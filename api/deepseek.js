@@ -38,18 +38,26 @@ export default async function handler(req, res) {
                     console.log('WARNING: Guide content seems too short, might be truncated');
                 }
                 
-        // Use only the tree structure part of the guide
-        if (guideContent.length > 10000) {
-            console.log('Guide is very large, using only tree structure part');
-            // Find the tree structure part (first 10KB contains the tree)
-            const treeStructureEnd = guideContent.indexOf('──────────────────────────────────────────────────');
-            if (treeStructureEnd > 0 && treeStructureEnd < 10000) {
-                guideContent = guideContent.substring(0, treeStructureEnd);
+        // Try to use full guide content with compression
+        console.log('Using full guide content with compression');
+        console.log('Guide content length:', guideContent.length);
+        
+        // Add compression to reduce size
+        const compressedGuide = guideContent.replace(/\s+/g, ' ').trim();
+        console.log('Compressed guide length:', compressedGuide.length);
+        
+        if (compressedGuide.length > 50000) {
+            console.log('Guide still too large, using tree structure part');
+            const treeStructureEnd = compressedGuide.indexOf('──────────────────────────────────────────────────');
+            if (treeStructureEnd > 0 && treeStructureEnd < 20000) {
+                guideContent = compressedGuide.substring(0, treeStructureEnd);
                 console.log('Using tree structure part only:', guideContent.length);
             } else {
-                guideContent = guideContent.substring(0, 10000);
+                guideContent = compressedGuide.substring(0, 20000);
                 console.log('Guide truncated to:', guideContent.length);
             }
+        } else {
+            guideContent = compressedGuide;
         }
             } else {
                 console.log('Guide file not found at:', guidePath);
@@ -119,6 +127,11 @@ ${guideContent}
             // Try to compress the request
             const compressedBody = JSON.stringify(requestBody);
             console.log('Compressed body size:', compressedBody.length);
+            
+            // Add additional compression
+            const zlib = await import('zlib');
+            const compressed = zlib.gzipSync(compressedBody);
+            console.log('Gzip compressed size:', compressed.length);
             
             const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
                 method: 'POST',
