@@ -63,9 +63,9 @@ ${guideContent}
         console.log('API Key exists:', !!process.env.DEEPSEEK_API_KEY);
         console.log('API Key length:', process.env.DEEPSEEK_API_KEY ? process.env.DEEPSEEK_API_KEY.length : 0);
         
-        // Remove timeout to allow unlimited processing time
-        // const controller = new AbortController();
-        // const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 seconds timeout
+        // Add longer timeout to allow complete processing
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes timeout
         
         // Check if API key exists
         if (!process.env.DEEPSEEK_API_KEY) {
@@ -99,8 +99,11 @@ ${guideContent}
                     'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(requestBody)
+                body: JSON.stringify(requestBody),
+                signal: controller.signal
             });
+            
+            clearTimeout(timeoutId);
             
             console.log('DeepSeek API response status:', response.status);
             
@@ -142,7 +145,9 @@ ${guideContent}
         console.error('Error stack:', error.stack);
         
         let errorMessage = 'خطأ في معالجة الطلب';
-        if (error.message.includes('DeepSeek API key is not configured')) {
+        if (error.name === 'AbortError' || error.message.includes('timeout')) {
+            errorMessage = 'انتهت مهلة الطلب (5 دقائق)، يرجى المحاولة مرة أخرى';
+        } else if (error.message.includes('DeepSeek API key is not configured')) {
             errorMessage = 'خطأ في إعدادات API، يرجى التحقق من الإعدادات';
         } else if (error.message.includes('network') || error.message.includes('fetch')) {
             errorMessage = 'خطأ في الشبكة، يرجى المحاولة مرة أخرى';
