@@ -39,9 +39,9 @@ export default async function handler(req, res) {
                 }
                 
                 // If guide is too large, truncate it to avoid API limits
-                if (guideContent.length > 1000000) {
+                if (guideContent.length > 500000) {
                     console.log('Guide is very large, truncating to avoid API limits');
-                    guideContent = guideContent.substring(0, 1000000);
+                    guideContent = guideContent.substring(0, 500000);
                 }
             } else {
                 console.log('Guide file not found at:', guidePath);
@@ -74,8 +74,11 @@ ${guideContent}
         
         // Check if API key exists
         if (!process.env.DEEPSEEK_API_KEY) {
+            console.error('DeepSeek API key is not configured');
             throw new Error('DeepSeek API key is not configured');
         }
+        
+        console.log('API Key first 10 chars:', process.env.DEEPSEEK_API_KEY.substring(0, 10));
 
         const requestBody = {
             model: 'deepseek-chat',
@@ -92,6 +95,7 @@ ${guideContent}
         console.log('Messages count:', requestBody.messages.length);
 
         try {
+            console.log('Making request to DeepSeek API...');
             const deepseekResponse = await fetch('https://api.deepseek.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
@@ -130,6 +134,9 @@ ${guideContent}
             }
         } catch (fetchError) {
             console.error('Fetch error:', fetchError);
+            console.error('Fetch error name:', fetchError.name);
+            console.error('Fetch error message:', fetchError.message);
+            console.error('Fetch error stack:', fetchError.stack);
             throw fetchError;
         }
         
