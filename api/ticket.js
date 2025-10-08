@@ -35,6 +35,8 @@ export default async function handler(req, res) {
         const ticketNumber = 'TKT-' + Date.now().toString().slice(-6);
         
         // حفظ التذكرة في قاعدة البيانات
+        console.log('Inserting ticket:', { ticketNumber, name, email, phone, message });
+        
         const { data, error } = await supabase
             .from('tickets')
             .insert([
@@ -53,17 +55,15 @@ export default async function handler(req, res) {
             console.error('Supabase error:', error);
             return res.status(500).json({ 
                 success: false, 
-                error: 'خطأ في حفظ التذكرة' 
+                error: `خطأ في حفظ التذكرة: ${error.message}`,
+                details: error
             });
         }
 
-        // إرسال إيميل تأكيد
-        try {
-            await sendConfirmationEmail(email, ticketNumber, name);
-        } catch (emailError) {
-            console.error('Email error:', emailError);
-            // لا نوقف العملية إذا فشل الإيميل
-        }
+        console.log('Ticket inserted successfully:', data);
+
+        // إرسال إيميل تأكيد (مؤقتاً معطل)
+        console.log('Ticket created successfully:', ticketNumber);
 
         res.status(200).json({ 
             success: true, 
@@ -80,50 +80,8 @@ export default async function handler(req, res) {
     }
 }
 
-// دالة إرسال إيميل التأكيد
+// دالة إرسال إيميل التأكيد (مؤقتاً معطل)
 async function sendConfirmationEmail(email, ticketNumber, name) {
-    const emailData = {
-        to: email,
-        subject: `تأكيد فتح التذكرة #${ticketNumber} - witsUP`,
-        html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #28a745;">تم فتح تذكرة الدعم بنجاح</h2>
-                <p>مرحباً ${name},</p>
-                <p>تم استلام طلب الدعم الخاص بك وسنرد عليك في أقرب وقت ممكن.</p>
-                
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                    <h3>تفاصيل التذكرة:</h3>
-                    <p><strong>رقم التذكرة:</strong> ${ticketNumber}</p>
-                    <p><strong>الحالة:</strong> مفتوحة</p>
-                    <p><strong>التاريخ:</strong> ${new Date().toLocaleDateString('ar-SA')}</p>
-                </div>
-                
-                <p>سنقوم بالرد على طلبك خلال 24 ساعة.</p>
-                <p>شكراً لاستخدام witsUP!</p>
-            </div>
-        `
-    };
-
-    // استخدام خدمة إرسال الإيميل (يمكن استخدام SendGrid, Nodemailer, etc.)
-    // هنا مثال باستخدام fetch إلى خدمة إرسال إيميل
-    const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            service_id: process.env.EMAILJS_SERVICE_ID,
-            template_id: process.env.EMAILJS_TEMPLATE_ID,
-            user_id: process.env.EMAILJS_USER_ID,
-            template_params: {
-                to_email: email,
-                ticket_number: ticketNumber,
-                customer_name: name
-            }
-        })
-    });
-
-    if (!response.ok) {
-        throw new Error('Failed to send email');
-    }
+    console.log('Email would be sent to:', email, 'for ticket:', ticketNumber);
+    // TODO: إضافة خدمة إرسال إيميل لاحقاً
 }
