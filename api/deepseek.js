@@ -83,7 +83,7 @@ ${guideContent}
                     ...conversationHistory,
                     { role: "user", content: message }
                 ],
-                max_tokens: 3000,
+                max_tokens: 100000,
                 temperature: 0.3
             }),
             timeout: 60000 // 60 seconds timeout
