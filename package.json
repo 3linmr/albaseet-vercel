@@ -1,7 +1,7 @@
 {
-  "name": "albaseet-vercel-clean",
+  "name": "witsup-vercel-clean",
   "version": "1.0.0",
-  "description": "مساعد albaseet.life على Vercel - نظيف",
+  "description": "مساعد witsUP على Vercel - نظيف",
   "dependencies": {
     "openai": "^4.20.1"
   },
