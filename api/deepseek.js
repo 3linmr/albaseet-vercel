@@ -38,8 +38,12 @@ export default async function handler(req, res) {
                     console.log('WARNING: Guide content seems too short, might be truncated');
                 }
                 
-                // Keep full guide content for accurate responses
-                console.log('Using full guide content for accurate responses');
+                // Check if guide is too large for Vercel limits
+                if (guideContent.length > 100000) {
+                    console.log('Guide is very large, truncating to avoid Vercel limits');
+                    guideContent = guideContent.substring(0, 100000);
+                    console.log('Guide truncated to:', guideContent.length);
+                }
             } else {
                 console.log('Guide file not found at:', guidePath);
                 console.log('Current working directory:', process.cwd());
@@ -96,6 +100,9 @@ ${guideContent}
         console.log('Messages count:', requestBody.messages.length);
         console.log('Max tokens:', requestBody.max_tokens);
         console.log('Temperature:', requestBody.temperature);
+        console.log('System message size:', systemMessage.length);
+        console.log('Guide content size:', guideContent.length);
+        console.log('Request body size in MB:', (JSON.stringify(requestBody).length / 1024 / 1024).toFixed(2));
 
         try {
             console.log('Making request to DeepSeek API...');
