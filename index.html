@@ -263,6 +263,101 @@
             transform: translateY(-2px);
         }
 
+        .ticket-button {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .ticket-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .ticket-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .ticket-modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .ticket-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .ticket-form input, .ticket-form textarea {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .ticket-form input:focus, .ticket-form textarea:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .ticket-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .ticket-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .ticket-submit {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .ticket-cancel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .ticket-submit:hover, .ticket-cancel:hover {
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 768px) {
             .chat-container {
                 padding: 10px;
@@ -328,7 +423,10 @@
                 </button>
                 <button class="clear-chat" onclick="clearChat()">
                     مسح المحادثة
-                        </button>
+                </button>
+                <button class="ticket-button" onclick="openTicketModal()">
+                    🎫 فتح تذكرة
+                </button>
                     </div>
                     
             <div class="suggestions">
@@ -337,6 +435,30 @@
                 <div class="suggestion" onclick="sendSuggestion('ما هي أنواع الموافقات؟')">ما هي أنواع الموافقات؟</div>
                 <div class="suggestion" onclick="sendSuggestion('كيف أضيف صنف جديد؟')">كيف أضيف صنف جديد؟</div>
             </div>
+        </div>
+    </div>
+
+    <!-- نموذج التذكرة -->
+    <div id="ticketModal" class="ticket-modal">
+        <div class="ticket-modal-content">
+            <h2>🎫 فتح تذكرة دعم</h2>
+            <p>إذا لم تكن الإجابة كافية، يمكنك فتح تذكرة دعم وسنرد عليك في أقرب وقت.</p>
+            
+            <form class="ticket-form" id="ticketForm">
+                <input type="text" id="ticketName" placeholder="الاسم الكامل" required>
+                <input type="email" id="ticketEmail" placeholder="البريد الإلكتروني" required>
+                <input type="tel" id="ticketPhone" placeholder="رقم الجوال" required>
+                <textarea id="ticketMessage" placeholder="اكتب رسالتك هنا..." required></textarea>
+                
+                <div class="ticket-buttons">
+                    <button type="button" class="ticket-cancel" onclick="closeTicketModal()">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="ticket-submit">
+                        إرسال التذكرة
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -491,6 +613,59 @@
         document.getElementById('chatInput').addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // فتح نموذج التذكرة
+        function openTicketModal() {
+            document.getElementById('ticketModal').style.display = 'block';
+        }
+
+        // إغلاق نموذج التذكرة
+        function closeTicketModal() {
+            document.getElementById('ticketModal').style.display = 'none';
+            document.getElementById('ticketForm').reset();
+        }
+
+        // إغلاق النموذج عند النقر خارجه
+        window.onclick = function(event) {
+            const modal = document.getElementById('ticketModal');
+            if (event.target === modal) {
+                closeTicketModal();
+            }
+        }
+
+        // إرسال التذكرة
+        document.getElementById('ticketForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('ticketName').value,
+                email: document.getElementById('ticketEmail').value,
+                phone: document.getElementById('ticketPhone').value,
+                message: document.getElementById('ticketMessage').value
+            };
+
+            try {
+                const response = await fetch('/api/ticket', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`تم إرسال التذكرة بنجاح! رقم التذكرة: ${result.ticketNumber}`);
+                    closeTicketModal();
+                } else {
+                    alert('حدث خطأ في إرسال التذكرة. يرجى المحاولة مرة أخرى.');
+                }
+            } catch (error) {
+                console.error('Error submitting ticket:', error);
+                alert('حدث خطأ في إرسال التذكرة. يرجى المحاولة مرة أخرى.');
+            }
         });
     </script>
 </body>

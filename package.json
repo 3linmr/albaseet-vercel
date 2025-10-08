@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "مساعد witsUP على Vercel - نظيف",
   "dependencies": {
-    "openai": "^4.20.1"
+    "openai": "^4.20.1",
+    "@supabase/supabase-js": "^2.38.0"
   },
   "engines": {
     "node": ">=18.0.0"
