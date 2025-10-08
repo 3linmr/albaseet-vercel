@@ -144,7 +144,7 @@
 
         .chat-input {
             width: 100%;
-            padding: 20px 25px 20px 80px;
+            padding: 50px 25px 20px 80px;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             font-size: 1.1rem;
@@ -165,8 +165,7 @@
         .send-button {
             position: absolute;
             left: 8px;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 8px;
             background: #e3f2fd;
             color: #1976d2;
             border: 1px solid #bbdefb;
@@ -418,7 +417,7 @@
 
             .chat-input {
                 font-size: 16px; /* Prevents zoom on iOS */
-                padding: 10px 15px 10px 60px;
+                padding: 40px 15px 10px 60px;
                 min-height: 40px;
                 width: 100%;
             }
@@ -429,6 +428,7 @@
                 min-width: 50px;
                 height: 30px;
                 left: 5px;
+                top: 5px;
             }
             
             .clear-chat, .ticket-button {
@@ -561,7 +561,7 @@
                         <textarea 
                     class="chat-input" 
                     id="chatInput" 
-                    placeholder="اكتب سؤالك هنا... اسألني عن أي شيء في نظام witsUP"
+                    placeholder="اكتب سؤالك هنا"
                     rows="3"
                         ></textarea>
                 <button class="send-button" id="sendButton" onclick="sendMessage()">
