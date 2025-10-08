@@ -140,7 +140,7 @@
         .chat-input-wrapper {
             display: flex;
             gap: 10px;
-            align-items: flex-end;
+            align-items: center;
             width: 100%;
         }
 
@@ -168,16 +168,17 @@
             background: #e3f2fd;
             color: #1976d2;
             border: 1px solid #bbdefb;
-            padding: 12px 24px;
+            padding: 20px 25px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 1rem;
             transition: all 0.3s ease;
-            min-width: 80px;
+            min-width: 100px;
             font-weight: 500;
+            height: 60px;
         }
 
-        .send-button:hover {
+        .send-button:hover:not(:disabled) {
             background: #bbdefb;
             color: #0d47a1;
         }
@@ -559,7 +560,7 @@
                     rows="3"
                         ></textarea>
                 <button class="send-button" id="sendButton" onclick="sendMessage()">
-                    إرسال
+                    اسأل
                 </button>
                 <button class="clear-chat" onclick="clearChat()">
                     مسح المحادثة
@@ -608,6 +609,9 @@
 
         // تحديث وقت الترحيب
         document.getElementById('welcomeTime').textContent = new Date().toLocaleTimeString('ar-SA');
+        
+        // تهيئة زر الإرسال ليكون معطل في البداية
+        document.getElementById('sendButton').disabled = true;
 
         // DeepSeek فقط - لا حاجة لاختيار النموذج
 
@@ -741,10 +745,18 @@
             }
         });
 
-        // تعديل ارتفاع النص تلقائياً
+        // تعديل ارتفاع النص تلقائياً وتفعيل/تعطيل الزر
         document.getElementById('chatInput').addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            
+            // تفعيل/تعطيل زر الإرسال حسب المحتوى
+            const sendButton = document.getElementById('sendButton');
+            if (this.value.trim().length > 0) {
+                sendButton.disabled = false;
+            } else {
+                sendButton.disabled = true;
+            }
         });
 
         // فتح نموذج التذكرة
