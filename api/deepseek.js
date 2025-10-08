@@ -50,6 +50,37 @@ export default async function handler(req, res) {
                    if (data && data.content) {
                        guideContent = data.content;
                        console.log('Guide loaded from database successfully, length:', guideContent.length);
+                       
+                       // Extract relevant sections based on the question
+                       const question = message.toLowerCase();
+                       
+                       if (question.includes('سند') || question.includes('يومية') || question.includes('قيد')) {
+                           // Extract accounting section
+                           const accountingStart = guideContent.indexOf('## قيد يومية');
+                           const accountingEnd = guideContent.indexOf('## ', accountingStart + 1);
+                           if (accountingStart > 0) {
+                               guideContent = guideContent.substring(accountingStart, accountingEnd > 0 ? accountingEnd : accountingStart + 10000);
+                               console.log('Using accounting section, length:', guideContent.length);
+                           }
+                       } else if (question.includes('فاتورة') || question.includes('بيع')) {
+                           // Extract sales section
+                           const salesStart = guideContent.indexOf('## فاتورة بيع');
+                           const salesEnd = guideContent.indexOf('## ', salesStart + 1);
+                           if (salesStart > 0) {
+                               guideContent = guideContent.substring(salesStart, salesEnd > 0 ? salesEnd : salesStart + 10000);
+                               console.log('Using sales section, length:', guideContent.length);
+                           }
+                       } else {
+                           // Use tree structure for general questions
+                           const treeEnd = guideContent.indexOf('──────────────────────────────────────────────────');
+                           if (treeEnd > 0 && treeEnd < 20000) {
+                               guideContent = guideContent.substring(0, treeEnd);
+                               console.log('Using tree structure, length:', guideContent.length);
+                           } else {
+                               guideContent = guideContent.substring(0, 15000);
+                               console.log('Using first 15000 chars, length:', guideContent.length);
+                           }
+                       }
                    } else {
                        console.log('No guide content found in database');
                    }
@@ -89,17 +120,17 @@ ${guideContent}
         
         console.log('API Key first 10 chars:', process.env.DEEPSEEK_API_KEY.substring(0, 10));
 
-        // Use DeepSeek only with 100,000 tokens
-        const requestBody = {
-            model: 'deepseek-chat',
-            messages: [
-                { role: "system", content: systemMessage },
-                ...conversationHistory,
-                { role: "user", content: message }
-            ],
-            max_tokens: 100000,
-            temperature: 0.3
-        };
+               // Use DeepSeek only with 8192 tokens (API limit)
+               const requestBody = {
+                   model: 'deepseek-chat',
+                   messages: [
+                       { role: "system", content: systemMessage },
+                       ...conversationHistory,
+                       { role: "user", content: message }
+                   ],
+                   max_tokens: 8192,
+                   temperature: 0.3
+               };
 
         console.log('Request body size:', JSON.stringify(requestBody).length);
         console.log('Messages count:', requestBody.messages.length);
