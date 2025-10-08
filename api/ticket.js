@@ -96,7 +96,7 @@ export default async function handler(req, res) {
 // دالة إرسال إيميل التأكيد
 async function sendConfirmationEmail(email, ticketNumber, name) {
     try {
-        // استخدام خدمة Resend (مجانية)
+        // استخدام خدمة Resend
         const response = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
@@ -104,8 +104,8 @@ async function sendConfirmationEmail(email, ticketNumber, name) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                from: 'witsUP Support <noreply@witsup.com>',
-                to: [email],
+                from: 'onboarding@resend.dev',
+                to: email,
                 subject: `تأكيد فتح التذكرة #${ticketNumber} - witsUP`,
                 html: `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; direction: rtl;">
