@@ -1,0 +1,11 @@
+{
+  "name": "albaseet-vercel-clean",
+  "version": "1.0.0",
+  "description": "مساعد albaseet.life على Vercel - نظيف",
+  "dependencies": {
+    "openai": "^4.20.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

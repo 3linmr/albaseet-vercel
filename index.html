@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مساعد albaseet.life - Chat Page - NEW DEPLOYMENT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .chat-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .chat-header h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .chat-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            max-height: 60vh;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .message.user {
+            text-align: left;
+        }
+
+        .message.assistant {
+            text-align: right;
+        }
+
+        .message-content {
+            display: inline-block;
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.assistant .message-content {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: #95a5a6;
+            margin-top: 5px;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            margin-bottom: 20px;
+            text-align: right;
+            max-width: 80%;
+            margin-left: auto;
+        }
+
+        .typing-dots {
+            display: inline-block;
+        }
+
+        .typing-dots::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        .chat-input-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1rem;
+            resize: none;
+            min-height: 50px;
+            max-height: 120px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .model-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+
+        .model-option {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .model-option.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .clear-chat {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .clear-chat:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .suggestion {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .suggestion:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                padding: 10px;
+            }
+            
+            .chat-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .message-content {
+            max-width: 90%;
+            }
+            
+            .chat-input-wrapper {
+                flex-direction: column;
+            }
+            
+            .send-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>💬 مساعد albaseet.life - صفحة جديدة</h1>
+            <p>اسأل أي سؤال عن نظام البسيط وسأجيبك بناءً على الدليل الشامل</p>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message assistant">
+                <div class="message-content">
+                    مرحباً! أنا مساعدك الذكي لنظام albaseet.life. يمكنني مساعدتك في:
+                    <br>• شرح أي وظيفة في النظام
+                    <br>• الإجابة على أسئلتك التقنية
+                    <br>• توجيهك خطوة بخطوة
+                    <br><br>اسألني أي شيء! 😊
+                </div>
+                <div class="message-time" id="welcomeTime"></div>
+                    </div>
+                </div>
+                
+        <div class="typing-indicator" id="typingIndicator">
+            <span class="typing-dots">المساعد يكتب</span>
+            </div>
+            
+        <div class="chat-input-container">
+            <div class="model-selector">
+                <div class="model-option active" data-model="deepseek">DeepSeek R1</div>
+                <div class="model-option" data-model="chatgpt">ChatGPT</div>
+            </div>
+            
+            <div class="chat-input-wrapper">
+                        <textarea 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="اكتب سؤالك هنا..."
+                    rows="1"
+                        ></textarea>
+                <button class="send-button" id="sendButton" onclick="sendMessage()">
+                    إرسال
+                </button>
+                <button class="clear-chat" onclick="clearChat()">
+                    مسح المحادثة
+                        </button>
+                    </div>
+                    
+            <div class="suggestions">
+                <div class="suggestion" onclick="sendSuggestion('كيف أضيف عميل جديد؟')">كيف أضيف عميل جديد؟</div>
+                <div class="suggestion" onclick="sendSuggestion('كيف أنشئ فاتورة بيع؟')">كيف أنشئ فاتورة بيع؟</div>
+                <div class="suggestion" onclick="sendSuggestion('ما هي أنواع الموافقات؟')">ما هي أنواع الموافقات؟</div>
+                <div class="suggestion" onclick="sendSuggestion('كيف أضيف صنف جديد؟')">كيف أضيف صنف جديد؟</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedModel = 'deepseek';
+        let conversationHistory = [];
+
+        // تحديث وقت الترحيب
+        document.getElementById('welcomeTime').textContent = new Date().toLocaleTimeString('ar-SA');
+
+        // اختيار النموذج
+        document.querySelectorAll('.model-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.model-option').forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                selectedModel = this.dataset.model;
+            });
+        });
+
+        // إرسال الرسالة
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // إضافة رسالة المستخدم
+            addMessage(message, 'user');
+            input.value = '';
+            input.style.height = 'auto';
+
+            // إظهار مؤشر الكتابة
+            showTypingIndicator();
+
+            try {
+                const apiEndpoint = selectedModel === 'deepseek' ? '/api/deepseek' : '/api/chat';
+                const response = await fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // إخفاء مؤشر الكتابة
+                hideTypingIndicator();
+
+                if (data.response) {
+                    // إضافة رسالة المساعد
+                    addMessage(data.response, 'assistant');
+                    
+                    // تحديث تاريخ المحادثة
+                    conversationHistory.push({ role: 'user', content: message });
+                    conversationHistory.push({ role: 'assistant', content: data.response });
+                    
+                    // الاحتفاظ بآخر 10 تبادلات فقط لتوفير الذاكرة
+                    if (conversationHistory.length > 20) {
+                        conversationHistory = conversationHistory.slice(-20);
+                    }
+                } else if (data.error) {
+                    addMessage(`عذراً، ${data.error}. يرجى المحاولة مرة أخرى.`, 'assistant');
+            } else {
+                    addMessage('عذراً، حدث خطأ في معالجة طلبك. يرجى المحاولة مرة أخرى.', 'assistant');
+                    }
+                } catch (error) {
+                hideTypingIndicator();
+                console.error('Error:', error);
+                
+                let errorMessage = 'عذراً، حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.';
+                
+                if (error.message.includes('timeout') || error.message.includes('انتهت مهلة')) {
+                    errorMessage = 'انتهت مهلة الاتصال. يرجى المحاولة مرة أخرى.';
+                } else if (error.message.includes('ECONNRESET') || error.message.includes('انقطع الاتصال')) {
+                    errorMessage = 'انقطع الاتصال بالخادم. يرجى المحاولة مرة أخرى.';
+                }
+                
+                addMessage(errorMessage, 'assistant');
+            }
+        }
+
+        // إضافة رسالة جديدة
+        function addMessage(content, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = content;
+            
+            const messageTime = document.createElement('div');
+            messageTime.className = 'message-time';
+            messageTime.textContent = new Date().toLocaleTimeString('ar-SA');
+            
+            messageDiv.appendChild(messageContent);
+            messageDiv.appendChild(messageTime);
+            messagesContainer.appendChild(messageDiv);
+            
+            // التمرير لأسفل
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // إظهار مؤشر الكتابة
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'block';
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+        }
+
+        // إخفاء مؤشر الكتابة
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        // إرسال اقتراح
+        function sendSuggestion(text) {
+            document.getElementById('chatInput').value = text;
+            sendMessage();
+        }
+
+        // مسح المحادثة
+        function clearChat() {
+            if (confirm('هل تريد مسح جميع الرسائل؟')) {
+                document.getElementById('chatMessages').innerHTML = `
+                    <div class="message assistant">
+                        <div class="message-content">
+                            مرحباً! أنا مساعدك الذكي لنظام albaseet.life. يمكنني مساعدتك في:
+                            <br>• شرح أي وظيفة في النظام
+                            <br>• الإجابة على أسئلتك التقنية
+                            <br>• توجيهك خطوة بخطوة
+                            <br><br>اسألني أي شيء! 😊
+                                </div>
+                        <div class="message-time">${new Date().toLocaleTimeString('ar-SA')}</div>
+                            </div>
+                        `;
+                conversationHistory = [];
+            }
+        }
+
+        // إرسال بالضغط على Enter
+        document.getElementById('chatInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // تعديل ارتفاع النص تلقائياً
+        document.getElementById('chatInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+    </script>
+</body>
+</html>
