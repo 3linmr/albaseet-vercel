@@ -138,15 +138,13 @@
         }
 
         .chat-input-wrapper {
-            display: flex;
-            gap: 10px;
-            align-items: center;
+            position: relative;
             width: 100%;
         }
 
         .chat-input {
-            flex: 1;
-            padding: 20px 25px;
+            width: 100%;
+            padding: 20px 80px 20px 25px;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             font-size: 1.1rem;
@@ -155,7 +153,7 @@
             max-height: 150px;
             font-family: inherit;
             transition: all 0.3s ease;
-            width: 100%;
+            box-sizing: border-box;
         }
 
         .chat-input:focus {
@@ -165,17 +163,21 @@
         }
 
         .send-button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
             background: #e3f2fd;
             color: #1976d2;
             border: 1px solid #bbdefb;
-            padding: 20px 25px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
-            min-width: 100px;
+            min-width: 60px;
             font-weight: 500;
-            height: 60px;
+            height: 40px;
         }
 
         .send-button:hover:not(:disabled) {
@@ -414,23 +416,19 @@
                 padding: 8px;
             }
 
-            .chat-input-wrapper {
-                flex-direction: row;
-                gap: 8px;
-            }
-
             .chat-input {
                 font-size: 16px; /* Prevents zoom on iOS */
-                padding: 10px 15px;
+                padding: 10px 60px 10px 15px;
                 min-height: 40px;
                 width: 100%;
             }
 
             .send-button {
-                padding: 10px 15px;
-                font-size: 0.9rem;
-                min-width: 80px;
-                height: 40px;
+                padding: 6px 12px;
+                font-size: 0.8rem;
+                min-width: 50px;
+                height: 30px;
+                right: 5px;
             }
             
             .clear-chat, .ticket-button {
