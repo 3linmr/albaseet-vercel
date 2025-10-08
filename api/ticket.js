@@ -7,6 +7,12 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
+    console.log('Ticket API called with method:', req.method);
+    console.log('Environment variables:', {
+        SUPABASE_URL: process.env.SUPABASE_URL ? 'Set' : 'Not set',
+        SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY ? 'Set' : 'Not set'
+    });
+    
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -22,6 +28,7 @@ export default async function handler(req, res) {
     }
 
     try {
+        console.log('Request body:', req.body);
         const { name, email, phone, message } = req.body;
         
         if (!name || !email || !phone || !message) {
