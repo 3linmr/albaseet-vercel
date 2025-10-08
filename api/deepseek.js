@@ -20,7 +20,7 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'الرسالة مطلوبة' });
         }
 
-               // قراءة الدليل من الملف مباشرة
+               // قراءة الدليل من الملف مع تقسيم ذكي
                let guideContent = '';
                try {
                    const fs = await import('fs');
@@ -30,9 +30,45 @@ export default async function handler(req, res) {
                    console.log('Reading guide from file:', guidePath);
                    
                    if (fs.existsSync(guidePath)) {
-                       guideContent = fs.readFileSync(guidePath, 'utf8');
-                       console.log('Guide loaded from file successfully, length:', guideContent.length);
-                       console.log('Using FULL guide content with 100,000 tokens limit');
+                       const fullGuide = fs.readFileSync(guidePath, 'utf8');
+                       console.log('Full guide loaded, length:', fullGuide.length);
+                       
+                       // Extract relevant section based on question
+                       const question = message.toLowerCase();
+                       
+                       if (question.includes('سند') || question.includes('قبض') || question.includes('صرف')) {
+                           // Extract accounting section
+                           const accountingStart = fullGuide.indexOf('## قيد يومية');
+                           const accountingEnd = fullGuide.indexOf('## ', accountingStart + 1);
+                           if (accountingStart > 0) {
+                               guideContent = fullGuide.substring(accountingStart, accountingEnd > 0 ? accountingEnd : accountingStart + 15000);
+                               console.log('Using accounting section, length:', guideContent.length);
+                           } else {
+                               guideContent = fullGuide.substring(0, 15000);
+                               console.log('Using first 15000 chars, length:', guideContent.length);
+                           }
+                       } else if (question.includes('فاتورة') || question.includes('بيع')) {
+                           // Extract sales section
+                           const salesStart = fullGuide.indexOf('## فاتورة بيع');
+                           const salesEnd = fullGuide.indexOf('## ', salesStart + 1);
+                           if (salesStart > 0) {
+                               guideContent = fullGuide.substring(salesStart, salesEnd > 0 ? salesEnd : salesStart + 15000);
+                               console.log('Using sales section, length:', guideContent.length);
+                           } else {
+                               guideContent = fullGuide.substring(0, 15000);
+                               console.log('Using first 15000 chars, length:', guideContent.length);
+                           }
+                       } else {
+                           // Use tree structure for general questions
+                           const treeEnd = fullGuide.indexOf('──────────────────────────────────────────────────');
+                           if (treeEnd > 0 && treeEnd < 20000) {
+                               guideContent = fullGuide.substring(0, treeEnd);
+                               console.log('Using tree structure, length:', guideContent.length);
+                           } else {
+                               guideContent = fullGuide.substring(0, 15000);
+                               console.log('Using first 15000 chars, length:', guideContent.length);
+                           }
+                       }
                    } else {
                        console.log('Guide file not found at:', guidePath);
                        console.log('Current working directory:', process.cwd());
