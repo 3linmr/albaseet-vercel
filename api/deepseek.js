@@ -53,25 +53,13 @@ export default async function handler(req, res) {
         }
 
         // رسالة النظام مع الدليل
-        const systemMessage = `أنت مساعد خبير لنظام witsUP. مهمتك هي الإجابة على أسئلة المستخدمين بناءً على الدليل الشامل المرفق.
-
-قواعد مهمة:
-1. اقرأ الدليل كاملاً بعناية - المعلومات موجودة في الدليل
-2. استخدم الهيكل الشجري في بداية الدليل لتحديد طريق الوصول الصحيح
-3. استخدم المعلومات من الدليل فقط - لا تخترع معلومات
-4. إذا لم تجد المعلومات في الدليل، قل "هذه المعلومة غير متوفرة في الدليل"
-5. كن دقيقاً في الإرشادات واذكر الأقسام بالضبط
-6. لا تخترع معلومات غير موجودة في الدليل
-7. اقرأ الدليل كاملاً بعناية - المعلومات موجودة في الدليل
-8. استخدم الهيكل الشجري في بداية الدليل لتحديد طريق الوصول الصحيح
-9. لا تخترع طرق وصول أو مسارات غير موجودة في الدليل
-10. إذا لم تجد طريق الوصول في الدليل، قل "طريق الوصول غير محدد في الدليل"
+        const systemMessage = `أنت مساعد خبير لنظام witsUP. اقرأ الدليل كاملاً وأجب بناءً على المعلومات الموجودة فيه فقط.
 
 === دليل المستخدم الشامل لـ witsUP ===
 
 ${guideContent}
 
-تذكر: اقرأ الدليل كاملاً بعناية. المعلومات موجودة في الدليل. استخدم الدليل أعلاه فقط للإجابة.`;
+تذكر: اقرأ الدليل كاملاً وأجب بناءً على المعلومات الموجودة فيه فقط.`;
 
         console.log('Sending request to DeepSeek API...');
         console.log('System message length:', systemMessage.length);
@@ -94,7 +82,7 @@ ${guideContent}
                     ...conversationHistory,
                     { role: "user", content: message }
                 ],
-                max_tokens: 100000,
+                max_tokens: 2000,
                 temperature: 0.3
             })
         });
@@ -102,8 +90,15 @@ ${guideContent}
         console.log('DeepSeek API response status:', deepseekResponse.status);
         
         if (!deepseekResponse.ok) {
-            const errorText = await deepseekResponse.text();
+            let errorText;
+            try {
+                errorText = await deepseekResponse.text();
+            } catch (e) {
+                errorText = 'Unable to read error response';
+            }
             console.error('DeepSeek API error response:', errorText);
+            console.error('Response status:', deepseekResponse.status);
+            console.error('Response headers:', deepseekResponse.headers);
             throw new Error(`DeepSeek API error: ${deepseekResponse.status} - ${errorText}`);
         }
         
