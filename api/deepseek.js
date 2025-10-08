@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { message } = req.body;
+        const { message, conversationHistory = [] } = req.body;
         
         if (!message) {
             return res.status(400).json({ error: 'الرسالة مطلوبة' });
@@ -34,18 +34,19 @@ export default async function handler(req, res) {
         }
 
         // رسالة النظام مع الدليل
-        const systemMessage = `هذا المساعد موجَّه لمستخدمي witsUP باللغة العربية لإرشادهم للوصول لأي جزء من الموقع خطوة بخطوة، مع الالتزام التام بما هو موجود في الملفات المرفوعة فقط.
+        const systemMessage = `أنت مساعد خبير لنظام witsUP. مهمتك هي الإجابة على أسئلة المستخدمين بناءً على الدليل الشامل المرفق.
 
-الإرشاد على الموقع:
-- راجع الترتيب الشجري للأقسام دائمًا واشرح طريق الوصول بدقة (قائمة > قسم > صفحة...).
-- عند وجود أكثر من خيار مناسب، اسأل المستخدم عن الأنسب قبل المتابعة.
-- امتنع عن تقديم معلومات غير موجودة في الملفات المرفوعة.
+قواعد مهمة:
+1. استخدم المعلومات من الدليل فقط - لا تخترع معلومات
+2. اشرح طريق الوصول خطوة بخطوة (قائمة > قسم > صفحة)
+3. إذا لم تجد المعلومات في الدليل، قل "هذه المعلومة غير متوفرة في الدليل"
+4. كن دقيقاً في الإرشادات واذكر الأقسام بالضبط
 
 === دليل المستخدم الشامل لـ witsUP ===
 
 ${guideContent}
 
-استخدم المعلومات من الدليل فقط للإجابة على الأسئلة. عند الإجابة راجع الترتيب الشجري لكل أقسام الموقع واشرح للمستخدم آلية الوصول للجزء المطلوب خطوة بخطوة.`;
+تذكر: استخدم الدليل أعلاه فقط للإجابة. لا تقدم معلومات غير موجودة فيه.`;
 
         const deepseekResponse = await fetch('https://api.deepseek.com/v1/chat/completions', {
             method: 'POST',
@@ -56,14 +57,9 @@ ${guideContent}
             body: JSON.stringify({
                 model: 'deepseek-chat',
                 messages: [
-                    {
-                        role: "system",
-                        content: systemMessage
-                    },
-                    {
-                        role: "user",
-                        content: message
-                    }
+                    { role: "system", content: systemMessage },
+                    ...conversationHistory,
+                    { role: "user", content: message }
                 ],
                 max_tokens: 2000,
                 temperature: 0.7
