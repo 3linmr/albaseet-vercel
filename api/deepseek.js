@@ -85,7 +85,7 @@ ${guideContent}
                 ...conversationHistory,
                 { role: "user", content: message }
             ],
-            max_tokens: 100000,
+            max_tokens: 8192,
             temperature: 0.3
         };
 
