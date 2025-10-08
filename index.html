@@ -377,22 +377,147 @@
         @media (max-width: 768px) {
             .chat-container {
                 padding: 10px;
+                height: 100vh;
             }
-            
+
+            .chat-header {
+                padding: 20px 15px;
+                margin-bottom: 15px;
+            }
+
             .chat-header h1 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
+                margin-bottom: 8px;
             }
-            
+
+            .chat-header p {
+                font-size: 0.85rem;
+                line-height: 1.4;
+            }
+
+            .chat-messages {
+                padding: 15px;
+                margin-bottom: 15px;
+                max-height: 50vh;
+            }
+
             .message-content {
-            max-width: 90%;
+                max-width: 95%;
+                padding: 12px 16px;
+                font-size: 0.9rem;
             }
-            
+
+            .chat-input-container {
+                padding: 15px;
+            }
+
             .chat-input-wrapper {
                 flex-direction: column;
+                gap: 15px;
             }
-            
-            .send-button {
+
+            .chat-input {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 15px 20px;
+                min-height: 50px;
                 width: 100%;
+            }
+
+            .send-button, .clear-chat, .ticket-button {
+                width: 100%;
+                padding: 12px 20px;
+                font-size: 1rem;
+                margin: 0;
+            }
+
+            .model-selector {
+                flex-direction: column;
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+
+            .model-option {
+                width: 100%;
+                text-align: center;
+                padding: 12px;
+            }
+
+            .suggestions {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .suggestion {
+                width: 100%;
+                text-align: center;
+                padding: 12px 15px;
+            }
+
+            .ticket-modal-content {
+                margin: 10% auto;
+                padding: 20px;
+                width: 95%;
+            }
+
+            .ticket-form {
+                gap: 15px;
+            }
+
+            .ticket-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .ticket-submit, .ticket-cancel {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chat-container {
+                padding: 5px;
+            }
+
+            .chat-header {
+                padding: 15px 10px;
+            }
+
+            .chat-header h1 {
+                font-size: 1.2rem;
+            }
+
+            .chat-header p {
+                font-size: 0.8rem;
+            }
+
+            .chat-messages {
+                padding: 10px;
+                max-height: 45vh;
+            }
+
+            .message-content {
+                padding: 10px 14px;
+                font-size: 0.85rem;
+            }
+
+            .chat-input-container {
+                padding: 10px;
+            }
+
+            .chat-input {
+                padding: 12px 15px;
+                font-size: 16px;
+            }
+
+            .send-button, .clear-chat, .ticket-button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            .ticket-modal-content {
+                margin: 5% auto;
+                padding: 15px;
+                width: 98%;
             }
         }
     </style>
