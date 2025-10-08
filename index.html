@@ -381,24 +381,26 @@
             }
 
             .chat-header {
-                padding: 20px 15px;
-                margin-bottom: 15px;
-            }
-
-            .chat-header h1 {
-                font-size: 1.4rem;
+                padding: 10px 15px;
                 margin-bottom: 8px;
             }
 
+            .chat-header h1 {
+                font-size: 1.1rem;
+                margin-bottom: 4px;
+            }
+
             .chat-header p {
-                font-size: 0.85rem;
-                line-height: 1.4;
+                font-size: 0.75rem;
+                line-height: 1.3;
+                display: none; /* إخفاء النص الطويل على الجوال */
             }
 
             .chat-messages {
-                padding: 15px;
-                margin-bottom: 15px;
-                max-height: 50vh;
+                padding: 10px;
+                margin-bottom: 8px;
+                max-height: 70vh;
+                min-height: 50vh;
             }
 
             .message-content {
@@ -408,49 +410,52 @@
             }
 
             .chat-input-container {
-                padding: 15px;
+                padding: 8px;
             }
 
             .chat-input-wrapper {
                 flex-direction: column;
-                gap: 15px;
+                gap: 8px;
             }
 
             .chat-input {
                 font-size: 16px; /* Prevents zoom on iOS */
-                padding: 15px 20px;
-                min-height: 50px;
+                padding: 10px 15px;
+                min-height: 40px;
                 width: 100%;
             }
 
             .send-button, .clear-chat, .ticket-button {
                 width: 100%;
-                padding: 12px 20px;
-                font-size: 1rem;
+                padding: 8px 15px;
+                font-size: 0.9rem;
                 margin: 0;
             }
 
             .model-selector {
                 flex-direction: column;
-                gap: 8px;
-                margin-bottom: 15px;
+                gap: 4px;
+                margin-bottom: 8px;
             }
 
             .model-option {
                 width: 100%;
                 text-align: center;
-                padding: 12px;
+                padding: 8px;
+                font-size: 0.85rem;
             }
 
             .suggestions {
                 flex-direction: column;
-                gap: 8px;
+                gap: 4px;
+                margin-top: 8px;
             }
 
             .suggestion {
                 width: 100%;
                 text-align: center;
-                padding: 12px 15px;
+                padding: 8px 12px;
+                font-size: 0.8rem;
             }
 
             .ticket-modal-content {
@@ -479,20 +484,21 @@
             }
 
             .chat-header {
-                padding: 15px 10px;
+                padding: 8px 10px;
             }
 
             .chat-header h1 {
-                font-size: 1.2rem;
+                font-size: 1rem;
             }
 
             .chat-header p {
-                font-size: 0.8rem;
+                display: none; /* إخفاء النص على الشاشات الصغيرة */
             }
 
             .chat-messages {
-                padding: 10px;
-                max-height: 45vh;
+                padding: 8px;
+                max-height: 75vh;
+                min-height: 60vh;
             }
 
             .message-content {
@@ -501,17 +507,18 @@
             }
 
             .chat-input-container {
-                padding: 10px;
+                padding: 5px;
             }
 
             .chat-input {
-                padding: 12px 15px;
+                padding: 8px 12px;
                 font-size: 16px;
+                min-height: 35px;
             }
 
             .send-button, .clear-chat, .ticket-button {
-                padding: 10px 15px;
-                font-size: 0.9rem;
+                padding: 6px 12px;
+                font-size: 0.8rem;
             }
 
             .ticket-modal-content {
