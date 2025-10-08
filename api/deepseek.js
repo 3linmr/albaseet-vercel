@@ -20,54 +20,43 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'الرسالة مطلوبة' });
         }
 
-        // قراءة الدليل
-        let guideContent = '';
-        try {
-            const fs = await import('fs');
-            const path = await import('path');
-            const guidePath = path.join(process.cwd(), 'دليل_المستخدم_الشامل_الثاني_الأصلي.md');
-            console.log('Attempting to read guide from:', guidePath);
-            
-            if (fs.existsSync(guidePath)) {
-                console.log('Guide file exists, reading...');
-                guideContent = fs.readFileSync(guidePath, 'utf8');
-                console.log('Guide loaded successfully, length:', guideContent.length);
-                
-                // Check if guide content is being truncated
-                if (guideContent.length < 100000) {
-                    console.log('WARNING: Guide content seems too short, might be truncated');
-                }
-                
-        // Try to use full guide content with compression
-        console.log('Using full guide content with compression');
-        console.log('Guide content length:', guideContent.length);
-        
-        // Add compression to reduce size
-        const compressedGuide = guideContent.replace(/\s+/g, ' ').trim();
-        console.log('Compressed guide length:', compressedGuide.length);
-        
-        if (compressedGuide.length > 50000) {
-            console.log('Guide still too large, using tree structure part');
-            const treeStructureEnd = compressedGuide.indexOf('──────────────────────────────────────────────────');
-            if (treeStructureEnd > 0 && treeStructureEnd < 20000) {
-                guideContent = compressedGuide.substring(0, treeStructureEnd);
-                console.log('Using tree structure part only:', guideContent.length);
-            } else {
-                guideContent = compressedGuide.substring(0, 20000);
-                console.log('Guide truncated to:', guideContent.length);
-            }
-        } else {
-            guideContent = compressedGuide;
-        }
-            } else {
-                console.log('Guide file not found at:', guidePath);
-                console.log('Current working directory:', process.cwd());
-                console.log('Files in current directory:', fs.readdirSync(process.cwd()));
-            }
-        } catch (error) {
-            console.error('Error reading guide:', error);
-            console.error('Error details:', error.message);
-        }
+               // قراءة الدليل من قاعدة البيانات
+               let guideContent = '';
+               try {
+                   const { createClient } = await import('@supabase/supabase-js');
+                   
+                   const supabaseUrl = process.env.SUPABASE_URL;
+                   const supabaseKey = process.env.SUPABASE_ANON_KEY;
+                   
+                   if (!supabaseUrl || !supabaseKey) {
+                       console.error('Supabase credentials not found');
+                       throw new Error('Supabase credentials not configured');
+                   }
+                   
+                   const supabase = createClient(supabaseUrl, supabaseKey);
+                   
+                   console.log('Reading guide from database...');
+                   const { data, error } = await supabase
+                       .from('guide_content')
+                       .select('content')
+                       .eq('id', 1)
+                       .single();
+                   
+                   if (error) {
+                       console.error('Error reading guide from database:', error);
+                       throw error;
+                   }
+                   
+                   if (data && data.content) {
+                       guideContent = data.content;
+                       console.log('Guide loaded from database successfully, length:', guideContent.length);
+                   } else {
+                       console.log('No guide content found in database');
+                   }
+               } catch (error) {
+                   console.error('Error reading guide from database:', error);
+                   console.error('Error details:', error.message);
+               }
 
         // رسالة النظام مع الدليل - بدون قواعد عامة
         const systemMessage = `أنت مساعد خبير لنظام witsUP. مهمتك هي الإجابة على أسئلة المستخدمين بناءً على الدليل الشامل المرفق.
@@ -124,23 +113,13 @@ ${guideContent}
             console.log('Making request to DeepSeek API...');
             console.log('Request body size in MB:', (JSON.stringify(requestBody).length / 1024 / 1024).toFixed(2));
             
-            // Try to compress the request
-            const compressedBody = JSON.stringify(requestBody);
-            console.log('Compressed body size:', compressedBody.length);
-            
-            // Add additional compression
-            const zlib = await import('zlib');
-            const compressed = zlib.gzipSync(compressedBody);
-            console.log('Gzip compressed size:', compressed.length);
-            
             const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
-                    'Content-Type': 'application/json',
-                    'Accept-Encoding': 'gzip, deflate'
+                    'Content-Type': 'application/json'
                 },
-                body: compressedBody,
+                body: JSON.stringify(requestBody),
                 signal: controller.signal
             });
             
