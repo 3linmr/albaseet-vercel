@@ -63,8 +63,6 @@ ${guideContent}
 تذكر: اقرأ الدليل كاملاً وأجب بناءً على المعلومات الموجودة فيه فقط.`;
 
         console.log('Sending request to DeepSeek API...');
-        console.log('System message length:', systemMessage.length);
-        console.log('Guide content length:', guideContent.length);
         console.log('API Key exists:', !!process.env.DEEPSEEK_API_KEY);
         console.log('API Key length:', process.env.DEEPSEEK_API_KEY ? process.env.DEEPSEEK_API_KEY.length : 0);
         
@@ -93,6 +91,8 @@ ${guideContent}
 
         console.log('Request body size:', JSON.stringify(requestBody).length);
         console.log('Messages count:', requestBody.messages.length);
+        console.log('Max tokens:', requestBody.max_tokens);
+        console.log('Temperature:', requestBody.temperature);
 
         try {
             console.log('Making request to DeepSeek API...');
