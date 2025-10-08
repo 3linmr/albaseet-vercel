@@ -38,12 +38,8 @@ export default async function handler(req, res) {
                     console.log('WARNING: Guide content seems too short, might be truncated');
                 }
                 
-                // Check if guide is too large for Vercel limits
-                if (guideContent.length > 20000) {
-                    console.log('Guide is very large, truncating to avoid Vercel limits');
-                    guideContent = guideContent.substring(0, 20000);
-                    console.log('Guide truncated to:', guideContent.length);
-                }
+                // Keep full guide content - no truncation
+                console.log('Using full guide content for accurate responses');
             } else {
                 console.log('Guide file not found at:', guidePath);
                 console.log('Current working directory:', process.cwd());
@@ -92,7 +88,7 @@ ${guideContent}
                 ...conversationHistory,
                 { role: "user", content: message }
             ],
-            max_tokens: 120000,
+            max_tokens: 4000,
             temperature: 0.3
         };
 
@@ -106,13 +102,20 @@ ${guideContent}
 
         try {
             console.log('Making request to DeepSeek API...');
+            console.log('Request body size in MB:', (JSON.stringify(requestBody).length / 1024 / 1024).toFixed(2));
+            
+            // Try to compress the request
+            const compressedBody = JSON.stringify(requestBody);
+            console.log('Compressed body size:', compressedBody.length);
+            
             const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept-Encoding': 'gzip, deflate'
                 },
-                body: JSON.stringify(requestBody),
+                body: compressedBody,
                 signal: controller.signal
             });
             
