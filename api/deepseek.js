@@ -71,7 +71,7 @@ ${guideContent}
         
         // Add longer timeout to allow complete processing
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes timeout
+        const timeoutId = setTimeout(() => controller.abort(), 600000); // 10 minutes timeout
         
         // Check if API key exists
         if (!process.env.DEEPSEEK_API_KEY) {
@@ -81,16 +81,40 @@ ${guideContent}
         
         console.log('API Key first 10 chars:', process.env.DEEPSEEK_API_KEY.substring(0, 10));
 
-        const requestBody = {
-            model: 'deepseek-chat',
-            messages: [
-                { role: "system", content: systemMessage },
-                ...conversationHistory,
-                { role: "user", content: message }
-            ],
-            max_tokens: 4000,
-            temperature: 0.3
-        };
+        // Try ChatGPT first (supports more tokens), fallback to DeepSeek
+        let requestBody;
+        let apiUrl;
+        let apiKey;
+        
+        if (process.env.OPENAI_API_KEY) {
+            console.log('Using ChatGPT API (supports 100,000+ tokens)');
+            apiUrl = 'https://api.openai.com/v1/chat/completions';
+            apiKey = process.env.OPENAI_API_KEY;
+            requestBody = {
+                model: 'gpt-4o',
+                messages: [
+                    { role: "system", content: systemMessage },
+                    ...conversationHistory,
+                    { role: "user", content: message }
+                ],
+                max_tokens: 100000,
+                temperature: 0.3
+            };
+        } else {
+            console.log('Using DeepSeek API (limited tokens)');
+            apiUrl = 'https://api.deepseek.com/v1/chat/completions';
+            apiKey = process.env.DEEPSEEK_API_KEY;
+            requestBody = {
+                model: 'deepseek-chat',
+                messages: [
+                    { role: "system", content: systemMessage },
+                    ...conversationHistory,
+                    { role: "user", content: message }
+                ],
+                max_tokens: 100000,
+                temperature: 0.3
+            };
+        }
 
         console.log('Request body size:', JSON.stringify(requestBody).length);
         console.log('Messages count:', requestBody.messages.length);
@@ -108,10 +132,10 @@ ${guideContent}
             const compressedBody = JSON.stringify(requestBody);
             console.log('Compressed body size:', compressedBody.length);
             
-            const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+                    'Authorization': `Bearer ${apiKey}`,
                     'Content-Type': 'application/json',
                     'Accept-Encoding': 'gzip, deflate'
                 },
