@@ -76,7 +76,7 @@ ${guideContent}
         
         // Create AbortController for timeout
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 seconds timeout
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 seconds timeout
         
         const deepseekResponse = await fetch('https://api.deepseek.com/v1/chat/completions', {
             method: 'POST',
@@ -91,7 +91,7 @@ ${guideContent}
                     ...conversationHistory,
                     { role: "user", content: message }
                 ],
-                max_tokens: 80000,
+                max_tokens: 4000,
                 temperature: 0.3
             }),
             signal: controller.signal
@@ -101,17 +101,23 @@ ${guideContent}
         
         console.log('DeepSeek API response status:', deepseekResponse.status);
         
+        if (!deepseekResponse.ok) {
+            const errorText = await deepseekResponse.text();
+            console.error('DeepSeek API error response:', errorText);
+            throw new Error(`DeepSeek API error: ${deepseekResponse.status} - ${errorText}`);
+        }
+        
         const data = await deepseekResponse.json();
         console.log('DeepSeek API response data:', JSON.stringify(data, null, 2));
         
-        if (deepseekResponse.ok) {
+        if (data.choices && data.choices[0] && data.choices[0].message) {
             res.status(200).json({
                 response: data.choices[0].message.content,
                 model: 'deepseek-chat'
             });
         } else {
-            console.error('DeepSeek API error:', data);
-            throw new Error(data.error?.message || 'خطأ في DeepSeek');
+            console.error('Invalid response structure:', data);
+            throw new Error('استجابة غير صحيحة من DeepSeek API');
         }
         
     } catch (error) {
@@ -127,6 +133,12 @@ ${guideContent}
             errorMessage = 'خطأ في API، يرجى المحاولة مرة أخرى';
         } else if (error.message.includes('JSON')) {
             errorMessage = 'خطأ في معالجة البيانات، يرجى المحاولة مرة أخرى';
+        } else if (error.message.includes('401')) {
+            errorMessage = 'خطأ في API Key، يرجى التحقق من الإعدادات';
+        } else if (error.message.includes('429')) {
+            errorMessage = 'تم تجاوز حد الطلبات، يرجى المحاولة لاحقاً';
+        } else if (error.message.includes('500')) {
+            errorMessage = 'خطأ في الخادم، يرجى المحاولة مرة أخرى';
         }
         
         res.status(500).json({ 
