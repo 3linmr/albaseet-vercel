@@ -38,11 +38,8 @@ export default async function handler(req, res) {
                     console.log('WARNING: Guide content seems too short, might be truncated');
                 }
                 
-                // If guide is too large, truncate it to avoid API limits
-                if (guideContent.length > 500000) {
-                    console.log('Guide is very large, truncating to avoid API limits');
-                    guideContent = guideContent.substring(0, 500000);
-                }
+                // Keep full guide content for accurate responses
+                console.log('Using full guide content for accurate responses');
             } else {
                 console.log('Guide file not found at:', guidePath);
                 console.log('Current working directory:', process.cwd());
@@ -85,7 +82,7 @@ ${guideContent}
                 ...conversationHistory,
                 { role: "user", content: message }
             ],
-            max_tokens: 8192,
+            max_tokens: 80000,
             temperature: 0.3
         };
 
@@ -96,7 +93,7 @@ ${guideContent}
 
         try {
             console.log('Making request to DeepSeek API...');
-            const deepseekResponse = await fetch('https://api.deepseek.com/v1/chat/completions', {
+            const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
@@ -105,22 +102,22 @@ ${guideContent}
                 body: JSON.stringify(requestBody)
             });
             
-            console.log('DeepSeek API response status:', deepseekResponse.status);
+            console.log('DeepSeek API response status:', response.status);
             
-            if (!deepseekResponse.ok) {
+            if (!response.ok) {
                 let errorText;
                 try {
-                    errorText = await deepseekResponse.text();
+                    errorText = await response.text();
                 } catch (e) {
                     errorText = 'Unable to read error response';
                 }
                 console.error('DeepSeek API error response:', errorText);
-                console.error('Response status:', deepseekResponse.status);
-                console.error('Response headers:', deepseekResponse.headers);
-                throw new Error(`DeepSeek API error: ${deepseekResponse.status} - ${errorText}`);
+                console.error('Response status:', response.status);
+                console.error('Response headers:', response.headers);
+                throw new Error(`DeepSeek API error: ${response.status} - ${errorText}`);
             }
             
-            const data = await deepseekResponse.json();
+            const data = await response.json();
             console.log('DeepSeek API response data:', JSON.stringify(data, null, 2));
             
             if (data.choices && data.choices[0] && data.choices[0].message) {
