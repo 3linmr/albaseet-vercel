@@ -28,6 +28,9 @@ export default async function handler(req, res) {
             const guidePath = path.join(process.cwd(), 'دليل_المستخدم_الشامل_الثاني_الأصلي.md');
             if (fs.existsSync(guidePath)) {
                 guideContent = fs.readFileSync(guidePath, 'utf8');
+                console.log('Guide loaded successfully, length:', guideContent.length);
+            } else {
+                console.log('Guide file not found at:', guidePath);
             }
         } catch (error) {
             console.error('Error reading guide:', error);
@@ -41,12 +44,14 @@ export default async function handler(req, res) {
 2. اشرح طريق الوصول خطوة بخطوة (قائمة > قسم > صفحة)
 3. إذا لم تجد المعلومات في الدليل، قل "هذه المعلومة غير متوفرة في الدليل"
 4. كن دقيقاً في الإرشادات واذكر الأقسام بالضبط
+5. لا تذكر معلومات غير موجودة في الدليل مثل "مركز التكلفة" أو "المرفقات" أو "حالة السند"
+6. ركز على الحقول المطلوبة والاختيارية المذكورة في الدليل فقط
 
 === دليل المستخدم الشامل لـ witsUP ===
 
 ${guideContent}
 
-تذكر: استخدم الدليل أعلاه فقط للإجابة. لا تقدم معلومات غير موجودة فيه.`;
+تذكر: استخدم الدليل أعلاه فقط للإجابة. لا تقدم معلومات غير موجودة فيه. إذا لم تجد معلومة في الدليل، قل صراحة أنها غير متوفرة.`;
 
         const deepseekResponse = await fetch('https://api.deepseek.com/v1/chat/completions', {
             method: 'POST',
