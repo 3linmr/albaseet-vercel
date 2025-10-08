@@ -38,8 +38,19 @@ export default async function handler(req, res) {
                     console.log('WARNING: Guide content seems too short, might be truncated');
                 }
                 
-                // Keep full guide content - no truncation
-                console.log('Using full guide content for accurate responses');
+        // Use only the tree structure part of the guide
+        if (guideContent.length > 10000) {
+            console.log('Guide is very large, using only tree structure part');
+            // Find the tree structure part (first 10KB contains the tree)
+            const treeStructureEnd = guideContent.indexOf('──────────────────────────────────────────────────');
+            if (treeStructureEnd > 0 && treeStructureEnd < 10000) {
+                guideContent = guideContent.substring(0, treeStructureEnd);
+                console.log('Using tree structure part only:', guideContent.length);
+            } else {
+                guideContent = guideContent.substring(0, 10000);
+                console.log('Guide truncated to:', guideContent.length);
+            }
+        }
             } else {
                 console.log('Guide file not found at:', guidePath);
                 console.log('Current working directory:', process.cwd());
