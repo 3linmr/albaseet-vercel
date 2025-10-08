@@ -39,9 +39,9 @@ export default async function handler(req, res) {
                 }
                 
                 // Check if guide is too large for Vercel limits
-                if (guideContent.length > 100000) {
+                if (guideContent.length > 20000) {
                     console.log('Guide is very large, truncating to avoid Vercel limits');
-                    guideContent = guideContent.substring(0, 100000);
+                    guideContent = guideContent.substring(0, 20000);
                     console.log('Guide truncated to:', guideContent.length);
                 }
             } else {
