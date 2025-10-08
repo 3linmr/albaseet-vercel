@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مساعد witsUP - Chat Page - NEW DEPLOYMENT</title>
+    <title>مساعد witsUP الذكي</title>
     <style>
         * {
             margin: 0;
@@ -141,19 +141,21 @@
             display: flex;
             gap: 10px;
             align-items: flex-end;
+            width: 100%;
         }
 
         .chat-input {
             flex: 1;
-            padding: 15px 20px;
+            padding: 20px 25px;
             border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 1rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
             resize: none;
-            min-height: 50px;
-            max-height: 120px;
+            min-height: 60px;
+            max-height: 150px;
             font-family: inherit;
             transition: all 0.3s ease;
+            width: 100%;
         }
 
         .chat-input:focus {
@@ -398,8 +400,8 @@
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            <h1>💬 مساعد witsUP - صفحة جديدة</h1>
-            <p>اسأل أي سؤال عن نظام witsUP وسأجيبك بناءً على الدليل الشامل</p>
+            <h1>💬 مساعد witsUP الذكي</h1>
+            <p>مرحباً! أنا مساعدك الذكي لنظام witsUP. يمكنني مساعدتك في شرح أي وظيفة في النظام والإجابة على أسئلتك التقنية وتوجيهك خطوة بخطوة. اسألني أي شيء! 😊</p>
         </div>
         
         <div class="chat-messages" id="chatMessages">
@@ -429,8 +431,8 @@
                         <textarea 
                     class="chat-input" 
                     id="chatInput" 
-                    placeholder="اكتب سؤالك هنا..."
-                    rows="1"
+                    placeholder="اكتب سؤالك هنا... اسألني عن أي شيء في نظام witsUP"
+                    rows="3"
                         ></textarea>
                 <button class="send-button" id="sendButton" onclick="sendMessage()">
                     إرسال
