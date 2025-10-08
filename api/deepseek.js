@@ -33,6 +33,7 @@ export default async function handler(req, res) {
                        guideContent = fs.readFileSync(guidePath, 'utf8');
                        console.log('Guide loaded from file successfully, length:', guideContent.length);
                        console.log('Using FULL guide content as before');
+                       console.log('Guide content preview:', guideContent.substring(0, 200));
                    } else {
                        console.log('Guide file not found at:', guidePath);
                        console.log('Current working directory:', process.cwd());
@@ -61,6 +62,9 @@ ${guideContent}
         console.log('Guide contains "المعاملات":', guideContent.includes('المعاملات'));
         console.log('Guide contains "سند قبض":', guideContent.includes('سند قبض'));
         console.log('Guide contains "قيد يومية":', guideContent.includes('قيد يومية'));
+        console.log('Guide contains "witsUP":', guideContent.includes('witsUP'));
+        console.log('Guide contains "دليل":', guideContent.includes('دليل'));
+        console.log('System message contains guide:', systemMessage.includes(guideContent.substring(0, 100)));
         
         // Add longer timeout to allow complete processing
         const controller = new AbortController();
