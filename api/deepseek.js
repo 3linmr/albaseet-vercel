@@ -32,15 +32,16 @@ export default async function handler(req, res) {
                 console.log('Guide file exists, reading...');
                 guideContent = fs.readFileSync(guidePath, 'utf8');
                 console.log('Guide loaded successfully, length:', guideContent.length);
-                console.log('Guide contains "إضافة دولة جديدة":', guideContent.includes('إضافة دولة جديدة'));
-                console.log('Guide contains "إضافة حي جديد":', guideContent.includes('إضافة حي جديد'));
-                console.log('Guide contains "قيد يومية":', guideContent.includes('قيد يومية'));
-                console.log('Guide contains "المحاسبة":', guideContent.includes('المحاسبة'));
-                console.log('Guide contains "المعاملات":', guideContent.includes('المعاملات'));
                 
                 // Check if guide content is being truncated
                 if (guideContent.length < 100000) {
                     console.log('WARNING: Guide content seems too short, might be truncated');
+                }
+                
+                // If guide is too large, truncate it to avoid API limits
+                if (guideContent.length > 1000000) {
+                    console.log('Guide is very large, truncating to avoid API limits');
+                    guideContent = guideContent.substring(0, 1000000);
                 }
             } else {
                 console.log('Guide file not found at:', guidePath);
@@ -90,41 +91,46 @@ ${guideContent}
         console.log('Request body size:', JSON.stringify(requestBody).length);
         console.log('Messages count:', requestBody.messages.length);
 
-        const deepseekResponse = await fetch('https://api.deepseek.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        });
-        
-        console.log('DeepSeek API response status:', deepseekResponse.status);
-        
-        if (!deepseekResponse.ok) {
-            let errorText;
-            try {
-                errorText = await deepseekResponse.text();
-            } catch (e) {
-                errorText = 'Unable to read error response';
-            }
-            console.error('DeepSeek API error response:', errorText);
-            console.error('Response status:', deepseekResponse.status);
-            console.error('Response headers:', deepseekResponse.headers);
-            throw new Error(`DeepSeek API error: ${deepseekResponse.status} - ${errorText}`);
-        }
-        
-        const data = await deepseekResponse.json();
-        console.log('DeepSeek API response data:', JSON.stringify(data, null, 2));
-        
-        if (data.choices && data.choices[0] && data.choices[0].message) {
-            res.status(200).json({
-                response: data.choices[0].message.content,
-                model: 'deepseek-chat'
+        try {
+            const deepseekResponse = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
             });
-        } else {
-            console.error('Invalid response structure:', data);
-            throw new Error('استجابة غير صحيحة من DeepSeek API');
+            
+            console.log('DeepSeek API response status:', deepseekResponse.status);
+            
+            if (!deepseekResponse.ok) {
+                let errorText;
+                try {
+                    errorText = await deepseekResponse.text();
+                } catch (e) {
+                    errorText = 'Unable to read error response';
+                }
+                console.error('DeepSeek API error response:', errorText);
+                console.error('Response status:', deepseekResponse.status);
+                console.error('Response headers:', deepseekResponse.headers);
+                throw new Error(`DeepSeek API error: ${deepseekResponse.status} - ${errorText}`);
+            }
+            
+            const data = await deepseekResponse.json();
+            console.log('DeepSeek API response data:', JSON.stringify(data, null, 2));
+            
+            if (data.choices && data.choices[0] && data.choices[0].message) {
+                res.status(200).json({
+                    response: data.choices[0].message.content,
+                    model: 'deepseek-chat'
+                });
+            } else {
+                console.error('Invalid response structure:', data);
+                throw new Error('استجابة غير صحيحة من DeepSeek API');
+            }
+        } catch (fetchError) {
+            console.error('Fetch error:', fetchError);
+            throw fetchError;
         }
         
     } catch (error) {
