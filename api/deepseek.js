@@ -70,6 +70,14 @@ ${guideContent}
 
 تذكر: اقرأ الدليل كاملاً بعناية. المعلومات موجودة في الدليل. استخدم الدليل أعلاه فقط للإجابة.`;
 
+        console.log('Sending request to DeepSeek API...');
+        console.log('System message length:', systemMessage.length);
+        console.log('Guide content length:', guideContent.length);
+        
+        // Create AbortController for timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 seconds timeout
+        
         const deepseekResponse = await fetch('https://api.deepseek.com/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -83,13 +91,18 @@ ${guideContent}
                     ...conversationHistory,
                     { role: "user", content: message }
                 ],
-                max_tokens: 100000,
+                max_tokens: 4000,
                 temperature: 0.3
             }),
-            timeout: 60000 // 60 seconds timeout
+            signal: controller.signal
         });
         
+        clearTimeout(timeoutId);
+        
+        console.log('DeepSeek API response status:', deepseekResponse.status);
+        
         const data = await deepseekResponse.json();
+        console.log('DeepSeek API response data:', JSON.stringify(data, null, 2));
         
         if (deepseekResponse.ok) {
             res.status(200).json({
@@ -97,14 +110,28 @@ ${guideContent}
                 model: 'deepseek-chat'
             });
         } else {
+            console.error('DeepSeek API error:', data);
             throw new Error(data.error?.message || 'خطأ في DeepSeek');
         }
         
     } catch (error) {
         console.error('DeepSeek Error:', error);
+        console.error('Error stack:', error.stack);
+        
+        let errorMessage = 'خطأ في معالجة الطلب';
+        if (error.name === 'AbortError' || error.message.includes('timeout')) {
+            errorMessage = 'انتهت مهلة الطلب، يرجى المحاولة مرة أخرى';
+        } else if (error.message.includes('network') || error.message.includes('fetch')) {
+            errorMessage = 'خطأ في الشبكة، يرجى المحاولة مرة أخرى';
+        } else if (error.message.includes('API') || error.message.includes('DeepSeek')) {
+            errorMessage = 'خطأ في API، يرجى المحاولة مرة أخرى';
+        } else if (error.message.includes('JSON')) {
+            errorMessage = 'خطأ في معالجة البيانات، يرجى المحاولة مرة أخرى';
+        }
+        
         res.status(500).json({ 
-            error: 'خطأ في معالجة الطلب',
-            details: error.message
+            error: errorMessage,
+            details: error.message 
         });
     }
 }
