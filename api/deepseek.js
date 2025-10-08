@@ -20,59 +20,27 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'الرسالة مطلوبة' });
         }
 
-               // قراءة الدليل من قاعدة البيانات
+               // قراءة الدليل من الملف مباشرة
                let guideContent = '';
                try {
-                   const { createClient } = await import('@supabase/supabase-js');
+                   const fs = await import('fs');
+                   const path = await import('path');
+                   const guidePath = path.join(process.cwd(), 'دليل_المستخدم_الشامل_الثاني_الأصلي.md');
                    
-                   const supabaseUrl = process.env.SUPABASE_URL;
-                   const supabaseKey = process.env.SUPABASE_ANON_KEY;
+                   console.log('Reading guide from file:', guidePath);
                    
-                   if (!supabaseUrl || !supabaseKey) {
-                       console.error('Supabase credentials not found');
-                       throw new Error('Supabase credentials not configured');
-                   }
-                   
-                   const supabase = createClient(supabaseUrl, supabaseKey);
-                   
-                   console.log('Reading guide from database...');
-                   const { data, error } = await supabase
-                       .from('guide_content')
-                       .select('content')
-                       .eq('id', 1)
-                       .single();
-                   
-                   if (error) {
-                       console.error('Error reading guide from database:', error);
-                       throw error;
-                   }
-                   
-                   if (data && data.content) {
-                       guideContent = data.content;
-                       console.log('Guide loaded from database successfully, length:', guideContent.length);
+                   if (fs.existsSync(guidePath)) {
+                       guideContent = fs.readFileSync(guidePath, 'utf8');
+                       console.log('Guide loaded from file successfully, length:', guideContent.length);
                        console.log('Using FULL guide content with 100,000 tokens limit');
                    } else {
-                       console.log('No guide content found in database');
+                       console.log('Guide file not found at:', guidePath);
+                       console.log('Current working directory:', process.cwd());
+                       console.log('Files in current directory:', fs.readdirSync(process.cwd()));
                    }
                } catch (error) {
-                   console.error('Error reading guide from database:', error);
+                   console.error('Error reading guide from file:', error);
                    console.error('Error details:', error.message);
-                   
-                   // Fallback: try to read from file
-                   try {
-                       const fs = await import('fs');
-                       const path = await import('path');
-                       const guidePath = path.join(process.cwd(), 'دليل_المستخدم_الشامل_الثاني_الأصلي.md');
-                       
-                       if (fs.existsSync(guidePath)) {
-                           guideContent = fs.readFileSync(guidePath, 'utf8');
-                           console.log('Fallback: Guide loaded from file, length:', guideContent.length);
-                       } else {
-                           console.log('Fallback: Guide file not found');
-                       }
-                   } catch (fileError) {
-                       console.error('Fallback file reading failed:', fileError);
-                   }
                }
 
         // رسالة النظام مع الدليل - بدون قواعد عامة
