@@ -64,27 +64,39 @@ ${guideContent}
         console.log('Sending request to DeepSeek API...');
         console.log('System message length:', systemMessage.length);
         console.log('Guide content length:', guideContent.length);
+        console.log('API Key exists:', !!process.env.DEEPSEEK_API_KEY);
+        console.log('API Key length:', process.env.DEEPSEEK_API_KEY ? process.env.DEEPSEEK_API_KEY.length : 0);
         
         // Remove timeout to allow unlimited processing time
         // const controller = new AbortController();
         // const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 seconds timeout
         
+        // Check if API key exists
+        if (!process.env.DEEPSEEK_API_KEY) {
+            throw new Error('DeepSeek API key is not configured');
+        }
+
+        const requestBody = {
+            model: 'deepseek-chat',
+            messages: [
+                { role: "system", content: systemMessage },
+                ...conversationHistory,
+                { role: "user", content: message }
+            ],
+            max_tokens: 100000,
+            temperature: 0.3
+        };
+
+        console.log('Request body size:', JSON.stringify(requestBody).length);
+        console.log('Messages count:', requestBody.messages.length);
+
         const deepseekResponse = await fetch('https://api.deepseek.com/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                model: 'deepseek-chat',
-                messages: [
-                    { role: "system", content: systemMessage },
-                    ...conversationHistory,
-                    { role: "user", content: message }
-                ],
-                max_tokens: 2000,
-                temperature: 0.3
-            })
+            body: JSON.stringify(requestBody)
         });
         
         console.log('DeepSeek API response status:', deepseekResponse.status);
@@ -120,7 +132,9 @@ ${guideContent}
         console.error('Error stack:', error.stack);
         
         let errorMessage = 'خطأ في معالجة الطلب';
-        if (error.message.includes('network') || error.message.includes('fetch')) {
+        if (error.message.includes('DeepSeek API key is not configured')) {
+            errorMessage = 'خطأ في إعدادات API، يرجى التحقق من الإعدادات';
+        } else if (error.message.includes('network') || error.message.includes('fetch')) {
             errorMessage = 'خطأ في الشبكة، يرجى المحاولة مرة أخرى';
         } else if (error.message.includes('API') || error.message.includes('DeepSeek')) {
             errorMessage = 'خطأ في API، يرجى المحاولة مرة أخرى';
@@ -132,6 +146,10 @@ ${guideContent}
             errorMessage = 'تم تجاوز حد الطلبات، يرجى المحاولة لاحقاً';
         } else if (error.message.includes('500')) {
             errorMessage = 'خطأ في الخادم، يرجى المحاولة مرة أخرى';
+        } else if (error.message.includes('413')) {
+            errorMessage = 'الطلب كبير جداً، يرجى المحاولة مرة أخرى';
+        } else if (error.message.includes('400')) {
+            errorMessage = 'خطأ في البيانات المرسلة، يرجى المحاولة مرة أخرى';
         }
         
         res.status(500).json({ 
