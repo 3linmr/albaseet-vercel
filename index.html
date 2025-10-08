@@ -415,7 +415,7 @@
             }
 
             .chat-input-wrapper {
-                flex-direction: column;
+                flex-direction: row;
                 gap: 8px;
             }
 
@@ -426,7 +426,14 @@
                 width: 100%;
             }
 
-            .send-button, .clear-chat, .ticket-button {
+            .send-button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+                min-width: 80px;
+                height: 40px;
+            }
+            
+            .clear-chat, .ticket-button {
                 width: 100%;
                 padding: 8px 15px;
                 font-size: 0.9rem;
