@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
     try {
         console.log('Request body:', req.body);
-        const { name, email, phone, message } = req.body;
+        const { name, email, phone, message, lastQuestion, lastAnswer } = req.body;
         
         if (!name || !email || !phone || !message) {
             return res.status(400).json({ 
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
         const ticketNumber = 'TKT-' + Date.now().toString().slice(-6);
         
         // حفظ التذكرة في قاعدة البيانات
-        console.log('Inserting ticket:', { ticketNumber, name, email, phone, message });
+        console.log('Inserting ticket:', { ticketNumber, name, email, phone, message, lastQuestion, lastAnswer });
         
         const { data, error } = await supabase
             .from('tickets')
@@ -53,6 +53,8 @@ export default async function handler(req, res) {
                     email: email,
                     phone: phone,
                     message: message,
+                    last_question: lastQuestion || null,
+                    last_answer: lastAnswer || null,
                     status: 'open',
                     created_at: new Date().toISOString()
                 }
@@ -71,7 +73,7 @@ export default async function handler(req, res) {
 
         // إرسال إيميل تأكيد
         try {
-            await sendConfirmationEmail(email, ticketNumber, name);
+            await sendConfirmationEmail(email, ticketNumber, name, lastQuestion, lastAnswer);
             console.log('Email sent successfully to:', email);
         } catch (emailError) {
             console.error('Email error:', emailError);
@@ -94,7 +96,7 @@ export default async function handler(req, res) {
 }
 
 // دالة إرسال إيميل التأكيد
-async function sendConfirmationEmail(email, ticketNumber, name) {
+async function sendConfirmationEmail(email, ticketNumber, name, lastQuestion, lastAnswer) {
     try {
         // استخدام خدمة Resend
         const response = await fetch('https://api.resend.com/emails', {
@@ -119,6 +121,14 @@ async function sendConfirmationEmail(email, ticketNumber, name) {
                             <p><strong>الحالة:</strong> مفتوحة</p>
                             <p><strong>التاريخ:</strong> ${new Date().toLocaleDateString('ar-SA')}</p>
                         </div>
+                        
+                        ${lastQuestion && lastAnswer ? `
+                        <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0; border-right: 4px solid #1976d2;">
+                            <h3 style="color: #1976d2; margin-top: 0;">آخر سؤال وجواب:</h3>
+                            <p><strong>السؤال:</strong> ${lastQuestion}</p>
+                            <p><strong>الإجابة:</strong> ${lastAnswer}</p>
+                        </div>
+                        ` : ''}
                         
                         <p>سنقوم بالرد على طلبك خلال 24 ساعة.</p>
                         <p style="color: #666; font-size: 14px;">شكراً لاستخدام witsUP!</p>

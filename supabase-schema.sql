@@ -6,6 +6,8 @@ CREATE TABLE tickets (
     email VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     message TEXT NOT NULL,
+    last_question TEXT,
+    last_answer TEXT,
     status VARCHAR(20) DEFAULT 'open',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

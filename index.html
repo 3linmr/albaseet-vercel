@@ -786,11 +786,30 @@
         document.getElementById('ticketForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // الحصول على آخر سؤال وجواب من المحادثة
+            const messages = document.querySelectorAll('.message');
+            let lastQuestion = '';
+            let lastAnswer = '';
+            
+            if (messages.length >= 2) {
+                const lastUserMessage = Array.from(messages).reverse().find(msg => msg.classList.contains('user'));
+                const lastAssistantMessage = Array.from(messages).reverse().find(msg => msg.classList.contains('assistant'));
+                
+                if (lastUserMessage) {
+                    lastQuestion = lastUserMessage.querySelector('.message-content').textContent.trim();
+                }
+                if (lastAssistantMessage) {
+                    lastAnswer = lastAssistantMessage.querySelector('.message-content').textContent.trim();
+                }
+            }
+            
             const formData = {
                 name: document.getElementById('ticketName').value,
                 email: document.getElementById('ticketEmail').value,
                 phone: document.getElementById('ticketPhone').value,
-                message: document.getElementById('ticketMessage').value
+                message: document.getElementById('ticketMessage').value,
+                lastQuestion: lastQuestion,
+                lastAnswer: lastAnswer
             };
 
             try {
