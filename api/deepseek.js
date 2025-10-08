@@ -57,6 +57,22 @@ export default async function handler(req, res) {
                } catch (error) {
                    console.error('Error reading guide from database:', error);
                    console.error('Error details:', error.message);
+                   
+                   // Fallback: try to read from file
+                   try {
+                       const fs = await import('fs');
+                       const path = await import('path');
+                       const guidePath = path.join(process.cwd(), 'دليل_المستخدم_الشامل_الثاني_الأصلي.md');
+                       
+                       if (fs.existsSync(guidePath)) {
+                           guideContent = fs.readFileSync(guidePath, 'utf8');
+                           console.log('Fallback: Guide loaded from file, length:', guideContent.length);
+                       } else {
+                           console.log('Fallback: Guide file not found');
+                       }
+                   } catch (fileError) {
+                       console.error('Fallback file reading failed:', fileError);
+                   }
                }
 
         // رسالة النظام مع الدليل - بدون قواعد عامة
