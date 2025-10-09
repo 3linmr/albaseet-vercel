@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مساعد WitsUP الذكي</title>
+    <title>مساعد witsUP الذكي</title>
     <style>
         * {
             margin: 0;
@@ -303,18 +303,20 @@
 
         .ticket-modal-content {
             background-color: white;
-            margin: 5% auto;
-            padding: 30px;
+            margin: 2% auto;
+            padding: 20px;
             border-radius: 15px;
-            width: 90%;
+            width: 95%;
             max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .ticket-form {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
 
         .ticket-form input, .ticket-form textarea {
@@ -332,7 +334,7 @@
         }
 
         .ticket-form textarea {
-            min-height: 120px;
+            min-height: 80px;
             resize: vertical;
         }
 
@@ -465,13 +467,23 @@
             }
 
             .ticket-modal-content {
-                margin: 10% auto;
-                padding: 20px;
-                width: 95%;
+                margin: 5% auto;
+                padding: 15px;
+                width: 98%;
+                max-height: 85vh;
             }
 
             .ticket-form {
-                gap: 15px;
+                gap: 12px;
+            }
+
+            .ticket-form input, .ticket-form textarea {
+                padding: 12px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            .ticket-form textarea {
+                min-height: 60px;
             }
 
             .ticket-buttons {
@@ -528,9 +540,10 @@
             }
 
             .ticket-modal-content {
-                margin: 5% auto;
-                padding: 15px;
+                margin: 2% auto;
+                padding: 12px;
                 width: 98%;
+                max-height: 90vh;
             }
         }
     </style>
@@ -538,14 +551,14 @@
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            <h1>💬 مساعد WitsUP الذكي</h1>
-            
+            <h1>💬 مساعد witsUP الذكي</h1>
+            <p>سلني أجيبك</p>
         </div>
         
         <div class="chat-messages" id="chatMessages">
             <div class="message assistant">
                 <div class="message-content">
-                    سلني أجبك
+                    سلني أجيبك
                 </div>
                 <div class="message-time" id="welcomeTime"></div>
                     </div>
@@ -838,3 +851,4 @@
     </script>
 </body>
 </html>
+
