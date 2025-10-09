@@ -1,3 +1,4 @@
+
 export default async function handler(req, res) {
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -164,7 +165,7 @@ ${guideContent}
                 // تنظيف الإجابة من الرموز المزعجة
                 let cleanResponse = data.choices[0].message.content;
                 
-                // إزالة الرموز المزعجة
+                // إزالة الرموز المزعجة وتحسين التنسيق
                 cleanResponse = cleanResponse
                     .replace(/\*\*/g, '') // إزالة **
                     .replace(/\*/g, '') // إزالة *
@@ -173,6 +174,11 @@ ${guideContent}
                     .replace(/`[^`]*`/g, '') // إزالة inline code
                     .replace(/\n{3,}/g, '\n\n') // تقليل الأسطر الفارغة
                     .replace(/^\s*[\*\-\+]\s*/gm, '• ') // تحويل النقاط
+                    .replace(/\n\s*\n\s*\n/g, '\n\n') // تنظيف المسافات المتعددة
+                    .replace(/\s{2,}/g, ' ') // إزالة المسافات المتعددة
+                    .replace(/\n\s+/g, '\n') // إزالة المسافات في بداية الأسطر
+                    .replace(/\s+\n/g, '\n') // إزالة المسافات في نهاية الأسطر
+                    .replace(/\n{2,}/g, '\n\n') // مسافة واحدة بين الفقرات
                     .trim();
                 
                 res.status(200).json({
