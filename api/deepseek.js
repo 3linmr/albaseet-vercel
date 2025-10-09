@@ -28,7 +28,7 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'الرسالة مطلوبة' });
         }
 
-        // قراءة الدليل من قاعدة البيانات
+        // قراءة الدليل كاملاً من قاعدة البيانات
         let guideContent = '';
         try {
             const { createClient } = await import('@supabase/supabase-js');
@@ -48,18 +48,7 @@ export default async function handler(req, res) {
             
             console.log('Reading guide from database...');
             
-            // جرب قراءة جميع السجلات أولاً
-            const { data: allData, error: allError } = await supabase
-                .from('guide_content')
-                .select('*');
-            
-            console.log('All records:', allData ? allData.length : 0);
-            if (allData && allData.length > 0) {
-                console.log('First record ID:', allData[0].id);
-                console.log('First record content length:', allData[0].content ? allData[0].content.length : 0);
-            }
-            
-            // جرب قراءة السجل الأول
+            // قراءة الدليل كاملاً
             const { data, error } = await supabase
                 .from('guide_content')
                 .select('content')
@@ -68,7 +57,6 @@ export default async function handler(req, res) {
             
             if (error) {
                 console.error('Error reading guide from database:', error);
-                console.error('Error details:', error.message);
                 throw error;
             }
             
@@ -82,7 +70,6 @@ export default async function handler(req, res) {
             }
         } catch (error) {
             console.error('Error reading guide from database:', error);
-            console.error('Error details:', error.message);
         }
 
         // رسالة النظام مع الدليل الكامل كما كان في السابق
@@ -119,7 +106,7 @@ ${guideContent}
         
         console.log('API Key first 10 chars:', process.env.DEEPSEEK_API_KEY.substring(0, 10));
 
-               // Use DeepSeek with 100,000 tokens (DeepSeek supports 128K)
+               // Use DeepSeek with full guide content and large context window
                const requestBody = {
                    model: 'deepseek-chat',
                    messages: [
@@ -127,7 +114,7 @@ ${guideContent}
                        ...conversationHistory,
                        { role: "user", content: message }
                    ],
-                   max_tokens: 100000,
+                   max_tokens: 8192,
                    temperature: 0.3
                };
 
@@ -223,4 +210,5 @@ ${guideContent}
         });
     }
 }
+
 
