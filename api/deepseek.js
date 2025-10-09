@@ -1,4 +1,3 @@
-
 export default async function handler(req, res) {
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -80,7 +79,16 @@ export default async function handler(req, res) {
 
 ${guideContent}
 
-تذكر: اقرأ الدليل كاملاً بعناية. المعلومات موجودة في الدليل. استخدم الدليل أعلاه فقط للإجابة.`;
+تذكر: اقرأ الدليل كاملاً بعناية. المعلومات موجودة في الدليل. استخدم الدليل أعلاه فقط للإجابة.
+
+=== تعليمات التنسيق ===
+عند الإجابة، يجب أن تنظم النص بشكل واضح ومنظم:
+- استخدم مسافات مناسبة بين الفقرات
+- رتب النقاط والأرقام بشكل واضح
+- استخدم مسافات قبل وبعد العناوين
+- اجعل النص سهل القراءة والتنظيم
+- لا تستخدم رموز markdown مثل * أو # أو **
+- استخدم تنسيق واضح ومنظم للخطوات والإرشادات`;
 
         console.log('Sending request to DeepSeek API...');
         console.log('API Key exists:', !!process.env.DEEPSEEK_API_KEY);
@@ -165,20 +173,13 @@ ${guideContent}
                 // تنظيف الإجابة من الرموز المزعجة
                 let cleanResponse = data.choices[0].message.content;
                 
-                // إزالة الرموز المزعجة وتحسين التنسيق
+                // تنظيف بسيط - إزالة الرموز المزعجة فقط
                 cleanResponse = cleanResponse
                     .replace(/\*\*/g, '') // إزالة **
                     .replace(/\*/g, '') // إزالة *
                     .replace(/#{1,6}\s*/g, '') // إزالة # و ## و ###
                     .replace(/```[\s\S]*?```/g, '') // إزالة code blocks
                     .replace(/`[^`]*`/g, '') // إزالة inline code
-                    .replace(/\n{3,}/g, '\n\n') // تقليل الأسطر الفارغة
-                    .replace(/^\s*[\*\-\+]\s*/gm, '• ') // تحويل النقاط
-                    .replace(/\n\s*\n\s*\n/g, '\n\n') // تنظيف المسافات المتعددة
-                    .replace(/\s{2,}/g, ' ') // إزالة المسافات المتعددة
-                    .replace(/\n\s+/g, '\n') // إزالة المسافات في بداية الأسطر
-                    .replace(/\s+\n/g, '\n') // إزالة المسافات في نهاية الأسطر
-                    .replace(/\n{2,}/g, '\n\n') // مسافة واحدة بين الفقرات
                     .trim();
                 
                 res.status(200).json({
