@@ -14,35 +14,76 @@ export default async function handler(req, res) {
     }
 
     try {
+        console.log('=== DEEPSEEK API CALLED ===');
+        console.log('Request method:', req.method);
+        console.log('Request body:', req.body);
+        
         const { message, conversationHistory = [] } = req.body;
         
+        console.log('Message:', message);
+        console.log('Conversation history length:', conversationHistory.length);
+        
         if (!message) {
+            console.log('No message provided');
             return res.status(400).json({ error: 'الرسالة مطلوبة' });
         }
 
-               // قراءة الدليل كاملاً كما كان في السابق
-               let guideContent = '';
-               try {
-                   const fs = await import('fs');
-                   const path = await import('path');
-                   const guidePath = path.join(process.cwd(), 'دليل_المستخدم_الشامل_الثاني_الأصلي.md');
-                   
-                   console.log('Reading guide from file:', guidePath);
-                   
-                   if (fs.existsSync(guidePath)) {
-                       guideContent = fs.readFileSync(guidePath, 'utf8');
-                       console.log('Guide loaded from file successfully, length:', guideContent.length);
-                       console.log('Using FULL guide content as before');
-                       console.log('Guide content preview:', guideContent.substring(0, 200));
-                   } else {
-                       console.log('Guide file not found at:', guidePath);
-                       console.log('Current working directory:', process.cwd());
-                       console.log('Files in current directory:', fs.readdirSync(process.cwd()));
-                   }
-               } catch (error) {
-                   console.error('Error reading guide from file:', error);
-                   console.error('Error details:', error.message);
-               }
+        // قراءة الدليل من قاعدة البيانات
+        let guideContent = '';
+        try {
+            const { createClient } = await import('@supabase/supabase-js');
+            
+            const supabaseUrl = process.env.SUPABASE_URL;
+            const supabaseKey = process.env.SUPABASE_ANON_KEY;
+            
+            console.log('Supabase URL:', supabaseUrl ? 'Found' : 'Missing');
+            console.log('Supabase Key:', supabaseKey ? 'Found' : 'Missing');
+            
+            if (!supabaseUrl || !supabaseKey) {
+                console.error('Supabase credentials not found');
+                throw new Error('Supabase credentials not configured');
+            }
+            
+            const supabase = createClient(supabaseUrl, supabaseKey);
+            
+            console.log('Reading guide from database...');
+            
+            // جرب قراءة جميع السجلات أولاً
+            const { data: allData, error: allError } = await supabase
+                .from('guide_content')
+                .select('*');
+            
+            console.log('All records:', allData ? allData.length : 0);
+            if (allData && allData.length > 0) {
+                console.log('First record ID:', allData[0].id);
+                console.log('First record content length:', allData[0].content ? allData[0].content.length : 0);
+            }
+            
+            // جرب قراءة السجل الأول
+            const { data, error } = await supabase
+                .from('guide_content')
+                .select('content')
+                .limit(1)
+                .single();
+            
+            if (error) {
+                console.error('Error reading guide from database:', error);
+                console.error('Error details:', error.message);
+                throw error;
+            }
+            
+            if (data && data.content) {
+                guideContent = data.content;
+                console.log('Guide loaded from database successfully, length:', guideContent.length);
+                console.log('Using FULL guide content from database');
+                console.log('Guide content preview:', guideContent.substring(0, 200));
+            } else {
+                console.log('No guide content found in database');
+            }
+        } catch (error) {
+            console.error('Error reading guide from database:', error);
+            console.error('Error details:', error.message);
+        }
 
         // رسالة النظام مع الدليل الكامل كما كان في السابق
         const systemMessage = `أنت مساعد خبير لنظام witsUP. مهمتك هي الإجابة على أسئلة المستخدمين بناءً على الدليل الشامل المرفق.
@@ -182,3 +223,4 @@ ${guideContent}
         });
     }
 }
+
