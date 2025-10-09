@@ -161,8 +161,22 @@ ${guideContent}
             console.log('DeepSeek API response data:', JSON.stringify(data, null, 2));
             
             if (data.choices && data.choices[0] && data.choices[0].message) {
+                // تنظيف الإجابة من الرموز المزعجة
+                let cleanResponse = data.choices[0].message.content;
+                
+                // إزالة الرموز المزعجة
+                cleanResponse = cleanResponse
+                    .replace(/\*\*/g, '') // إزالة **
+                    .replace(/\*/g, '') // إزالة *
+                    .replace(/#{1,6}\s*/g, '') // إزالة # و ## و ###
+                    .replace(/```[\s\S]*?```/g, '') // إزالة code blocks
+                    .replace(/`[^`]*`/g, '') // إزالة inline code
+                    .replace(/\n{3,}/g, '\n\n') // تقليل الأسطر الفارغة
+                    .replace(/^\s*[\*\-\+]\s*/gm, '• ') // تحويل النقاط
+                    .trim();
+                
                 res.status(200).json({
-                    response: data.choices[0].message.content,
+                    response: cleanResponse,
                     model: 'deepseek-chat'
                 });
             } else {
@@ -210,5 +224,6 @@ ${guideContent}
         });
     }
 }
+
 
 
