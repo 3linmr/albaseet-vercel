@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مساعد witsUP الذكي</title>
+    <title>مساعد ويتسب الذكي</title>
     <style>
         * {
             margin: 0;
@@ -16,6 +16,13 @@
             background: #f8f9fa;
             min-height: 100vh;
             direction: rtl;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background: #1a1a1a;
+            color: #e0e0e0;
         }
 
         .chat-container {
@@ -29,12 +36,19 @@
 
         .chat-header {
             background: #ffffff;
-            padding: 30px;
+            padding: 15px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             text-align: center;
             border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .chat-header {
+            background: #2d2d2d;
+            border-color: #404040;
+            color: #e0e0e0;
         }
 
         .chat-header h1 {
@@ -42,11 +56,177 @@
             font-size: 1.8rem;
             margin-bottom: 10px;
             font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .chat-header h1 {
+            color: #ffffff;
+        }
+
+        /* Animated logo container */
+        .animated-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .animated-logo svg {
+            width: 200px;
+            height: 200px;
+            filter: drop-shadow(0 0 25px rgba(105, 192, 211, 0.6));
+        }
+
+        /* Snake animation styles */
+        .snake-path {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Snake animation with exact original colors */
+        .main-triangles .snake-path {
+            stroke-width: 2;
+            stroke-dasharray: 0 1000;
+            animation: snake-draw 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 6px currentColor);
+        }
+
+        /* Different triangles have different original colors */
+        .main-triangles .snake-path:nth-child(1) {
+            stroke: #1856a0;
+        }
+
+        .main-triangles .snake-path:nth-child(2) {
+            stroke: #69c0d3;
+        }
+
+        .main-triangles .snake-path:nth-child(3) {
+            stroke: #69c0d3;
+        }
+
+        .main-triangles .snake-path:nth-child(4) {
+            stroke: #1856a0;
+        }
+
+        .main-triangles .snake-path:nth-child(5) {
+            stroke: #1856a0;
+        }
+
+        .main-triangles .snake-path:nth-child(6) {
+            stroke: #133c74;
+        }
+
+        .witsup-text .snake-path {
+            stroke-width: 2;
+            stroke-dasharray: 0 800;
+            animation: snake-draw-text 4s ease-in-out infinite 0.3s;
+            filter: drop-shadow(0 0 6px currentColor);
+        }
+
+        /* WITS text is dark blue, UP text is cyan */
+        .witsup-text .snake-path:nth-child(1),
+        .witsup-text .snake-path:nth-child(2),
+        .witsup-text .snake-path:nth-child(3),
+        .witsup-text .snake-path:nth-child(4) {
+            stroke: #133c74;
+        }
+
+        .witsup-text .snake-path:nth-child(5),
+        .witsup-text .snake-path:nth-child(6) {
+            stroke: #69c0d3;
+        }
+
+        .arabic-text .snake-path {
+            stroke-width: 1.5;
+            stroke-dasharray: 0 900;
+            animation: snake-draw-arabic 4s ease-in-out infinite 0.6s;
+            filter: drop-shadow(0 0 5px currentColor);
+        }
+
+        /* Arabic text colors */
+        .arabic-text .snake-path:nth-child(1),
+        .arabic-text .snake-path:nth-child(2) {
+            stroke: #69c0d3;
+        }
+
+        .arabic-text .snake-path:nth-child(3),
+        .arabic-text .snake-path:nth-child(4),
+        .arabic-text .snake-path:nth-child(5),
+        .arabic-text .snake-path:nth-child(6),
+        .arabic-text .snake-path:nth-child(7),
+        .arabic-text .snake-path:nth-child(8) {
+            stroke: #133c74;
+        }
+
+        @keyframes snake-draw {
+            0% {
+                stroke-dasharray: 0 1000;
+                stroke-dashoffset: 0;
+            }
+            70% {
+                stroke-dasharray: 1000 0;
+                stroke-dashoffset: -1000;
+            }
+            100% {
+                stroke-dasharray: 1000 0;
+                stroke-dashoffset: -1000;
+            }
+        }
+
+        @keyframes snake-draw-text {
+            0% {
+                stroke-dasharray: 0 800;
+                stroke-dashoffset: 0;
+            }
+            70% {
+                stroke-dasharray: 800 0;
+                stroke-dashoffset: -800;
+            }
+            100% {
+                stroke-dasharray: 800 0;
+                stroke-dashoffset: -800;
+            }
+        }
+
+        @keyframes snake-draw-arabic {
+            0% {
+                stroke-dasharray: 0 900;
+                stroke-dashoffset: 0;
+            }
+            70% {
+                stroke-dasharray: 900 0;
+                stroke-dashoffset: -900;
+            }
+            100% {
+                stroke-dasharray: 900 0;
+                stroke-dashoffset: -900;
+            }
+        }
+
+        /* Dark mode background for logo */
+        .animated-logo {
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .animated-logo {
+            background: #2d2d2d;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .chat-header p {
             color: #6c757d;
             font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .chat-header p {
+            color: #e0e0e0;
         }
 
         .chat-messages {
@@ -54,11 +234,17 @@
             background: #ffffff;
             border-radius: 8px;
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             overflow-y: auto;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             border: 1px solid #e9ecef;
-            max-height: 60vh;
+            max-height: 70vh;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .chat-messages {
+            background: #2d2d2d;
+            border-color: #404040;
         }
 
         .message {
@@ -92,12 +278,24 @@
             background: #f8f9fa;
             color: #212529;
             border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .message.assistant .message-content {
+            background: #3d3d3d;
+            color: #e0e0e0;
+            border-color: #555;
         }
 
         .message-time {
             font-size: 0.8rem;
             color: #95a5a6;
             margin-top: 5px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .message-time {
+            color: #b0b0b0;
         }
 
         .typing-indicator {
@@ -135,6 +333,12 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .chat-input-container {
+            background: #2d2d2d;
+            border-color: #404040;
         }
 
         .chat-input-wrapper {
@@ -154,6 +358,18 @@
             font-family: inherit;
             transition: all 0.3s ease;
             box-sizing: border-box;
+            background: #ffffff;
+            color: #212529;
+        }
+
+        body.dark-mode .chat-input {
+            background: #3d3d3d;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .chat-input::placeholder {
+            color: #999;
         }
 
         .chat-input:focus {
@@ -227,9 +443,20 @@
             font-weight: 500;
         }
 
+        body.dark-mode .clear-chat {
+            background: #4a3d2a;
+            color: #ffb74d;
+            border-color: #ff9800;
+        }
+
         .clear-chat:hover {
             background: #ffcc02;
             color: #e65100;
+        }
+
+        body.dark-mode .clear-chat:hover {
+            background: #ff9800;
+            color: #ffcc02;
         }
 
         @keyframes fadeIn {
@@ -265,11 +492,23 @@
             font-weight: 500;
         }
 
+        body.dark-mode .suggestion {
+            background: #3d3d3d;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+
         .suggestion:hover {
             background: #f8f9fa;
             color: #007bff;
             border-color: #007bff;
             transform: translateY(-1px);
+        }
+
+        body.dark-mode .suggestion:hover {
+            background: #555;
+            color: #4fc3f7;
+            border-color: #4fc3f7;
         }
 
         .ticket-button {
@@ -285,9 +524,55 @@
             font-weight: 500;
         }
 
+        body.dark-mode .ticket-button {
+            background: #2d4a2d;
+            color: #81c784;
+            border-color: #4a7c59;
+        }
+
         .ticket-button:hover {
             background: #c8e6c9;
             color: #1b5e20;
+        }
+
+        body.dark-mode .ticket-button:hover {
+            background: #4a7c59;
+            color: #a5d6a7;
+        }
+
+        /* Dark mode toggle button */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode-toggle:hover {
+            background: #e9ecef;
+            transform: scale(1.1);
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            background: #2d2d2d;
+            border-color: #404040;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .dark-mode-toggle:hover {
+            background: #404040;
         }
 
         .ticket-modal {
@@ -379,14 +664,33 @@
         }
 
         @media (max-width: 768px) {
+            .dark-mode-toggle {
+                top: 10px;
+                left: 10px;
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .animated-logo {
+                width: 60px;
+                height: 60px;
+                margin: 0 auto 8px;
+            }
+
+            .animated-logo svg {
+                width: 150px;
+                height: 150px;
+            }
+
             .chat-container {
                 padding: 10px;
                 height: 100vh;
             }
 
             .chat-header {
-                padding: 10px 15px;
-                margin-bottom: 8px;
+                padding: 8px 12px;
+                margin-bottom: 6px;
             }
 
             .chat-header h1 {
@@ -402,9 +706,9 @@
 
             .chat-messages {
                 padding: 10px;
-                margin-bottom: 8px;
-                max-height: 70vh;
-                min-height: 50vh;
+                margin-bottom: 6px;
+                max-height: 75vh;
+                min-height: 60vh;
             }
 
             .message-content {
@@ -497,6 +801,17 @@
         }
 
         @media (max-width: 480px) {
+            .animated-logo {
+                width: 50px;
+                height: 50px;
+                margin: 0 auto 6px;
+            }
+
+            .animated-logo svg {
+                width: 130px;
+                height: 130px;
+            }
+
             .chat-container {
                 padding: 5px;
             }
@@ -515,8 +830,8 @@
 
             .chat-messages {
                 padding: 8px;
-                max-height: 75vh;
-                min-height: 60vh;
+                max-height: 80vh;
+                min-height: 65vh;
             }
 
             .message-content {
@@ -549,16 +864,53 @@
     </style>
 </head>
 <body>
+    <!-- Dark mode toggle button -->
+    <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()">
+        🌙
+    </button>
+
     <div class="chat-container">
         <div class="chat-header">
-            <h1>💬 مساعد WitsUp الذكي</h1>
-            <p>سلني أجيبك</p>
+            <div class="animated-logo">
+                <svg viewBox="0 0 2000 2000" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Snake animation paths -->
+                    <g class="main-triangles">
+                        <path class="snake-path" d="M958.6,987.01l-11.92,20.64c-16.18,28.03-56.64,28.03-72.82,0l-193.23-334.68c-16.11-27.9,4.03-62.78,36.25-62.78h0c14.95,0,28.77,7.98,36.25,20.93l157.15,272.19,48.33,83.71Z"/>
+                        <path class="snake-path" d="M1138.06,987.01l-11.91,20.64c-16.18,28.03-56.64,28.03-72.82,0l-43.12-74.69,48.32-83.71,79.53,137.77Z"/>
+                        <path class="snake-path" d="M1283.13,610.19c-14.95,0-28.77,7.98-36.25,20.93l-183.14,317.21c-9.95,17.25-34.8,16.86-44.85-.33l34.44,59.65c16.18,28.03,56.64,28.03,72.82,0l193.23-334.68c16.11-27.9-4.03-62.78-36.25-62.78h0Z"/>
+                        <path class="snake-path" d="M1103.33,610.19h-23.83l-195.22,338.14c-9.95,17.25-34.81,16.85-44.86-.34l24.35,42.18h0s10.09,17.48,10.09,17.48c16.18,28.03,56.64,28.03,72.82,0l193.06-334.4c16.18-28.03-4.05-63.06-36.41-63.06Z"/>
+                        <path class="snake-path" d="M1103.33,610.19h-206.66c-32.37,0-52.59,35.04-36.41,63.07l11.91,20.63h210.6c19.91.1,32.68,21.44,22.73,38.69l34.24-59.33c16.18-28.03-4.05-63.06-36.41-63.06Z"/>
+                        <path class="snake-path" d="M943.03,649.21c-9.87-17.3,2.23-39.02,22.14-39.02h-68.5c-32.37,0-52.59,35.04-36.41,63.07l81.22,140.67,48.32-83.7-46.78-81.02Z"/>
+                    </g>
+                    
+                    <g class="witsup-text">
+                        <path class="snake-path" d="M872.78,1113.44l-35.03,107.09h-26.62l-23.56-72.51-24.32,72.51h-26.47l-35.19-107.09h25.7l24.17,75.27,25.24-75.27h22.95l24.48,75.88,24.94-75.88h23.71Z"/>
+                        <path class="snake-path" d="M883.5,1113.44c0-7.5,5.97-13.31,14.84-13.31s14.84,5.51,14.84,12.85c0,7.96-5.97,13.77-14.84,13.77s-14.84-5.81-14.84-13.31ZM886.4,1138.22h23.87v82.31h-23.87v-82.31Z"/>
+                        <path class="snake-path" d="M985.54,1216.55c-4.9,3.52-12.09,5.2-19.43,5.2-19.43,0-30.75-9.94-30.75-29.53v-33.81h-12.7v-18.36h12.7v-20.04h23.87v20.04h20.5v18.36h-20.5v33.5c0,7.04,3.82,10.86,10.25,10.86,3.52,0,7.04-1.07,9.64-3.06l6.43,16.83Z"/>
+                        <path class="snake-path" d="M991.05,1212.88l7.96-17.13c7.34,4.74,18.51,7.96,28.61,7.96,11.01,0,15.15-2.91,15.15-7.5,0-13.46-49.72.31-49.72-32.59,0-15.6,14.07-26.62,38.09-26.62,11.32,0,23.87,2.6,31.67,7.19l-7.96,16.98c-8.11-4.59-16.22-6.12-23.71-6.12-10.71,0-15.3,3.37-15.3,7.65,0,14.07,49.72.46,49.72,32.89,0,15.3-14.23,26.16-38.86,26.16-13.92,0-28-3.82-35.65-8.87Z"/>
+                        <path class="snake-path" d="M1081.01,1173.41v-59.97h24.78v59.05c0,20.35,8.87,28.76,23.87,28.76s23.87-8.41,23.87-28.76v-59.05h24.48v59.97c0,31.51-18.05,48.96-48.5,48.96s-48.5-17.44-48.5-48.96Z"/>
+                        <path class="snake-path" d="M1295.34,1152.3c0,23.87-17.9,38.71-46.51,38.71h-21.57v29.53h-24.78v-107.09h46.35c28.61,0,46.51,14.84,46.51,38.86ZM1270.25,1152.3c0-11.78-7.65-18.66-22.79-18.66h-20.19v37.18h20.19c15.15,0,22.79-6.88,22.79-18.51Z"/>
+                    </g>
+                    
+                    <g class="arabic-text">
+                        <path class="snake-path" d="M769.64,1355.16c-3.32,0-6.17,1.18-8.56,3.55-2.39,2.37-3.58,5.21-3.58,8.52s1.19,6.08,3.58,8.45c2.39,2.37,5.24,3.55,8.56,3.55s6.18-1.17,8.59-3.51c2.41-2.34,3.62-5.17,3.62-8.49s-1.2-6.16-3.58-8.52c-2.39-2.37-5.27-3.55-8.63-3.55Z"/>
+                        <path class="snake-path" d="M902.25,1328.9h-55.22c-4.73,0-8.24-1.22-10.53-3.66-.67-.7-1.55-1.79-2.61-3.24.58-2.95.94-6.11,1.07-9.49v-39.35h-24.5v39.21c0,6.24-1.12,10.56-3.36,12.95-2.24,2.39-5.97,3.58-11.19,3.58h-43.96c-5.12,0-9.09-.73-11.92-2.19-2.83-1.46-4.88-3.68-6.14-6.66-1.27-2.83-1.71-6.63-1.32-11.41v-22.16h-25.67v22.24c1.07,13.21,5,23.31,11.78,30.28,7.31,7.61,18.41,11.41,33.28,11.41h49.74v-.12c8.36-.51,15.16-2.87,20.4-7.07,1.15.99,2.32,1.86,3.51,2.58,5.12,3.07,11.21,4.61,18.29,4.61h58.37l6.51-2.12v-17.26l-6.51-2.12Z"/>
+                        <path class="snake-path" d="M1140.12,1273.53c3.32,0,6.18-1.17,8.59-3.51s3.62-5.17,3.62-8.48-1.2-6.16-3.58-8.52c-2.39-2.37-5.27-3.55-8.63-3.55s-6.17,1.18-8.56,3.55c-2.39,2.37-3.58,5.21-3.58,8.52s1.19,6.08,3.58,8.45c2.39,2.37,5.24,3.55,8.56,3.55Z"/>
+                        <path class="snake-path" d="M1113.71,1273.53c3.32,0,6.18-1.17,8.59-3.51,2.41-2.34,3.62-5.17,3.62-8.48s-1.2-6.16-3.58-8.52c-2.39-2.37-5.27-3.55-8.63-3.55s-6.17,1.18-8.56,3.55c-2.39,2.37-3.58,5.21-3.58,8.52s1.19,6.08,3.58,8.45c2.39,2.37,5.24,3.55,8.56,3.55Z"/>
+                        <path class="snake-path" d="M1179.33,1312.37c0,6.24-1.12,10.56-3.36,12.95-2.24,2.39-8.41,3.58-18.51,3.58h-5.78c-4.73,0-8.24-1.22-10.53-3.66-2.29-2.44-3.29-6.44-3-12v-32.77h-25.02v32.77c.29,5.56-.71,9.56-3,12-2.29,2.44-5.8,3.66-10.53,3.66h-57.27c-4.73,0-8.24-1.22-10.53-3.66-.83-.88-1.66-3.22-2.49-7.02.1-1.02.19-2.07.29-3.15v-41.91h-23.85v41.69c0,4.78-1.07,8.31-3.22,10.61-2.15,2.29-3.71,3.44-4.68,3.44-3.12,0-5.75-1.14-7.9-3.44-2.15-2.29-3.22-5.83-3.22-10.61v-41.69h-23.85v41.69c0,2.88-.44,5.32-1.32,7.31-.54,1.22-1.27,2.27-2.19,3.15-2.29,2.39-5.58,3.58-9.88,3.58h-8.92v-55.74h-23.77v55.74h-40.23v21.5h72.85c6.05,0,11.34-1.34,15.87-4.02,2.78-1.76,5.19-3.95,7.24-6.58,1.9,2.54,3.92,4.51,6.07,5.92,4.63,3.12,10.48,4.68,17.56,4.68,8.78,0,15.87-2.37,21.29-7.09,1.12.98,2.27,1.8,3.44,2.49,5.12,3.07,11.21,4.61,18.29,4.61h60.42c8.58,0,15.18-1.66,19.79-4.97,2.13-1.53,4.07-3.61,5.82-6.22,2.14,2.72,4.48,4.84,7.01,6.36,5.36,3.22,10.73,4.83,16.09,4.83h6.22s0,0,0,0h12.43c11.7,0,20.65-3.27,26.84-9.8,6.19-6.53,9.53-15.9,10.02-28.09v-39.35h-24.5v39.21Z"/>
+                        <path class="snake-path" d="M1191.03,1355.23c-3.32,0-6.17,1.18-8.56,3.55-2.39,2.37-3.58,5.21-3.58,8.52s1.19,6.08,3.58,8.45c2.39,2.37,5.24,3.55,8.56,3.55s6.18-1.17,8.59-3.51c2.41-2.34,3.62-5.17,3.62-8.49s-1.2-6.16-3.58-8.52c-2.39-2.37-5.27-3.55-8.63-3.55Z"/>
+                        <path class="snake-path" d="M1164.62,1355.23c-3.32,0-6.17,1.18-8.56,3.55s-3.58,5.21-3.58,8.52,1.2,6.08,3.58,8.45,5.24,3.55,8.56,3.55,6.18-1.17,8.59-3.51c2.41-2.34,3.62-5.17,3.62-8.49s-1.2-6.16-3.58-8.52c-2.39-2.37-5.27-3.55-8.63-3.55Z"/>
+                        <path class="snake-path" d="M1290.84,1290.87c-3.1-6.34-7.49-11.22-13.17-14.63-5.68-3.41-12.13-5.12-19.35-5.12s-13.52,1.71-19.2,5.12c-5.68,3.41-10.09,8.12-13.24,14.12-3.15,6-4.72,12.73-4.72,20.19,0,13.12,3.55,23.04,10.64,29.77,7.09,6.73,17.47,10.09,31.12,10.09h6.73c-.39,1.85-2.61,4.19-6.66,7.02-4.05,2.83-10.24,4.24-18.58,4.24h-22.38v22.24h22.16c17.12,0,29.94-4.21,38.47-12.62,8.53-8.41,12.8-21.05,12.8-37.93v-20.55c0-8.29-1.55-15.6-4.64-21.94ZM1262.93,1328.9c-6.34,0-10.92-1.44-13.75-4.32-2.83-2.88-4.24-7.56-4.24-14.04,0-3.75.61-6.99,1.83-9.69,1.22-2.71,2.82-4.75,4.79-6.14s4.23-2.08,6.77-2.08c4.24,0,7.53,1.63,9.88,4.90,2.34,3.27,3.51,9.24,3.51,17.92l.07,13.46h-8.85Z"/>
+                    </g>
+                </svg>
+            </div>
+            <h1>💬 مساعد ويتسب الذكي</h1>
         </div>
         
         <div class="chat-messages" id="chatMessages">
             <div class="message assistant">
                 <div class="message-content">
-                    سلني أجيبك
+                    سلني أجبك
                 </div>
                 <div class="message-time" id="welcomeTime"></div>
                     </div>
@@ -624,6 +976,37 @@
     <script>
         let selectedModel = 'deepseek'; // DeepSeek فقط
         let conversationHistory = [];
+
+        // Dark mode functionality
+        function toggleDarkMode() {
+            const body = document.body;
+            const toggleButton = document.getElementById('darkModeToggle');
+            
+            body.classList.toggle('dark-mode');
+            
+            // Update button icon
+            if (body.classList.contains('dark-mode')) {
+                toggleButton.textContent = '☀️';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                toggleButton.textContent = '🌙';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+
+        // Load dark mode preference on page load
+        function loadDarkModePreference() {
+            const darkMode = localStorage.getItem('darkMode');
+            const toggleButton = document.getElementById('darkModeToggle');
+            
+            if (darkMode === 'enabled') {
+                document.body.classList.add('dark-mode');
+                toggleButton.textContent = '☀️';
+            }
+        }
+
+        // Initialize dark mode on page load
+        document.addEventListener('DOMContentLoaded', loadDarkModePreference);
 
         // تحديث وقت الترحيب
         document.getElementById('welcomeTime').textContent = new Date().toLocaleTimeString('ar-SA');
@@ -851,4 +1234,5 @@
     </script>
 </body>
 </html>
+
 
