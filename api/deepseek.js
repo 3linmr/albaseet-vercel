@@ -1,3 +1,4 @@
+
 export default async function handler(req, res) {
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -83,12 +84,17 @@ ${guideContent}
 
 === تعليمات التنسيق ===
 عند الإجابة، يجب أن تنظم النص بشكل واضح ومنظم:
-- استخدم مسافات مناسبة بين الفقرات
-- رتب النقاط والأرقام بشكل واضح
-- استخدم مسافات قبل وبعد العناوين
-- اجعل النص سهل القراءة والتنظيم
-- لا تستخدم رموز markdown مثل * أو # أو **
-- استخدم تنسيق واضح ومنظم للخطوات والإرشادات`;
+
+1. استخدم مسافات مناسبة بين الفقرات (سطر فارغ بين كل فقرة)
+2. رتب النقاط والأرقام بشكل واضح مع مسافات مناسبة
+3. استخدم مسافات قبل وبعد العناوين
+4. اجعل النص سهل القراءة والتنظيم
+5. لا تستخدم رموز markdown مثل * أو # أو **
+6. استخدم تنسيق واضح ومنظم للخطوات والإرشادات
+7. أضف سطر فارغ قبل كل رقم أو نقطة جديدة
+8. نظم المعلومات في فقرات منفصلة وواضحة
+9. استخدم مسافات مناسبة بين العناصر المختلفة
+10. اجعل كل قسم منفصل بوضوح عن الآخر`;
 
         console.log('Sending request to DeepSeek API...');
         console.log('API Key exists:', !!process.env.DEEPSEEK_API_KEY);
@@ -115,7 +121,7 @@ ${guideContent}
         
         console.log('API Key first 10 chars:', process.env.DEEPSEEK_API_KEY.substring(0, 10));
 
-               // Use DeepSeek with full guide content and large context window
+               // Use DeepSeek with full guide content
                const requestBody = {
                    model: 'deepseek-chat',
                    messages: [
@@ -170,17 +176,22 @@ ${guideContent}
             console.log('DeepSeek API response data:', JSON.stringify(data, null, 2));
             
             if (data.choices && data.choices[0] && data.choices[0].message) {
-                // تنظيف الإجابة من الرموز المزعجة
+                // تنظيف وتحسين تنسيق الإجابة
                 let cleanResponse = data.choices[0].message.content;
                 
-                // تنظيف بسيط - إزالة الرموز المزعجة فقط
+                // تنظيف وتحسين التنسيق
                 cleanResponse = cleanResponse
                     .replace(/\*\*/g, '') // إزالة **
                     .replace(/\*/g, '') // إزالة *
                     .replace(/#{1,6}\s*/g, '') // إزالة # و ## و ###
                     .replace(/```[\s\S]*?```/g, '') // إزالة code blocks
                     .replace(/`[^`]*`/g, '') // إزالة inline code
-                    .trim();
+                    .replace(/\n\s*\n\s*\n/g, '\n\n') // تقليل المسافات المتعددة
+                    .replace(/(\d+\.\s)/g, '\n$1') // إضافة سطر قبل الأرقام
+                    .replace(/([.!?])\s*([أ-ي])/g, '$1\n\n$2') // إضافة سطر بعد النقاط
+                    .replace(/\n\s+/g, '\n') // إزالة المسافات الزائدة
+                    .replace(/^\s+|\s+$/g, '') // إزالة المسافات من البداية والنهاية
+                    .replace(/\n{3,}/g, '\n\n'); // تقليل الأسطر المتعددة
                 
                 res.status(200).json({
                     response: cleanResponse,
@@ -231,6 +242,7 @@ ${guideContent}
         });
     }
 }
+
 
 
 
