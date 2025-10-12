@@ -1,3 +1,4 @@
+
 export default async function handler(req, res) {
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -173,18 +174,13 @@ ${guideContent}
                 // تنظيف وتحسين تنسيق الإجابة
                 let cleanResponse = data.choices[0].message.content;
                 
-                // تنظيف وإضافة أسطر فارغة للتنسيق
+                // تنظيف بسيط فقط - لا تلاعب بالنص العربي
                 cleanResponse = cleanResponse
                     .replace(/\*\*/g, '') // إزالة **
                     .replace(/\*/g, '') // إزالة *
                     .replace(/#{1,6}\s*/g, '') // إزالة # و ## و ###
                     .replace(/```[\s\S]*?```/g, '') // إزالة code blocks
-                    .replace(/`[^`]*`/g, '') // إزالة inline code
-                    .replace(/(\d+\.\s)/g, '\n\n$1') // إضافة سطرين قبل الأرقام
-                    .replace(/([.!?])\s*(\d+\.)/g, '$1\n\n$2') // إضافة سطرين قبل الأرقام
-                    .replace(/([.!?])\s*([أ-ي])/g, '$1\n\n$2') // إضافة سطرين بعد النقاط
-                    .replace(/([أ-ي])\s*(\d+\.)/g, '$1\n\n$2') // إضافة سطرين قبل الأرقام
-                    .replace(/([أ-ي])\s*([أ-ي])/g, '$1\n$2'); // إضافة سطر بين الجمل
+                    .replace(/`[^`]*`/g, ''); // إزالة inline code
                 
                 res.status(200).json({
                     response: cleanResponse,
