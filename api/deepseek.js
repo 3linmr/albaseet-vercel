@@ -180,8 +180,7 @@ ${guideContent}
                     .replace(/\*/g, '') // إزالة *
                     .replace(/#{1,6}\s*/g, '') // إزالة # و ## و ###
                     .replace(/```[\s\S]*?```/g, '') // إزالة code blocks
-                    .replace(/`[^`]*`/g, '') // إزالة inline code
-                    .trim(); // إزالة المسافات الزائدة فقط
+                    .replace(/`[^`]*`/g, ''); // إزالة inline code
                 
                 res.status(200).json({
                     response: cleanResponse,
@@ -232,6 +231,7 @@ ${guideContent}
         });
     }
 }
+
 
 
 
