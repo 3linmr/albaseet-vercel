@@ -256,9 +256,33 @@
             text-align: left;
         }
 
-        .message.assistant {
-            text-align: right;
-        }
+               .message.assistant {
+                   text-align: right;
+               }
+
+               .welcome-message {
+                   text-align: center !important;
+                   justify-content: center;
+                   display: flex;
+               }
+
+               .welcome-message .message-content {
+                   background: linear-gradient(135deg, #667eea, #764ba2);
+                   color: white;
+                   border: none;
+                   font-size: 1.2rem;
+                   font-weight: 600;
+                   padding: 20px 30px;
+                   border-radius: 25px;
+                   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                   max-width: 300px;
+                   margin: 0 auto;
+               }
+
+               body.dark-mode .welcome-message .message-content {
+                   background: linear-gradient(135deg, #4a5568, #2d3748);
+                   box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3);
+               }
 
         .message-content {
             display: inline-block;
@@ -519,43 +543,6 @@
             text-align: center;
         }
 
-        .suggestions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .suggestion {
-            background: #ffffff;
-            color: #495057;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            border: 1px solid #e9ecef;
-            font-weight: 500;
-        }
-
-        body.dark-mode .suggestion {
-            background: #3d3d3d;
-            color: #e0e0e0;
-            border-color: #555;
-        }
-
-        .suggestion:hover {
-            background: #f8f9fa;
-            color: #007bff;
-            border-color: #007bff;
-            transform: translateY(-1px);
-        }
-
-        body.dark-mode .suggestion:hover {
-            background: #555;
-            color: #4fc3f7;
-            border-color: #4fc3f7;
-        }
 
         .ticket-button {
             background: #e8f5e8;
@@ -1175,7 +1162,7 @@
         -->
         
         <div class="chat-messages" id="chatMessages">
-               <div class="message assistant">
+               <div class="message assistant welcome-message">
                    <div class="message-content">
                        سلني أجبك
                    </div>
@@ -1200,12 +1187,6 @@
                 </button>
                     </div>
                     
-            <div class="suggestions">
-                <div class="suggestion" onclick="sendSuggestion('كيف أضيف عميل جديد؟')">كيف أضيف عميل جديد؟</div>
-                <div class="suggestion" onclick="sendSuggestion('كيف أنشئ فاتورة بيع؟')">كيف أنشئ فاتورة بيع؟</div>
-                <div class="suggestion" onclick="sendSuggestion('ما هي أنواع الموافقات؟')">ما هي أنواع الموافقات؟</div>
-                <div class="suggestion" onclick="sendSuggestion('كيف أضيف صنف جديد؟')">كيف أضيف صنف جديد؟</div>
-            </div>
         </div>
     </div>
 
@@ -1399,19 +1380,14 @@
             document.getElementById('typingIndicator').style.display = 'none';
         }
 
-        // إرسال اقتراح
-        function sendSuggestion(text) {
-            document.getElementById('chatInput').value = text;
-            sendMessage();
-        }
 
         // مسح المحادثة
         function clearChat() {
             if (confirm('هل تريد مسح جميع الرسائل؟')) {
                 document.getElementById('chatMessages').innerHTML = `
-                    <div class="message assistant">
+                    <div class="message assistant welcome-message">
                         <div class="message-content">
-                            سلني أجيبك
+                            سلني أجبك
                         </div>
                     </div>
                 `;
@@ -1515,6 +1491,7 @@
     </script>
 </body>
 </html>
+
 
 
 
