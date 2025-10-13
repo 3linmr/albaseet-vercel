@@ -430,34 +430,6 @@
             border-color: #667eea;
         }
 
-        .clear-chat {
-            background: #fff3e0;
-            color: #f57c00;
-            border: 1px solid #ffcc02;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            margin-left: 10px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        body.dark-mode .clear-chat {
-            background: #4a3d2a;
-            color: #ffb74d;
-            border-color: #ff9800;
-        }
-
-        .clear-chat:hover {
-            background: #ffcc02;
-            color: #e65100;
-        }
-
-        body.dark-mode .clear-chat:hover {
-            background: #ff9800;
-            color: #ffcc02;
-        }
 
         /* Mobile icon buttons */
         .mobile-controls {
@@ -614,64 +586,121 @@
             color: #a5d6a7;
         }
 
-        /* Dark mode toggle button */
-        .dark-mode-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
+               /* Menu toggle button */
+               .menu-toggle {
+                   position: fixed;
+                   top: 20px;
+                   left: 20px;
+                   background: #f8f9fa;
+                   border: 2px solid #e9ecef;
+                   border-radius: 50%;
+                   width: 50px;
+                   height: 50px;
+                   cursor: pointer;
+                   display: flex;
+                   align-items: center;
+                   justify-content: center;
+                   font-size: 1.5rem;
+                   transition: all 0.3s ease;
+                   z-index: 1000;
+                   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+               }
 
-        .dark-mode-toggle:hover {
-            background: #e9ecef;
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-        }
+               .menu-toggle:hover {
+                   background: #e9ecef;
+                   transform: scale(1.1);
+                   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+               }
 
-        /* Tooltip for dark mode toggle */
-        .dark-mode-toggle::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            right: -10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 1001;
-        }
+               /* Tooltip for menu toggle */
+               .menu-toggle::after {
+                   content: attr(data-tooltip);
+                   position: absolute;
+                   right: -10px;
+                   top: 50%;
+                   transform: translateY(-50%);
+                   background: rgba(0, 0, 0, 0.8);
+                   color: white;
+                   padding: 5px 10px;
+                   border-radius: 4px;
+                   font-size: 0.8rem;
+                   white-space: nowrap;
+                   opacity: 0;
+                   pointer-events: none;
+                   transition: opacity 0.3s ease;
+                   z-index: 1001;
+               }
 
-        .dark-mode-toggle:hover::after {
-            opacity: 1;
-        }
+               .menu-toggle:hover::after {
+                   opacity: 1;
+               }
 
-        body.dark-mode .dark-mode-toggle {
-            background: #2d2d2d;
-            border-color: #404040;
-            color: #e0e0e0;
-        }
+               body.dark-mode .menu-toggle {
+                   background: #2d2d2d;
+                   border-color: #404040;
+                   color: #e0e0e0;
+               }
 
-        body.dark-mode .dark-mode-toggle:hover {
-            background: #404040;
-        }
+               body.dark-mode .menu-toggle:hover {
+                   background: #404040;
+               }
+
+               /* Menu dropdown */
+               .menu-dropdown {
+                   position: fixed;
+                   top: 80px;
+                   left: 20px;
+                   background: #ffffff;
+                   border: 1px solid #e9ecef;
+                   border-radius: 12px;
+                   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+                   z-index: 1000;
+                   display: none;
+                   min-width: 200px;
+                   overflow: hidden;
+               }
+
+               body.dark-mode .menu-dropdown {
+                   background: #2d2d2d;
+                   border-color: #404040;
+               }
+
+               .menu-item {
+                   width: 100%;
+                   padding: 12px 16px;
+                   border: none;
+                   background: transparent;
+                   color: #212529;
+                   cursor: pointer;
+                   display: flex;
+                   align-items: center;
+                   gap: 12px;
+                   transition: all 0.3s ease;
+                   text-align: right;
+               }
+
+               body.dark-mode .menu-item {
+                   color: #e0e0e0;
+               }
+
+               .menu-item:hover {
+                   background: #f8f9fa;
+               }
+
+               body.dark-mode .menu-item:hover {
+                   background: #404040;
+               }
+
+               .menu-icon {
+                   font-size: 1.2rem;
+                   width: 24px;
+                   text-align: center;
+               }
+
+               .menu-text {
+                   font-size: 0.9rem;
+                   font-weight: 500;
+               }
 
         .ticket-modal {
             display: none;
@@ -707,6 +736,23 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-field label {
+            font-weight: 600;
+            color: #212529;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        body.dark-mode .form-field label {
+            color: #e0e0e0;
         }
 
         .ticket-form input, .ticket-form textarea {
@@ -1067,10 +1113,26 @@
     </style>
 </head>
 <body>
-    <!-- Dark mode toggle button -->
-    <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()" data-tooltip="الوضع الليلي">
-        🌙
-    </button>
+           <!-- Menu button -->
+           <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()" data-tooltip="القائمة">
+               ⋯
+           </button>
+           
+           <!-- Menu dropdown -->
+           <div class="menu-dropdown" id="menuDropdown">
+               <button class="menu-item" onclick="toggleDarkMode()">
+                   <span class="menu-icon">🌙</span>
+                   <span class="menu-text">الوضع الليلي</span>
+               </button>
+               <button class="menu-item" onclick="clearChat()">
+                   <span class="menu-icon">🧹</span>
+                   <span class="menu-text">مسح المحادثة</span>
+               </button>
+               <button class="menu-item" onclick="openTicketModal()">
+                   <span class="menu-icon">🎧</span>
+                   <span class="menu-text">الدعم الفني</span>
+               </button>
+           </div>
 
     <div class="chat-container">
         <!-- Header section temporarily disabled
@@ -1113,12 +1175,11 @@
         -->
         
         <div class="chat-messages" id="chatMessages">
-            <div class="message assistant">
-                <div class="message-content">
-                    سلني أجيبك
-                </div>
-                <div class="message-time" id="welcomeTime"></div>
-                    </div>
+               <div class="message assistant">
+                   <div class="message-content">
+                       سلني أجبك
+                   </div>
+               </div>
                 </div>
                 
         <div class="typing-indicator" id="typingIndicator">
@@ -1137,22 +1198,6 @@
                 <button class="send-button" id="sendButton" onclick="sendMessage()">
                     اسأل
                 </button>
-                <button class="clear-chat" onclick="clearChat()">
-                    مسح المحادثة
-                </button>
-                <button class="ticket-button" onclick="openTicketModal()">
-                    🎫 فتح تذكرة
-                </button>
-                
-                <!-- Mobile icon buttons -->
-                <div class="mobile-controls">
-                    <button class="mobile-icon-btn mobile-ticket-btn" onclick="openTicketModal()" data-tooltip="الدعم الفني">
-                        🎧
-                    </button>
-                    <button class="mobile-icon-btn mobile-clear-btn" onclick="clearChat()" data-tooltip="مسح المحادثة">
-                        🧹
-                    </button>
-                </div>
                     </div>
                     
             <div class="suggestions">
@@ -1170,11 +1215,23 @@
             <h2>🎫 فتح تذكرة دعم</h2>
             <p>إذا لم تكن الإجابة كافية، يمكنك فتح تذكرة دعم وسنرد عليك في أقرب وقت.</p>
             
-            <form class="ticket-form" id="ticketForm">
-                <input type="text" id="ticketName" placeholder="الاسم الكامل" required>
-                <input type="email" id="ticketEmail" placeholder="البريد الإلكتروني" required>
-                <input type="tel" id="ticketPhone" placeholder="رقم الجوال" required>
-                <textarea id="ticketMessage" placeholder="اكتب رسالتك هنا..." required></textarea>
+                   <form class="ticket-form" id="ticketForm">
+                       <div class="form-field">
+                           <label for="ticketName">الاسم الكامل *</label>
+                           <input type="text" id="ticketName" placeholder="الاسم الكامل" required>
+                       </div>
+                       <div class="form-field">
+                           <label for="ticketEmail">البريد الإلكتروني *</label>
+                           <input type="email" id="ticketEmail" placeholder="البريد الإلكتروني" required>
+                       </div>
+                       <div class="form-field">
+                           <label for="ticketPhone">رقم الجوال *</label>
+                           <input type="tel" id="ticketPhone" placeholder="رقم الجوال" required>
+                       </div>
+                       <div class="form-field">
+                           <label for="ticketMessage">الرسالة *</label>
+                           <textarea id="ticketMessage" placeholder="اكتب رسالتك هنا..." required></textarea>
+                       </div>
                 
                 <div class="ticket-buttons">
                     <button type="button" class="ticket-cancel" onclick="closeTicketModal()">
@@ -1220,11 +1277,28 @@
             }
         }
 
-        // Initialize dark mode on page load
-        document.addEventListener('DOMContentLoaded', loadDarkModePreference);
+               // Initialize dark mode on page load
+               document.addEventListener('DOMContentLoaded', loadDarkModePreference);
 
-        // تحديث وقت الترحيب
-        document.getElementById('welcomeTime').textContent = new Date().toLocaleTimeString('ar-SA');
+               // Toggle menu dropdown
+               function toggleMenu() {
+                   const menu = document.getElementById('menuDropdown');
+                   if (menu.style.display === 'block') {
+                       menu.style.display = 'none';
+                   } else {
+                       menu.style.display = 'block';
+                   }
+               }
+
+               // Close menu when clicking outside
+               document.addEventListener('click', function(event) {
+                   const menu = document.getElementById('menuDropdown');
+                   const menuToggle = document.getElementById('menuToggle');
+                   if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
+                       menu.style.display = 'none';
+                   }
+               });
+
         
         // تهيئة زر الإرسال ليكون معطل في البداية
         document.getElementById('sendButton').disabled = true;
@@ -1295,29 +1369,24 @@
             }
         }
 
-        // إضافة رسالة جديدة
-        function addMessage(content, sender) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            
-            const messageContent = document.createElement('div');
-            messageContent.className = 'message-content';
-            messageContent.textContent = content;
-            
-            const messageTime = document.createElement('div');
-            messageTime.className = 'message-time';
-            messageTime.textContent = new Date().toLocaleTimeString('ar-SA');
-            
-            messageDiv.appendChild(messageContent);
-            messageDiv.appendChild(messageTime);
-            messagesContainer.appendChild(messageDiv);
-            
-            // التمرير لأسفل فقط للرسائل الجديدة من المستخدم
-            if (sender === 'user') {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-        }
+               // إضافة رسالة جديدة
+               function addMessage(content, sender) {
+                   const messagesContainer = document.getElementById('chatMessages');
+                   const messageDiv = document.createElement('div');
+                   messageDiv.className = `message ${sender}`;
+                   
+                   const messageContent = document.createElement('div');
+                   messageContent.className = 'message-content';
+                   messageContent.textContent = content;
+                   
+                   messageDiv.appendChild(messageContent);
+                   messagesContainer.appendChild(messageDiv);
+                   
+                   // التمرير لأسفل فقط للرسائل الجديدة من المستخدم
+                   if (sender === 'user') {
+                       messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                   }
+               }
 
         // إظهار مؤشر الكتابة
         function showTypingIndicator() {
@@ -1343,14 +1412,9 @@
                     <div class="message assistant">
                         <div class="message-content">
                             سلني أجيبك
-                            <br>• شرح أي وظيفة في النظام
-                            <br>• الإجابة على أسئلتك التقنية
-                            <br>• توجيهك خطوة بخطوة
-                            <br><br>اسألني أي شيء! 😊
-                                </div>
-                        <div class="message-time">${new Date().toLocaleTimeString('ar-SA')}</div>
-                            </div>
-                        `;
+                        </div>
+                    </div>
+                `;
                 conversationHistory = [];
             }
         }
@@ -1451,5 +1515,6 @@
     </script>
 </body>
 </html>
+
 
 
