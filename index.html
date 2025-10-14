@@ -1199,7 +1199,7 @@
                         rows="3"
                         ></textarea>
                     <button class="send-button" id="sendButton" onclick="sendMessage()">
-                        ←
+                        ↑
                     </button>
                 </div>
                     
@@ -1299,6 +1299,14 @@
         
         // تهيئة زر الإرسال ليكون معطل في البداية
         document.getElementById('sendButton').disabled = true;
+        
+        // تحديث حالة الزر عند الكتابة
+        document.getElementById('chatInput').addEventListener('input', function() {
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = this.value.trim() === '';
+        });
+
+        // لا يوجد كود للتعامل مع Enter - Enter يعمل بشكل طبيعي للسطر الجديد
 
         // DeepSeek فقط - لا حاجة لاختيار النموذج
 
@@ -1411,13 +1419,7 @@
             }
         }
 
-        // إرسال بالضغط على Enter
-        document.getElementById('chatInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
+        // تم حذف كود Enter - Enter يعمل بشكل طبيعي للسطر الجديد
 
         // تعديل ارتفاع النص تلقائياً وتفعيل/تعطيل الزر
         document.getElementById('chatInput').addEventListener('input', function() {
