@@ -1454,9 +1454,19 @@
             }
         }
 
-        // إرسال التذكرة
-        document.getElementById('ticketForm').addEventListener('submit', async function(e) {
+        // إرسال التذكرة عبر الواتساب
+        document.getElementById('ticketForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            const name = document.getElementById('ticketName').value;
+            const email = document.getElementById('ticketEmail').value;
+            const phone = document.getElementById('ticketPhone').value;
+            const message = document.getElementById('ticketMessage').value;
+            
+            if (!name || !email || !phone || !message) {
+                alert('يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
             
             // الحصول على آخر سؤال وجواب من المحادثة
             const messages = document.querySelectorAll('.message');
@@ -1475,36 +1485,41 @@
                 }
             }
             
-            const formData = {
-                name: document.getElementById('ticketName').value,
-                email: document.getElementById('ticketEmail').value,
-                phone: document.getElementById('ticketPhone').value,
-                message: document.getElementById('ticketMessage').value,
-                lastQuestion: lastQuestion,
-                lastAnswer: lastAnswer
-            };
+            // إنشاء رسالة الواتساب
+            let whatsappMessage = `🎫 *تذكرة دعم فني*
 
-            try {
-                const response = await fetch('/api/ticket', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
+👤 *الاسم:* ${name}
+📧 *البريد الإلكتروني:* ${email}
+📱 *رقم الجوال:* ${phone}
 
-                const result = await response.json();
-                
-                if (result.success) {
-                    alert(`تم إرسال التذكرة بنجاح! رقم التذكرة: ${result.ticketNumber}`);
-                    closeTicketModal();
-                } else {
-                    alert('حدث خطأ في إرسال التذكرة. يرجى المحاولة مرة أخرى.');
-                }
-            } catch (error) {
-                console.error('Error submitting ticket:', error);
-                alert('حدث خطأ في إرسال التذكرة. يرجى المحاولة مرة أخرى.');
+💬 *الرسالة:*
+${message}`;
+
+            // إضافة آخر سؤال وجواب إذا كانا موجودين
+            if (lastQuestion && lastAnswer) {
+                whatsappMessage += `
+
+📝 *آخر سؤال:*
+${lastQuestion}
+
+🤖 *آخر إجابة:*
+${lastAnswer}`;
             }
+
+            whatsappMessage += `
+
+---
+تم إرسال هذه التذكرة من مساعد WitsUp الذكي`;
+
+            // تشفير الرسالة للواتساب
+            const encodedMessage = encodeURIComponent(whatsappMessage);
+            const whatsappUrl = `https://wa.me/0552130095?text=${encodedMessage}`;
+            
+            // فتح الواتساب مع الرسالة
+            window.open(whatsappUrl, '_blank');
+            
+            // إغلاق النموذج
+            closeTicketModal();
         });
     </script>
 </body>
