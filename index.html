@@ -11,13 +11,30 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8f9fa;
-            min-height: 100vh;
-            direction: rtl;
-            transition: all 0.3s ease;
-        }
+       body {
+           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+           background: #f8f9fa;
+           min-height: 100vh;
+           direction: rtl;
+           transition: all 0.3s ease;
+       }
+
+       /* English language styles */
+       body.english {
+           direction: ltr;
+       }
+
+       body.english .chat-input-wrapper {
+           flex-direction: row-reverse;
+       }
+
+       body.english .message.user {
+           text-align: right;
+       }
+
+       body.english .message.assistant {
+           text-align: left;
+       }
 
         /* Dark mode styles */
         body.dark-mode {
@@ -405,49 +422,54 @@
         }
 
         .send-button {
-            background: #e3f2fd;
-            color: #1976d2;
-            border: 1px solid #bbdefb;
-            padding: 15px 20px;
-            border-radius: 12px;
+            background: #25d366;
+            color: #ffffff;
+            border: none;
+            padding: 20px 25px;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 2.2rem;
             transition: all 0.3s ease;
-            min-width: 50px;
+            min-width: 80px;
             font-weight: 600;
-            height: 60px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 3px 12px rgba(37, 211, 102, 0.4);
+            transform: rotate(-90deg);
         }
 
         .send-button:hover:not(:disabled) {
-            background: #bbdefb;
-            color: #0d47a1;
+            background: #128c7e;
+            transform: rotate(-90deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
         }
 
         .send-button:disabled {
-            background: #f5f5f5;
-            color: #9e9e9e;
-            border-color: #e0e0e0;
+            background: #cccccc;
+            color: #666666;
             cursor: not-allowed;
+            box-shadow: none;
+            transform: rotate(-90deg);
         }
 
         body.dark-mode .send-button {
-            background: #3d3d3d;
-            color: #e0e0e0;
-            border-color: #555;
-        }
-
-        body.dark-mode .send-button:hover:not(:disabled) {
-            background: #555;
+            background: #25d366;
             color: #ffffff;
         }
 
+        body.dark-mode .send-button:hover:not(:disabled) {
+            background: #128c7e;
+            transform: rotate(-90deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+        }
+
         body.dark-mode .send-button:disabled {
-            background: #2d2d2d;
-            color: #666;
-            border-color: #404040;
+            background: #555555;
+            color: #999999;
+            box-shadow: none;
+            transform: rotate(-90deg);
         }
 
         .model-selector {
@@ -944,10 +966,11 @@
             }
 
             .send-button {
-                padding: 10px 15px;
-                font-size: 1rem;
-                min-width: 45px;
-                height: 40px;
+                padding: 15px 20px;
+                font-size: 1.8rem;
+                min-width: 60px;
+                height: 60px;
+                border-radius: 50%;
             }
             
             /* إخفاء الأزرار العادية في الجوال */
@@ -1135,6 +1158,10 @@
                    <span class="menu-icon">🎧</span>
                    <span class="menu-text">الدعم الفني</span>
                </button>
+               <button class="menu-item" onclick="toggleLanguage()">
+                   <span class="menu-icon">🌐</span>
+                   <span class="menu-text">English</span>
+               </button>
            </div>
 
     <div class="chat-container">
@@ -1199,7 +1226,7 @@
                         rows="3"
                         ></textarea>
                     <button class="send-button" id="sendButton" onclick="sendMessage()">
-                        ↑
+                        ➤
                     </button>
                 </div>
                     
@@ -1242,9 +1269,10 @@
         </div>
     </div>
 
-    <script>
-        let selectedModel = 'deepseek'; // DeepSeek فقط
-        let conversationHistory = [];
+       <script>
+           let selectedModel = 'deepseek'; // DeepSeek فقط
+           let conversationHistory = [];
+           let isEnglish = false;
 
         // Dark mode functionality
         function toggleDarkMode() {
@@ -1274,18 +1302,70 @@
             }
         }
 
-               // Initialize dark mode on page load
-               document.addEventListener('DOMContentLoaded', loadDarkModePreference);
+        // Initialize dark mode on page load
+        document.addEventListener('DOMContentLoaded', loadDarkModePreference);
 
-               // Toggle menu dropdown
-               function toggleMenu() {
-                   const menu = document.getElementById('menuDropdown');
-                   if (menu.style.display === 'block') {
-                       menu.style.display = 'none';
-                   } else {
-                       menu.style.display = 'block';
-                   }
-               }
+        // Load language preference on page load
+        function loadLanguagePreference() {
+            const language = localStorage.getItem('language');
+            if (language === 'english') {
+                isEnglish = true;
+                document.body.classList.add('english');
+                document.querySelector('.menu-item:last-child .menu-text').textContent = 'العربية';
+                updateUIToEnglish();
+            }
+        }
+
+        // Initialize language on page load
+        document.addEventListener('DOMContentLoaded', loadLanguagePreference);
+
+        // Toggle menu dropdown
+        function toggleMenu() {
+            const menu = document.getElementById('menuDropdown');
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'block';
+            }
+        }
+
+        // Toggle language
+        function toggleLanguage() {
+            const body = document.body;
+            const languageButton = document.querySelector('.menu-item:last-child .menu-text');
+            
+            isEnglish = !isEnglish;
+            
+            if (isEnglish) {
+                body.classList.add('english');
+                languageButton.textContent = 'العربية';
+                updateUIToEnglish();
+            } else {
+                body.classList.remove('english');
+                languageButton.textContent = 'English';
+                updateUIToArabic();
+            }
+            
+            localStorage.setItem('language', isEnglish ? 'english' : 'arabic');
+        }
+
+        // Update UI to English
+        function updateUIToEnglish() {
+            document.getElementById('chatInput').placeholder = 'Type your question here';
+            document.querySelector('.welcome-message .message-content').textContent = 'Ask me anything';
+            document.querySelector('.menu-item:nth-child(1) .menu-text').textContent = 'Dark Mode';
+            document.querySelector('.menu-item:nth-child(2) .menu-text').textContent = 'Clear Chat';
+            document.querySelector('.menu-item:nth-child(3) .menu-text').textContent = 'Support';
+        }
+
+        // Update UI to Arabic
+        function updateUIToArabic() {
+            document.getElementById('chatInput').placeholder = 'اكتب سؤالك هنا';
+            document.querySelector('.welcome-message .message-content').textContent = 'سلني أجبك';
+            document.querySelector('.menu-item:nth-child(1) .menu-text').textContent = 'الوضع الليلي';
+            document.querySelector('.menu-item:nth-child(2) .menu-text').textContent = 'مسح المحادثة';
+            document.querySelector('.menu-item:nth-child(3) .menu-text').textContent = 'الدعم الفني';
+        }
 
                // Close menu when clicking outside
                document.addEventListener('click', function(event) {
@@ -1513,7 +1593,7 @@ ${lastAnswer}`;
 
             // تشفير الرسالة للواتساب
             const encodedMessage = encodeURIComponent(whatsappMessage);
-            const whatsappUrl = `https://wa.me/+966552130095?text=${encodedMessage}`;
+            const whatsappUrl = `https://wa.me/0552130095?text=${encodedMessage}`;
             
             // فتح الواتساب مع الرسالة
             window.open(whatsappUrl, '_blank');
