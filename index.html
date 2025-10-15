@@ -36,6 +36,22 @@
            text-align: left;
        }
 
+       body.english .ticket-modal-content {
+           text-align: left;
+       }
+
+       body.english .ticket-form {
+           text-align: left;
+       }
+
+       body.english .form-field {
+           text-align: left;
+       }
+
+       body.english .ticket-buttons {
+           justify-content: flex-end;
+       }
+
         /* Dark mode styles */
         body.dark-mode {
             background: #1a1a1a;
@@ -308,6 +324,7 @@
             border-radius: 20px;
             word-wrap: break-word;
             line-height: 1.6;
+            font-size: 1.1rem;
         }
 
         .message.user .message-content {
@@ -951,7 +968,7 @@
             .message-content {
                 max-width: 95%;
                 padding: 12px 16px;
-                font-size: 0.9rem;
+                font-size: 1.0rem;
             }
 
             .chat-input-container {
@@ -1092,7 +1109,7 @@
 
             .message-content {
                 padding: 10px 14px;
-                font-size: 0.85rem;
+                font-size: 0.95rem;
             }
 
             .chat-input-container {
@@ -1359,6 +1376,20 @@
             document.querySelector('.menu-item:nth-child(1) .menu-text').textContent = 'Dark Mode';
             document.querySelector('.menu-item:nth-child(2) .menu-text').textContent = 'Clear Chat';
             document.querySelector('.menu-item:nth-child(3) .menu-text').textContent = 'Support';
+            
+            // Update ticket modal to English
+            document.querySelector('.ticket-modal-content h2').textContent = '🎫 Create Support Ticket';
+            document.querySelector('.ticket-modal-content p').textContent = 'If the answer is not sufficient, you can create a support ticket and we will respond to you as soon as possible.';
+            document.querySelector('label[for="ticketName"]').textContent = 'Full Name *';
+            document.querySelector('label[for="ticketEmail"]').textContent = 'Email Address *';
+            document.querySelector('label[for="ticketPhone"]').textContent = 'Phone Number *';
+            document.querySelector('label[for="ticketMessage"]').textContent = 'Message *';
+            document.getElementById('ticketName').placeholder = 'Full Name';
+            document.getElementById('ticketEmail').placeholder = 'Email Address';
+            document.getElementById('ticketPhone').placeholder = 'Phone Number';
+            document.getElementById('ticketMessage').placeholder = 'Write your message here...';
+            document.querySelector('.ticket-cancel').textContent = 'Cancel';
+            document.querySelector('.ticket-submit').textContent = 'Send Ticket';
         }
 
         // Update UI to Arabic
@@ -1368,6 +1399,20 @@
             document.querySelector('.menu-item:nth-child(1) .menu-text').textContent = 'الوضع الليلي';
             document.querySelector('.menu-item:nth-child(2) .menu-text').textContent = 'مسح المحادثة';
             document.querySelector('.menu-item:nth-child(3) .menu-text').textContent = 'الدعم الفني';
+            
+            // Update ticket modal to Arabic
+            document.querySelector('.ticket-modal-content h2').textContent = '🎫 فتح تذكرة دعم';
+            document.querySelector('.ticket-modal-content p').textContent = 'إذا لم تكن الإجابة كافية، يمكنك فتح تذكرة دعم وسنرد عليك في أقرب وقت.';
+            document.querySelector('label[for="ticketName"]').textContent = 'الاسم الكامل *';
+            document.querySelector('label[for="ticketEmail"]').textContent = 'البريد الإلكتروني *';
+            document.querySelector('label[for="ticketPhone"]').textContent = 'رقم الجوال *';
+            document.querySelector('label[for="ticketMessage"]').textContent = 'الرسالة *';
+            document.getElementById('ticketName').placeholder = 'الاسم الكامل';
+            document.getElementById('ticketEmail').placeholder = 'البريد الإلكتروني';
+            document.getElementById('ticketPhone').placeholder = 'رقم الجوال';
+            document.getElementById('ticketMessage').placeholder = 'اكتب رسالتك هنا...';
+            document.querySelector('.ticket-cancel').textContent = 'إلغاء';
+            document.querySelector('.ticket-submit').textContent = 'إرسال التذكرة';
         }
 
                // Close menu when clicking outside
