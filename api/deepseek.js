@@ -73,8 +73,11 @@ export default async function handler(req, res) {
             console.error('Error reading guide from database:', error);
         }
 
+        // التحقق من لغة السؤال
+        const isEnglish = /^[a-zA-Z\s.,!?]+$/.test(message.trim());
+        
         // رسالة النظام مع الدليل الكامل كما كان في السابق
-        const systemMessage = `أنت مساعد خبير لنظام witsUP. مهمتك هي الإجابة على أسئلة المستخدمين بناءً على الدليل الشامل المرفق.
+        let systemMessage = `أنت مساعد خبير لنظام witsUP. مهمتك هي الإجابة على أسئلة المستخدمين بناءً على الدليل الشامل المرفق.
 
 === دليل المستخدم الشامل لـ witsUP ===
 
@@ -106,10 +109,19 @@ ${guideContent}
 - التزم بالدليل فقط ولا تلف من عندك
 - لا تذكر ميزات أو تقارير غير موجودة في الدليل`;
 
+        // إضافة تعليمات اللغة
+        if (isEnglish) {
+            systemMessage += `
+
+=== Language Instructions ===
+The user's question is in English. Please respond in English while maintaining the same formatting and accuracy requirements.`;
+        }
+
         console.log('Sending request to DeepSeek API...');
         console.log('API Key exists:', !!process.env.DEEPSEEK_API_KEY);
         console.log('API Key length:', process.env.DEEPSEEK_API_KEY ? process.env.DEEPSEEK_API_KEY.length : 0);
         console.log('Guide content length:', guideContent.length);
+        console.log('Is English question:', isEnglish);
         console.log('System message length:', systemMessage.length);
         console.log('Guide contains "المحاسبة":', guideContent.includes('المحاسبة'));
         console.log('Guide contains "المعاملات":', guideContent.includes('المعاملات'));
@@ -246,9 +258,3 @@ ${guideContent}
         });
     }
 }
-
-
-
-
-
-
