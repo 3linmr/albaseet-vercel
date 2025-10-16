@@ -1476,11 +1476,15 @@
             document.querySelector('.ticket-submit').textContent = 'Send Ticket';
             
             // Update send method options to English
-            const sendMethodLabel = document.querySelector('.form-field:last-of-type label');
+            const sendMethodLabel = document.querySelector('.form-field label:not([for])');
             if (sendMethodLabel) {
                 sendMethodLabel.textContent = 'Send Method *';
-                document.querySelector('.radio-option:first-child .radio-text').textContent = '📱 WhatsApp';
-                document.querySelector('.radio-option:last-child .radio-text').textContent = '📧 Email';
+            }
+            
+            const radioOptions = document.querySelectorAll('.radio-option .radio-text');
+            if (radioOptions.length >= 2) {
+                radioOptions[0].textContent = '📱 WhatsApp';
+                radioOptions[1].textContent = '📧 Email';
             }
             
             // Update typing indicator to English
@@ -1516,11 +1520,15 @@
             document.querySelector('.ticket-submit').textContent = 'إرسال التذكرة';
             
             // Update send method options to Arabic
-            const sendMethodLabel = document.querySelector('.form-field:last-of-type label');
+            const sendMethodLabel = document.querySelector('.form-field label:not([for])');
             if (sendMethodLabel) {
                 sendMethodLabel.textContent = 'طريقة الإرسال *';
-                document.querySelector('.radio-option:first-child .radio-text').textContent = '📱 واتساب';
-                document.querySelector('.radio-option:last-child .radio-text').textContent = '📧 إيميل';
+            }
+            
+            const radioOptions = document.querySelectorAll('.radio-option .radio-text');
+            if (radioOptions.length >= 2) {
+                radioOptions[0].textContent = '📱 واتساب';
+                radioOptions[1].textContent = '📧 إيميل';
             }
             
             // Update typing indicator to Arabic
