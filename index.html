@@ -371,7 +371,7 @@
         .typing-indicator {
             display: none;
             padding: 15px 20px;
-            background: linear-gradient(135deg, #f093fb, #f5576c);
+            background: linear-gradient(135deg, #25d366, #128c7e);
             color: white;
             border-radius: 20px;
             border-bottom-left-radius: 5px;
@@ -1482,6 +1482,15 @@
                 document.querySelector('.radio-option:first-child .radio-text').textContent = '📱 WhatsApp';
                 document.querySelector('.radio-option:last-child .radio-text').textContent = '📧 Email';
             }
+            
+            // Update typing indicator to English
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                const typingDots = typingIndicator.querySelector('.typing-dots');
+                if (typingDots) {
+                    typingDots.textContent = 'Assistant is typing';
+                }
+            }
         }
 
         // Update UI to Arabic
@@ -1512,6 +1521,15 @@
                 sendMethodLabel.textContent = 'طريقة الإرسال *';
                 document.querySelector('.radio-option:first-child .radio-text').textContent = '📱 واتساب';
                 document.querySelector('.radio-option:last-child .radio-text').textContent = '📧 إيميل';
+            }
+            
+            // Update typing indicator to Arabic
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                const typingDots = typingIndicator.querySelector('.typing-dots');
+                if (typingDots) {
+                    typingDots.textContent = 'المساعد يكتب';
+                }
             }
         }
 
