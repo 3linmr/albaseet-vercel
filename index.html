@@ -1477,7 +1477,7 @@
             
             // Update send method options to English
             const sendMethodLabel = document.querySelector('.form-field:last-of-type label');
-            if (sendMethodLabel && sendMethodLabel.textContent.includes('طريقة الإرسال')) {
+            if (sendMethodLabel) {
                 sendMethodLabel.textContent = 'Send Method *';
                 document.querySelector('.radio-option:first-child .radio-text').textContent = '📱 WhatsApp';
                 document.querySelector('.radio-option:last-child .radio-text').textContent = '📧 Email';
@@ -1517,7 +1517,7 @@
             
             // Update send method options to Arabic
             const sendMethodLabel = document.querySelector('.form-field:last-of-type label');
-            if (sendMethodLabel && sendMethodLabel.textContent.includes('Send Method')) {
+            if (sendMethodLabel) {
                 sendMethodLabel.textContent = 'طريقة الإرسال *';
                 document.querySelector('.radio-option:first-child .radio-text').textContent = '📱 واتساب';
                 document.querySelector('.radio-option:last-child .radio-text').textContent = '📧 إيميل';
