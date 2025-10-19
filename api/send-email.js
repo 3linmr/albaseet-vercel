@@ -16,12 +16,37 @@ export default async function handler(req, res) {
         try {
             const { name, email, phone, message, lastQuestion, lastAnswer } = req.body;
             
+            // التحقق من البيانات المطلوبة
+            if (!name || !email || !message) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Missing required fields: name, email, message'
+                });
+            }
+            
             console.log('📧 Received email request:', { name, email, phone, message });
 
             // إعداد Resend
-            const resend = new Resend(process.env.RESEND_API_KEY || 're_6wzZ6BsC_44mKXpYrvEweDWu6tVoaAbKg');
+            const apiKey = process.env.RESEND_API_KEY;
             
-            console.log('✅ Resend initialized');
+            if (!apiKey) {
+                console.error('❌ RESEND_API_KEY not found in environment variables');
+                return res.status(500).json({
+                    success: false,
+                    error: 'RESEND_API_KEY not configured'
+                });
+            }
+            
+            if (!apiKey.startsWith('re_')) {
+                console.error('❌ Invalid Resend API Key format');
+                return res.status(500).json({
+                    success: false,
+                    error: 'Invalid Resend API Key format'
+                });
+            }
+            
+            const resend = new Resend(apiKey);
+            console.log('✅ Resend initialized with API Key:', apiKey.substring(0, 10) + '...');
 
             // محتوى البريد الإلكتروني
             const emailContent = `
@@ -57,44 +82,68 @@ export default async function handler(req, res) {
 
             // إرسال البريد الإلكتروني باستخدام Resend
             const emailData = {
-                from: 'EZMart Assistant <onboarding@resend.dev>',
-                to: [email],
+                from: 'onboarding@resend.dev',
+                to: email,
                 subject: `🎫 تذكرة دعم فني جديدة - ${name}`,
-                html: emailContent,
-                reply_to: 'support@ezmart.app'
+                html: emailContent
             };
 
             console.log('📤 Sending email via Resend:', emailData);
 
-            const result = await resend.emails.send(emailData);
-            
-            console.log('✅ Email sent successfully:', result);
-            console.log('📧 Email details:', {
-                to: email,
-                subject: emailData.subject,
-                id: result.id
-            });
-            
-            res.status(200).json({ 
-                success: true, 
-                message: 'تم إرسال البريد الإلكتروني بنجاح',
-                emailId: result.id,
-                to: email
-            });
+            try {
+                const result = await resend.emails.send(emailData);
+                
+                console.log('✅ Email sent successfully:', result);
+                console.log('📧 Email details:', {
+                    to: email,
+                    subject: emailData.subject,
+                    id: result.id
+                });
+                
+                res.status(200).json({ 
+                    success: true, 
+                    message: 'تم إرسال البريد الإلكتروني بنجاح',
+                    emailId: result.id,
+                    to: email
+                });
+            } catch (resendError) {
+                console.error('❌ Resend API Error:', resendError);
+                console.error('Resend Error details:', {
+                    message: resendError.message,
+                    name: resendError.name,
+                    status: resendError.status,
+                    response: resendError.response
+                });
+                
+                // معالجة أخطاء Resend المختلفة
+                let errorMessage = 'فشل في إرسال البريد الإلكتروني';
+                if (resendError.message) {
+                    errorMessage += ': ' + resendError.message;
+                }
+                
+                res.status(500).json({
+                    success: false,
+                    error: errorMessage,
+                    details: resendError.message,
+                    code: resendError.name
+                });
+                return;
+            }
 
         } catch (error) {
             console.error('❌ Error sending email:', error);
             console.error('Error details:', {
                 message: error.message,
                 code: error.code,
-                response: error.response
+                response: error.response,
+                stack: error.stack
             });
             
             res.status(500).json({ 
                 success: false, 
                 error: 'فشل في إرسال البريد الإلكتروني',
                 details: error.message,
-                code: error.code
+                code: error.code || 'UNKNOWN_ERROR'
             });
         }
     } else {
