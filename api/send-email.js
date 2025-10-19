@@ -1,5 +1,5 @@
 // This is a Vercel Serverless Function for sending emails
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
     try {
@@ -27,31 +27,24 @@ export default async function handler(req, res) {
             
             console.log('📧 Received email request:', { name, email, phone, message });
 
-            // إعداد Resend
-            const apiKey = process.env.RESEND_API_KEY;
-            
-            console.log('🔑 Checking API Key...');
-            console.log('API Key exists:', !!apiKey);
-            console.log('API Key starts with re_:', apiKey?.startsWith('re_'));
-            
-            if (!apiKey) {
-                console.error('❌ RESEND_API_KEY not found in environment variables');
-                return res.status(500).json({
-                    success: false,
-                    error: 'RESEND_API_KEY not configured'
-                });
-            }
-            
-            if (!apiKey.startsWith('re_')) {
-                console.error('❌ Invalid Resend API Key format');
-                return res.status(500).json({
-                    success: false,
-                    error: 'Invalid Resend API Key format'
-                });
-            }
-            
-            const resend = new Resend(apiKey);
-            console.log('✅ Resend initialized with API Key:', apiKey.substring(0, 10) + '...');
+            // إعداد nodemailer مع إعدادات محسنة لـ Vercel
+            const transporter = nodemailer.createTransport({
+                host: 'pro.turbo-smtp.com',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: 'no-reply@ezmart.app',
+                    pass: 'BUjAWNFd'
+                },
+                tls: {
+                    rejectUnauthorized: false
+                },
+                connectionTimeout: 30000,
+                greetingTimeout: 30000,
+                socketTimeout: 30000
+            });
+
+            console.log('✅ Nodemailer transporter created');
 
             // محتوى البريد الإلكتروني
             const emailContent = `
@@ -85,54 +78,57 @@ export default async function handler(req, res) {
                 </div>
             `;
 
-            // إرسال البريد الإلكتروني باستخدام Resend
-            const emailData = {
-                from: 'onboarding@resend.dev',
+            // إعداد البريد الإلكتروني
+            const mailOptions = {
+                from: {
+                    name: 'EZMart - witsUP Assistant',
+                    address: 'no-reply@ezmart.app'
+                },
                 to: email,
                 subject: `🎫 تذكرة دعم فني جديدة - ${name}`,
-                html: emailContent
+                html: emailContent,
+                replyTo: 'support@ezmart.app'
             };
 
-            console.log('📤 Sending email via Resend:', emailData);
+            console.log('📤 Sending email via nodemailer:', mailOptions);
 
             try {
-                console.log('📤 Attempting to send email via Resend...');
-                const result = await resend.emails.send(emailData);
+                console.log('📤 Attempting to send email via nodemailer...');
+                const info = await transporter.sendMail(mailOptions);
                 
-                console.log('✅ Email sent successfully:', result);
+                console.log('✅ Email sent successfully:', info.messageId);
                 console.log('📧 Email details:', {
                     to: email,
-                    subject: emailData.subject,
-                    id: result.id
+                    subject: mailOptions.subject,
+                    messageId: info.messageId
                 });
                 
                 res.status(200).json({ 
                     success: true, 
                     message: 'تم إرسال البريد الإلكتروني بنجاح',
-                    emailId: result.id,
+                    emailId: info.messageId,
                     to: email
                 });
-            } catch (resendError) {
-                console.error('❌ Resend API Error:', resendError);
-                console.error('Resend Error details:', {
-                    message: resendError.message,
-                    name: resendError.name,
-                    status: resendError.status,
-                    response: resendError.response,
-                    stack: resendError.stack
+            } catch (nodemailerError) {
+                console.error('❌ Nodemailer Error:', nodemailerError);
+                console.error('Nodemailer Error details:', {
+                    message: nodemailerError.message,
+                    code: nodemailerError.code,
+                    response: nodemailerError.response,
+                    stack: nodemailerError.stack
                 });
                 
-                // معالجة أخطاء Resend المختلفة
+                // معالجة أخطاء nodemailer المختلفة
                 let errorMessage = 'فشل في إرسال البريد الإلكتروني';
-                if (resendError.message) {
-                    errorMessage += ': ' + resendError.message;
+                if (nodemailerError.message) {
+                    errorMessage += ': ' + nodemailerError.message;
                 }
                 
                 res.status(500).json({
                     success: false,
                     error: errorMessage,
-                    details: resendError.message,
-                    code: resendError.name || 'RESEND_ERROR'
+                    details: nodemailerError.message,
+                    code: nodemailerError.code || 'NODEMAILER_ERROR'
                 });
                 return;
             }
