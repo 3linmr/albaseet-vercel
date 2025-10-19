@@ -1,5 +1,5 @@
 // This is a Vercel Serverless Function for sending emails
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 export default async function handler(req, res) {
     // Set CORS headers
@@ -18,23 +18,10 @@ export default async function handler(req, res) {
             
             console.log('📧 Received email request:', { name, email, phone, message });
 
-            // إعداد البريد الإلكتروني
-            const transporter = nodemailer.createTransport({
-                host: 'pro.turbo-smtp.com',
-                port: 465,
-                secure: true, // استخدام SSL
-                auth: {
-                    user: 'no-reply@ezmart.app',
-                    pass: 'BUjAWNFd'
-                },
-                tls: {
-                    rejectUnauthorized: false
-                }
-            });
-
-            // اختبار الاتصال
-            await transporter.verify();
-            console.log('✅ SMTP connection verified');
+            // إعداد Resend
+            const resend = new Resend(process.env.RESEND_API_KEY || 're_6wzZ6BsC_44mKXpYrvEweDWu6tVoaAbKg');
+            
+            console.log('✅ Resend initialized');
 
             // محتوى البريد الإلكتروني
             const emailContent = `
@@ -68,27 +55,31 @@ export default async function handler(req, res) {
                 </div>
             `;
 
-            // إعداد البريد الإلكتروني
-            const mailOptions = {
-                from: {
-                    name: 'EZMart - witsUP Assistant',
-                    address: 'no-reply@ezmart.app'
-                },
-                to: email,
+            // إرسال البريد الإلكتروني باستخدام Resend
+            const emailData = {
+                from: 'EZMart Assistant <onboarding@resend.dev>',
+                to: [email],
                 subject: `🎫 تذكرة دعم فني جديدة - ${name}`,
                 html: emailContent,
-                replyTo: 'support@ezmart.app'
+                reply_to: 'support@ezmart.app'
             };
 
-            // إرسال البريد الإلكتروني
-            const info = await transporter.sendMail(mailOptions);
+            console.log('📤 Sending email via Resend:', emailData);
+
+            const result = await resend.emails.send(emailData);
             
-            console.log('✅ Email sent successfully:', info.messageId);
+            console.log('✅ Email sent successfully:', result);
+            console.log('📧 Email details:', {
+                to: email,
+                subject: emailData.subject,
+                id: result.id
+            });
             
             res.status(200).json({ 
                 success: true, 
                 message: 'تم إرسال البريد الإلكتروني بنجاح',
-                messageId: info.messageId 
+                emailId: result.id,
+                to: email
             });
 
         } catch (error) {
