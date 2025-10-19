@@ -2,17 +2,18 @@
 import { Resend } from 'resend';
 
 export default async function handler(req, res) {
-    // Set CORS headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    try {
+        // Set CORS headers
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
-    }
+        if (req.method === 'OPTIONS') {
+            res.status(200).end();
+            return;
+        }
 
-    if (req.method === 'POST') {
+        if (req.method === 'POST') {
         try {
             const { name, email, phone, message, lastQuestion, lastAnswer } = req.body;
             
@@ -28,6 +29,10 @@ export default async function handler(req, res) {
 
             // إعداد Resend
             const apiKey = process.env.RESEND_API_KEY;
+            
+            console.log('🔑 Checking API Key...');
+            console.log('API Key exists:', !!apiKey);
+            console.log('API Key starts with re_:', apiKey?.startsWith('re_'));
             
             if (!apiKey) {
                 console.error('❌ RESEND_API_KEY not found in environment variables');
@@ -91,6 +96,7 @@ export default async function handler(req, res) {
             console.log('📤 Sending email via Resend:', emailData);
 
             try {
+                console.log('📤 Attempting to send email via Resend...');
                 const result = await resend.emails.send(emailData);
                 
                 console.log('✅ Email sent successfully:', result);
@@ -112,7 +118,8 @@ export default async function handler(req, res) {
                     message: resendError.message,
                     name: resendError.name,
                     status: resendError.status,
-                    response: resendError.response
+                    response: resendError.response,
+                    stack: resendError.stack
                 });
                 
                 // معالجة أخطاء Resend المختلفة
@@ -125,7 +132,7 @@ export default async function handler(req, res) {
                     success: false,
                     error: errorMessage,
                     details: resendError.message,
-                    code: resendError.name
+                    code: resendError.name || 'RESEND_ERROR'
                 });
                 return;
             }
@@ -146,7 +153,15 @@ export default async function handler(req, res) {
                 code: error.code || 'UNKNOWN_ERROR'
             });
         }
-    } else {
-        res.status(405).json({ success: false, error: 'Method Not Allowed' });
+        } else {
+            res.status(405).json({ success: false, error: 'Method Not Allowed' });
+        }
+    } catch (outerError) {
+        console.error('❌ Outer error in send-email handler:', outerError);
+        res.status(500).json({
+            success: false,
+            error: 'Internal server error',
+            details: outerError.message
+        });
     }
 };
