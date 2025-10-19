@@ -1789,7 +1789,7 @@
         async function sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer) {
             try {
                 // إرسال إلى Zapier Webhook أولاً
-                await sendToZapier(name, email, phone, message, lastQuestion, lastAnswer);
+                const zapierSuccess = await sendToZapier(name, email, phone, message, lastQuestion, lastAnswer);
                 
                 // إرسال بريد إلكتروني
                 const response = await fetch('/api/send-email', {
@@ -1810,7 +1810,8 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    alert(`تم إرسال التذكرة بنجاح! تم إرسال البريد الإلكتروني إلى: ${email}`);
+                    const zapierStatus = zapierSuccess ? 'تم إرسال التذكرة إلى Trello بنجاح' : 'فشل في إرسال التذكرة إلى Trello';
+                    alert(`تم إرسال التذكرة بنجاح!\n📧 البريد الإلكتروني: ${email}\n📋 Trello: ${zapierStatus}`);
                     closeTicketModal();
                 } else {
                     alert('حدث خطأ في إرسال البريد الإلكتروني. يرجى المحاولة مرة أخرى.');
@@ -1824,17 +1825,10 @@
         // دالة إرسال التذكرة إلى Zapier Webhook
         async function sendToZapier(name, email, phone, message, lastQuestion, lastAnswer) {
             try {
-                console.log('🚀 Sending ticket to Zapier via Form...');
+                console.log('🚀 Sending ticket to Zapier via API...');
                 console.log('Data:', { name, email, phone, message, lastQuestion, lastAnswer });
                 
-                // إنشاء form مخفي لإرسال البيانات
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = 'https://hooks.zapier.com/hooks/catch/25043000/urt7rfs/';
-                form.target = '_self';
-                form.style.display = 'none';
-
-                // إضافة البيانات كـ hidden inputs
+                // إرسال البيانات عبر API بدلاً من form
                 const data = {
                     ticketType: 'Support Ticket',
                     customerName: name,
@@ -1851,37 +1845,27 @@
 
                 console.log('📤 Zapier Data:', data);
 
-                // إضافة كل حقل كـ input مخفي
-                Object.keys(data).forEach(key => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = key;
-                    input.value = data[key];
-                    form.appendChild(input);
+                // إرسال عبر API endpoint
+                const response = await fetch('/api/zapier', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
                 });
 
-                // إضافة form إلى الصفحة وإرساله
-                document.body.appendChild(form);
-                form.submit();
-                
-                // إزالة form بعد الإرسال
-                setTimeout(() => {
-                    if (document.body.contains(form)) {
-                        document.body.removeChild(form);
-                    }
-                }, 2000);
-
-                console.log('✅ Ticket sent to Zapier successfully via Form');
-                alert('تم إرسال التذكرة إلى Trello بنجاح! 🎉');
-                
-                // إخفاء الصفحة تلقائياً بعد 3 ثوان
-                setTimeout(() => {
-                    window.history.back();
-                }, 3000);
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('✅ Ticket sent to Zapier successfully:', result);
+                    return true;
+                } else {
+                    console.error('❌ Failed to send to Zapier:', response.status);
+                    return false;
+                }
 
             } catch (error) {
                 console.error('💥 Error sending to Zapier:', error);
-                alert('حدث خطأ في الاتصال بـ Trello: ' + error.message);
+                return false;
             }
         }
     </script>
