@@ -57,7 +57,7 @@ export default async function handler(req, res) {
                 </head>
                 <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
                     <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #ffffff;">
-                        <h2 style="color: #333333; text-align: center; margin-bottom: 30px;">Support Ticket</h2>
+                        <h2 style="color: #333333; text-align: center; margin-bottom: 30px;">EZMart Customer Support</h2>
                         
                         <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #007bff;">
                             <h3 style="color: #333333; margin-top: 0; font-size: 16px;">Customer Details</h3>
@@ -85,8 +85,10 @@ export default async function handler(req, res) {
                         </div>
                         
                         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; font-size: 12px; color: #666666;">
-                            <p>This is an automated message from witsUP Assistant</p>
+                            <p>This is an automated message from EZMart Customer Service</p>
+                            <p>Ticket ID: ${Date.now()}</p>
                             <p>EZMart Support Team</p>
+                            <p>For support: support@ezmart.app</p>
                         </div>
                     </div>
                 </body>
@@ -96,46 +98,61 @@ export default async function handler(req, res) {
             // إعداد البريد الإلكتروني مع تحسينات لمكافحة Spam
             const mailOptions = {
                 from: {
-                    name: 'EZMart Support',
+                    name: 'EZMart Customer Service',
                     address: 'no-reply@ezmart.app'
                 },
                 to: email,
-                subject: `Support Ticket - ${name}`,
+                subject: `EZMart Support: Ticket from ${name}`,
                 html: emailContent,
                 replyTo: 'support@ezmart.app',
-                // إضافة headers لمكافحة Spam
+                // إضافة headers قوية لمكافحة Spam
                 headers: {
                     'X-Priority': '3',
                     'X-MSMail-Priority': 'Normal',
                     'Importance': 'Normal',
-                    'X-Mailer': 'witsUP Assistant v1.0',
+                    'X-Mailer': 'EZMart System v1.0',
                     'List-Unsubscribe': '<mailto:unsubscribe@ezmart.app>',
                     'X-Auto-Response-Suppress': 'All',
                     'X-Spam-Check': 'Pass',
                     'X-Content-Type': 'text/html; charset=UTF-8',
                     'X-Report-Abuse': 'Please report abuse to abuse@ezmart.app',
                     'Return-Path': 'no-reply@ezmart.app',
-                    'Message-ID': `<${Date.now()}.${Math.random().toString(36).substr(2, 9)}@ezmart.app>`
+                    'Message-ID': `<${Date.now()}.${Math.random().toString(36).substr(2, 9)}@ezmart.app>`,
+                    'X-Sender': 'no-reply@ezmart.app',
+                    'X-Originating-IP': '192.168.1.1',
+                    'X-Entity-Ref-ID': 'ezmart-support-001',
+                    'X-Campaign-ID': 'support-ticket',
+                    'X-Source': 'customer-service',
+                    'X-Classification': 'business',
+                    'X-Business-Type': 'customer-support'
                 },
-                // إضافة text version
+                // إضافة text version محسن
                 text: `
-تذكرة دعم فني جديدة
+EZMart Customer Support Ticket
 
-العميل: ${name}
-البريد الإلكتروني: ${email}
-الهاتف: ${phone}
+Customer Information:
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
 
-الرسالة:
+Message:
 ${message}
 
 ${lastQuestion && lastAnswer ? `
-آخر محادثة:
-السؤال: ${lastQuestion}
-الإجابة: ${lastAnswer}
+Previous Conversation:
+Question: ${lastQuestion}
+Answer: ${lastAnswer}
 ` : ''}
 
-وقت الإرسال: ${new Date().toLocaleString('ar-SA')}
-المصدر: witsUP Assistant
+Ticket Details:
+Time: ${new Date().toLocaleString('ar-SA')}
+Source: EZMart Support System
+Ticket ID: ${Date.now()}
+
+This is an automated message from EZMart Customer Service.
+For support, please contact: support@ezmart.app
+
+EZMart Support Team
                 `
             };
 
