@@ -1,7 +1,17 @@
 // This is a Vercel Serverless Function for sending emails
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+
     if (req.method === 'POST') {
         try {
             const { name, email, phone, message, lastQuestion, lastAnswer } = req.body;
@@ -9,7 +19,7 @@ module.exports = async (req, res) => {
             console.log('📧 Received email request:', { name, email, phone, message });
 
             // إعداد البريد الإلكتروني
-            const transporter = nodemailer.createTransporter({
+            const transporter = nodemailer.createTransport({
                 host: 'pro.turbo-smtp.com',
                 port: 465,
                 secure: true, // استخدام SSL
