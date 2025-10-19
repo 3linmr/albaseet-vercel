@@ -1824,7 +1824,18 @@
         // دالة إرسال التذكرة إلى Zapier Webhook
         async function sendToZapier(name, email, phone, message, lastQuestion, lastAnswer) {
             try {
-                const zapierData = {
+                console.log('🚀 Sending ticket to Zapier via Form...');
+                console.log('Data:', { name, email, phone, message, lastQuestion, lastAnswer });
+                
+                // إنشاء form مخفي لإرسال البيانات
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'https://hooks.zapier.com/hooks/catch/25043000/urt7rfs/';
+                form.target = '_blank';
+                form.style.display = 'none';
+
+                // إضافة البيانات كـ hidden inputs
+                const data = {
                     ticketType: 'Support Ticket',
                     customerName: name,
                     customerEmail: email,
@@ -1838,22 +1849,34 @@
                     status: 'New'
                 };
 
-                const response = await fetch('https://hooks.zapier.com/hooks/catch/25043000/urt7rfs/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(zapierData)
+                console.log('📤 Zapier Data:', data);
+
+                // إضافة كل حقل كـ input مخفي
+                Object.keys(data).forEach(key => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = data[key];
+                    form.appendChild(input);
                 });
 
-                if (response.ok) {
-                    console.log('Ticket sent to Zapier successfully');
-                    console.log('Zapier response:', await response.json());
-                } else {
-                    console.error('Failed to send ticket to Zapier');
-                }
+                // إضافة form إلى الصفحة وإرساله
+                document.body.appendChild(form);
+                form.submit();
+                
+                // إزالة form بعد الإرسال
+                setTimeout(() => {
+                    if (document.body.contains(form)) {
+                        document.body.removeChild(form);
+                    }
+                }, 2000);
+
+                console.log('✅ Ticket sent to Zapier successfully via Form');
+                alert('تم إرسال التذكرة إلى Trello بنجاح! 🎉');
+
             } catch (error) {
-                console.error('Error sending to Zapier:', error);
+                console.error('💥 Error sending to Zapier:', error);
+                alert('حدث خطأ في الاتصال بـ Trello: ' + error.message);
             }
         }
     </script>
