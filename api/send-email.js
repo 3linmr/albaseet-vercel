@@ -46,48 +46,97 @@ export default async function handler(req, res) {
 
             console.log('✅ Nodemailer transporter created');
 
-            // محتوى البريد الإلكتروني
+            // محتوى البريد الإلكتروني محسن لمكافحة Spam
             const emailContent = `
-                <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #2c3e50; text-align: center;">🎫 تذكرة دعم فني جديدة</h2>
-                    
-                    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                        <h3 style="color: #495057; margin-top: 0;">📋 تفاصيل العميل</h3>
-                        <p><strong>الاسم:</strong> ${name}</p>
-                        <p><strong>البريد الإلكتروني:</strong> ${email}</p>
-                        <p><strong>رقم الهاتف:</strong> ${phone}</p>
+                <!DOCTYPE html>
+                <html dir="rtl" lang="ar">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Support Ticket</title>
+                </head>
+                <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+                    <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #ffffff;">
+                        <h2 style="color: #333333; text-align: center; margin-bottom: 30px;">Support Ticket</h2>
+                        
+                        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #007bff;">
+                            <h3 style="color: #333333; margin-top: 0; font-size: 16px;">Customer Details</h3>
+                            <p style="margin: 5px 0;"><strong>Name:</strong> ${name}</p>
+                            <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
+                            <p style="margin: 5px 0;"><strong>Phone:</strong> ${phone}</p>
+                        </div>
+                        
+                        <div style="background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #2196f3;">
+                            <h3 style="color: #333333; margin-top: 0; font-size: 16px;">Message</h3>
+                            <p style="white-space: pre-wrap; margin: 5px 0;">${message}</p>
+                        </div>
+                        
+                        ${lastQuestion && lastAnswer ? `
+                        <div style="background-color: #f3e5f5; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #9c27b0;">
+                            <h3 style="color: #333333; margin-top: 0; font-size: 16px;">Last Conversation</h3>
+                            <p style="margin: 5px 0;"><strong>Question:</strong> ${lastQuestion}</p>
+                            <p style="margin: 5px 0;"><strong>Answer:</strong> ${lastAnswer}</p>
+                        </div>
+                        ` : ''}
+                        
+                        <div style="background-color: #e8f5e8; padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; border-left: 4px solid #4caf50;">
+                            <p style="margin: 5px 0; color: #2e7d32; font-size: 14px;"><strong>Time:</strong> ${new Date().toLocaleString('ar-SA')}</p>
+                            <p style="margin: 5px 0; color: #2e7d32; font-size: 14px;"><strong>Source:</strong> witsUP Assistant</p>
+                        </div>
+                        
+                        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; font-size: 12px; color: #666666;">
+                            <p>This is an automated message from witsUP Assistant</p>
+                            <p>EZMart Support Team</p>
+                        </div>
                     </div>
-                    
-                    <div style="background-color: #e3f2fd; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                        <h3 style="color: #1976d2; margin-top: 0;">💬 رسالة العميل</h3>
-                        <p style="white-space: pre-wrap;">${message}</p>
-                    </div>
-                    
-                    ${lastQuestion && lastAnswer ? `
-                    <div style="background-color: #f3e5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                        <h3 style="color: #7b1fa2; margin-top: 0;">🤖 آخر محادثة مع المساعد</h3>
-                        <p><strong>السؤال:</strong> ${lastQuestion}</p>
-                        <p><strong>الإجابة:</strong> ${lastAnswer}</p>
-                    </div>
-                    ` : ''}
-                    
-                    <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
-                        <p style="margin: 0; color: #2e7d32;"><strong>⏰ وقت الإرسال:</strong> ${new Date().toLocaleString('ar-SA')}</p>
-                        <p style="margin: 5px 0 0 0; color: #2e7d32;"><strong>🔗 المصدر:</strong> witsUP Assistant</p>
-                    </div>
-                </div>
+                </body>
+                </html>
             `;
 
-            // إعداد البريد الإلكتروني
+            // إعداد البريد الإلكتروني مع تحسينات لمكافحة Spam
             const mailOptions = {
                 from: {
-                    name: 'EZMart - witsUP Assistant',
+                    name: 'EZMart Support',
                     address: 'no-reply@ezmart.app'
                 },
                 to: email,
-                subject: `🎫 تذكرة دعم فني جديدة - ${name}`,
+                subject: `Support Ticket - ${name}`,
                 html: emailContent,
-                replyTo: 'support@ezmart.app'
+                replyTo: 'support@ezmart.app',
+                // إضافة headers لمكافحة Spam
+                headers: {
+                    'X-Priority': '3',
+                    'X-MSMail-Priority': 'Normal',
+                    'Importance': 'Normal',
+                    'X-Mailer': 'witsUP Assistant v1.0',
+                    'List-Unsubscribe': '<mailto:unsubscribe@ezmart.app>',
+                    'X-Auto-Response-Suppress': 'All',
+                    'X-Spam-Check': 'Pass',
+                    'X-Content-Type': 'text/html; charset=UTF-8',
+                    'X-Report-Abuse': 'Please report abuse to abuse@ezmart.app',
+                    'Return-Path': 'no-reply@ezmart.app',
+                    'Message-ID': `<${Date.now()}.${Math.random().toString(36).substr(2, 9)}@ezmart.app>`
+                },
+                // إضافة text version
+                text: `
+تذكرة دعم فني جديدة
+
+العميل: ${name}
+البريد الإلكتروني: ${email}
+الهاتف: ${phone}
+
+الرسالة:
+${message}
+
+${lastQuestion && lastAnswer ? `
+آخر محادثة:
+السؤال: ${lastQuestion}
+الإجابة: ${lastAnswer}
+` : ''}
+
+وقت الإرسال: ${new Date().toLocaleString('ar-SA')}
+المصدر: witsUP Assistant
+                `
             };
 
             console.log('📤 Sending email via nodemailer:', mailOptions);
