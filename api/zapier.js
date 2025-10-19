@@ -17,25 +17,12 @@ export default async function handler(req, res) {
         console.log('🚀 Zapier API called');
         console.log('Request body:', req.body);
         
-        const { name, email, phone, message, lastQuestion, lastAnswer } = req.body;
+        // البيانات تأتي مباشرة من req.body
+        const zapierData = req.body;
         
-        if (!name || !email || !phone || !message) {
+        if (!zapierData.customerName || !zapierData.customerEmail || !zapierData.customerPhone || !zapierData.ticketMessage) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
-
-        const zapierData = {
-            ticketType: 'Support Ticket',
-            customerName: name,
-            customerEmail: email,
-            customerPhone: phone,
-            ticketMessage: message,
-            lastQuestion: lastQuestion || 'N/A',
-            lastAnswer: lastAnswer || 'N/A',
-            timestamp: new Date().toISOString(),
-            source: 'witsUP Assistant',
-            priority: 'Normal',
-            status: 'New'
-        };
 
         console.log('📤 Sending to Zapier:', zapierData);
 
