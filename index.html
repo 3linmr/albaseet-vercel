@@ -1709,7 +1709,7 @@
         }
 
         // إرسال التذكرة عبر الواتساب أو الإيميل
-        document.getElementById('ticketForm').addEventListener('submit', function(e) {
+        document.getElementById('ticketForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const name = document.getElementById('ticketName').value;
@@ -1719,7 +1719,7 @@
             const sendMethod = document.querySelector('input[name="sendMethod"]:checked').value;
             
             if (!name || !email || !phone || !message) {
-                alert('يرجى ملء جميع الحقول المطلوبة');
+                alert(isEnglish ? 'Please fill in all required fields' : 'يرجى ملء جميع الحقول المطلوبة');
                 return;
             }
             
@@ -1740,42 +1740,45 @@
                 }
             }
             
-            if (sendMethod === 'whatsapp') {
-                // إرسال عبر الواتساب
-                let whatsappMessage = `🎫 *تذكرة دعم فني*
-
-👤 *الاسم:* ${name}
-📧 *البريد الإلكتروني:* ${email}
-📱 *رقم الجوال:* ${phone}
-
-💬 *الرسالة:*
-${message}`;
-
-                // إضافة آخر سؤال وجواب إذا كانا موجودين
-                if (lastQuestion && lastAnswer) {
-                    whatsappMessage += `
-
-📝 *آخر سؤال:*
-${lastQuestion}
-
-🤖 *آخر إجابة:*
-${lastAnswer}`;
-                }
-
-                whatsappMessage += `
-
----
-تم إرسال هذه التذكرة من مساعد WitsUp الذكي`;
-
-                // تشفير الرسالة للواتساب
-                const encodedMessage = encodeURIComponent(whatsappMessage);
-                const whatsappUrl = `https://wa.me/0552130095?text=${encodedMessage}`;
-                
-                // فتح الواتساب مع الرسالة
-                window.open(whatsappUrl, '_blank');
-                
-                // إغلاق النموذج
-                closeTicketModal();
+               if (sendMethod === 'whatsapp') {
+                   // إرسال إلى Zapier Webhook أولاً
+                   await sendToZapier(name, email, phone, message, lastQuestion, lastAnswer);
+                   
+                   // إرسال عبر الواتساب
+                   let whatsappMessage = `🎫 *تذكرة دعم فني*
+   
+   👤 *الاسم:* ${name}
+   📧 *البريد الإلكتروني:* ${email}
+   📱 *رقم الجوال:* ${phone}
+   
+   💬 *الرسالة:*
+   ${message}`;
+   
+                   // إضافة آخر سؤال وجواب إذا كانا موجودين
+                   if (lastQuestion && lastAnswer) {
+                       whatsappMessage += `
+   
+   📝 *آخر سؤال:*
+   ${lastQuestion}
+   
+   🤖 *آخر إجابة:*
+   ${lastAnswer}`;
+                   }
+   
+                   whatsappMessage += `
+   
+   ---
+   تم إرسال هذه التذكرة من مساعد WitsUp الذكي`;
+   
+                   // تشفير الرسالة للواتساب
+                   const encodedMessage = encodeURIComponent(whatsappMessage);
+                   const whatsappUrl = `https://wa.me/0552130095?text=${encodedMessage}`;
+                   
+                   // فتح الواتساب مع الرسالة
+                   window.open(whatsappUrl, '_blank');
+                   
+                   // إغلاق النموذج
+                   closeTicketModal();
             } else if (sendMethod === 'email') {
                 // إرسال عبر الإيميل
                 sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer);
@@ -1785,6 +1788,9 @@ ${lastAnswer}`;
         // دالة إرسال التذكرة عبر الإيميل
         async function sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer) {
             try {
+                // إرسال إلى Zapier Webhook أولاً
+                await sendToZapier(name, email, phone, message, lastQuestion, lastAnswer);
+                
                 const response = await fetch('/api/ticket', {
                     method: 'POST',
                     headers: {
@@ -1812,6 +1818,42 @@ ${lastAnswer}`;
             } catch (error) {
                 console.error('Error sending ticket by email:', error);
                 alert('حدث خطأ في إرسال التذكرة. يرجى المحاولة مرة أخرى.');
+            }
+        }
+
+        // دالة إرسال التذكرة إلى Zapier Webhook
+        async function sendToZapier(name, email, phone, message, lastQuestion, lastAnswer) {
+            try {
+                const zapierData = {
+                    ticketType: 'Support Ticket',
+                    customerName: name,
+                    customerEmail: email,
+                    customerPhone: phone,
+                    ticketMessage: message,
+                    lastQuestion: lastQuestion || 'N/A',
+                    lastAnswer: lastAnswer || 'N/A',
+                    timestamp: new Date().toISOString(),
+                    source: 'witsUP Assistant',
+                    priority: 'Normal',
+                    status: 'New'
+                };
+
+                const response = await fetch('https://hooks.zapier.com/hooks/catch/25043000/urt7rfs/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(zapierData)
+                });
+
+                if (response.ok) {
+                    console.log('Ticket sent to Zapier successfully');
+                    console.log('Zapier response:', await response.json());
+                } else {
+                    console.error('Failed to send ticket to Zapier');
+                }
+            } catch (error) {
+                console.error('Error sending to Zapier:', error);
             }
         }
     </script>
