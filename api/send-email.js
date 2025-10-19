@@ -26,8 +26,15 @@ export default async function handler(req, res) {
                 auth: {
                     user: 'no-reply@ezmart.app',
                     pass: 'BUjAWNFd'
+                },
+                tls: {
+                    rejectUnauthorized: false
                 }
             });
+
+            // اختبار الاتصال
+            await transporter.verify();
+            console.log('✅ SMTP connection verified');
 
             // محتوى البريد الإلكتروني
             const emailContent = `
@@ -86,9 +93,17 @@ export default async function handler(req, res) {
 
         } catch (error) {
             console.error('❌ Error sending email:', error);
+            console.error('Error details:', {
+                message: error.message,
+                code: error.code,
+                response: error.response
+            });
+            
             res.status(500).json({ 
                 success: false, 
-                error: 'فشل في إرسال البريد الإلكتروني: ' + error.message 
+                error: 'فشل في إرسال البريد الإلكتروني',
+                details: error.message,
+                code: error.code
             });
         }
     } else {
