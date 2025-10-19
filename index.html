@@ -1808,13 +1808,16 @@
                 });
 
                 let result;
+                let textResponse;
+                
                 try {
-                    result = await response.json();
+                    textResponse = await response.text();
+                    console.log('Raw response:', textResponse);
+                    result = JSON.parse(textResponse);
                 } catch (parseError) {
                     console.error('JSON Parse Error:', parseError);
-                    const textResponse = await response.text();
                     console.error('Raw response:', textResponse);
-                    throw new Error('Invalid response format');
+                    throw new Error('Invalid response format: ' + textResponse);
                 }
                 
                 if (result.success) {
@@ -1823,11 +1826,13 @@
                     closeTicketModal();
                 } else {
                     console.error('Email API Error:', result);
-                    alert(`حدث خطأ في إرسال البريد الإلكتروني: ${result.error || 'خطأ غير معروف'}`);
+                    const errorMessage = result.error || result.details || 'خطأ غير معروف';
+                    alert(`حدث خطأ في إرسال البريد الإلكتروني: ${errorMessage}`);
                 }
             } catch (error) {
                 console.error('Error sending ticket by email:', error);
-                alert('حدث خطأ في إرسال التذكرة. يرجى المحاولة مرة أخرى.');
+                const errorMessage = error.message || 'خطأ غير معروف';
+                alert(`حدث خطأ في إرسال التذكرة: ${errorMessage}`);
             }
         }
 
