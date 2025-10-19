@@ -1807,14 +1807,23 @@
                     })
                 });
 
-                const result = await response.json();
+                let result;
+                try {
+                    result = await response.json();
+                } catch (parseError) {
+                    console.error('JSON Parse Error:', parseError);
+                    const textResponse = await response.text();
+                    console.error('Raw response:', textResponse);
+                    throw new Error('Invalid response format');
+                }
                 
                 if (result.success) {
                     const zapierStatus = zapierSuccess ? 'تم إرسال التذكرة إلى Trello بنجاح' : 'فشل في إرسال التذكرة إلى Trello';
                     alert(`تم إرسال التذكرة بنجاح!\n📧 البريد الإلكتروني: ${email}\n📋 Trello: ${zapierStatus}`);
                     closeTicketModal();
                 } else {
-                    alert('حدث خطأ في إرسال البريد الإلكتروني. يرجى المحاولة مرة أخرى.');
+                    console.error('Email API Error:', result);
+                    alert(`حدث خطأ في إرسال البريد الإلكتروني: ${result.error || 'خطأ غير معروف'}`);
                 }
             } catch (error) {
                 console.error('Error sending ticket by email:', error);
