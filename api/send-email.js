@@ -29,12 +29,12 @@ export default async function handler(req, res) {
 
             // إعداد nodemailer مع إعدادات محسنة لـ Vercel
             const transporter = nodemailer.createTransport({
-                host: 'pro.turbo-smtp.com',
-                port: 587,
+                host: process.env.SMTP_HOST || 'pro.turbo-smtp.com',
+                port: parseInt(process.env.SMTP_PORT) || 587,
                 secure: false,
                 auth: {
-                    user: 'no-reply@ezmart.app',
-                    pass: 'BUjAWNFd'
+                    user: process.env.SMTP_USER || 'no-reply@witsup.app',
+                    pass: process.env.SMTP_PASS || 'BUjAWNFd'
                 },
                 tls: {
                     rejectUnauthorized: false
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
                 </head>
                 <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
                     <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #ffffff;">
-                        <h2 style="color: #333333; text-align: center; margin-bottom: 30px;">EZMart Customer Support</h2>
+                        <h2 style="color: #333333; text-align: center; margin-bottom: 30px;">witsUP Customer Support</h2>
                         
                         <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #007bff;">
                             <h3 style="color: #333333; margin-top: 0; font-size: 16px;">Customer Details</h3>
@@ -85,10 +85,10 @@ export default async function handler(req, res) {
                         </div>
                         
                         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; font-size: 12px; color: #666666;">
-                            <p>This is an automated message from EZMart Customer Service</p>
+                            <p>This is an automated message from witsUP Customer Service</p>
                             <p>Ticket ID: ${Date.now()}</p>
-                            <p>EZMart Support Team</p>
-                            <p>For support: support@ezmart.app</p>
+                            <p>witsUP Support Team</p>
+                            <p>For support: support@witsup.app</p>
                         </div>
                     </div>
                 </body>
@@ -98,13 +98,13 @@ export default async function handler(req, res) {
             // إعداد البريد الإلكتروني مع تحسينات لمكافحة Spam
             const mailOptions = {
                 from: {
-                    name: 'EZMart Customer Service',
-                    address: 'no-reply@ezmart.app'
+                    name: 'witsUP Support',
+                    address: process.env.SMTP_USER || 'no-reply@witsup.app'
                 },
                 to: email,
-                subject: `EZMart Support: Ticket from ${name}`,
+                subject: `witsUP Support: Ticket from ${name}`,
                 html: emailContent,
-                replyTo: 'support@ezmart.app',
+                replyTo: 'support@witsup.app',
                 // إضافة headers قوية لمكافحة Spam
                 headers: {
                     'X-Priority': '3',
@@ -128,7 +128,7 @@ export default async function handler(req, res) {
                 },
                 // إضافة text version محسن
                 text: `
-EZMart Customer Support Ticket
+witsUP Customer Support Ticket
 
 Customer Information:
 Name: ${name}
@@ -146,13 +146,13 @@ Answer: ${lastAnswer}
 
 Ticket Details:
 Time: ${new Date().toLocaleString('ar-SA')}
-Source: EZMart Support System
+Source: witsUP Support System
 Ticket ID: ${Date.now()}
 
-This is an automated message from EZMart Customer Service.
-For support, please contact: support@ezmart.app
+This is an automated message from witsUP Customer Service.
+For support, please contact: support@witsup.app
 
-EZMart Support Team
+witsUP Support Team
                 `
             };
 
