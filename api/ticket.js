@@ -8,6 +8,9 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
+    // Set timeout for Vercel
+    res.setTimeout(30000); // 30 seconds
+    
     console.log('Ticket API called with method:', req.method);
     console.log('Environment variables:', {
         SUPABASE_URL: process.env.SUPABASE_URL ? 'Set' : 'Not set',
