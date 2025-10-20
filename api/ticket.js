@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import nodemailer from 'nodemailer';
 
 // إعداد Supabase
 const supabase = createClient(
@@ -98,52 +99,76 @@ export default async function handler(req, res) {
 // دالة إرسال إيميل التأكيد
 async function sendConfirmationEmail(email, ticketNumber, name, lastQuestion, lastAnswer) {
     try {
-        // استخدام خدمة Resend
-        const response = await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-                'Content-Type': 'application/json',
+        // إعداد nodemailer مع Turbo SMTP
+        const transporter = nodemailer.createTransport({
+            host: process.env.SMTP_HOST || 'pro.turbo-smtp.com',
+            port: parseInt(process.env.SMTP_PORT) || 587,
+            secure: false,
+            auth: {
+                user: process.env.SMTP_USER || 'no-reply@witsup.app',
+                pass: process.env.SMTP_PASS || 'BUjAWNFd'
             },
-            body: JSON.stringify({
-                from: 'onboarding@resend.dev',
-                to: email,
-                subject: `تأكيد فتح التذكرة #${ticketNumber} - witsUP`,
-                html: `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; direction: rtl;">
-                        <h2 style="color: #28a745; text-align: center;">تم فتح تذكرة الدعم بنجاح</h2>
-                        <p>مرحباً ${name},</p>
-                        <p>تم استلام طلب الدعم الخاص بك وسنرد عليك في أقرب وقت ممكن.</p>
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        const mailOptions = {
+            from: {
+                name: 'witsUP Support',
+                address: process.env.SMTP_USER || 'no-reply@witsup.app'
+            },
+            to: email,
+            subject: `تأكيد فتح التذكرة #${ticketNumber} - witsUP`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; direction: rtl;">
+                    <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 10px 10px 0 0; text-align: center;">
+                        <h1 style="margin: 0; font-size: 24px;">🎫 تم فتح تذكرة الدعم بنجاح</h1>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px; border: 1px solid #dee2e6;">
+                        <p style="color: #333; font-size: 16px; margin-bottom: 15px;">
+                            مرحباً <strong>${name}</strong>،
+                        </p>
                         
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; border-right: 4px solid #28a745;">
-                            <h3 style="color: #28a745; margin-top: 0;">تفاصيل التذكرة:</h3>
-                            <p><strong>رقم التذكرة:</strong> ${ticketNumber}</p>
+                        <p style="color: #555; line-height: 1.6;">
+                            تم استلام طلب الدعم الخاص بك وسنرد عليك في أقرب وقت ممكن.
+                        </p>
+                        
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #667eea;">
+                            <h3 style="color: #333; margin-top: 0;">تفاصيل التذكرة:</h3>
+                            <p><strong>رقم التذكرة:</strong> #${ticketNumber}</p>
                             <p><strong>الحالة:</strong> مفتوحة</p>
                             <p><strong>التاريخ:</strong> ${new Date().toLocaleDateString('ar-SA')}</p>
                         </div>
                         
                         ${lastQuestion && lastAnswer ? `
-                        <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0; border-right: 4px solid #1976d2;">
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #1976d2;">
                             <h3 style="color: #1976d2; margin-top: 0;">آخر سؤال وجواب:</h3>
                             <p><strong>السؤال:</strong> ${lastQuestion}</p>
                             <p><strong>الإجابة:</strong> ${lastAnswer}</p>
                         </div>
                         ` : ''}
                         
-                        <p>سنقوم بالرد على طلبك خلال 24 ساعة.</p>
-                        <p style="color: #666; font-size: 14px;">شكراً لاستخدام witsUP!</p>
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                            <h4 style="color: #1976d2; margin-top: 0;">📋 ما يحدث الآن:</h4>
+                            <ul style="color: #555; margin: 0;">
+                                <li>تم تسجيل تذكرتك في نظام الدعم الفني</li>
+                                <li>سيتم مراجعة طلبك من قبل فريق الدعم</li>
+                                <li>ستتلقى إيميل عند الرد على تذكرتك</li>
+                            </ul>
+                        </div>
+                        
+                        <p style="color: #666; font-size: 14px; margin-top: 20px;">
+                            شكراً لثقتك في خدماتنا. فريق الدعم الفني في witsUP
+                        </p>
                     </div>
-                `
-            })
-        });
+                </div>
+            `
+        };
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Email service error: ${errorData.message || 'Unknown error'}`);
-        }
-
-        const result = await response.json();
-        console.log('Email sent successfully:', result);
+        const result = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', result.messageId);
         
     } catch (error) {
         console.error('Failed to send email:', error);
