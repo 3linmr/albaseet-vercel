@@ -2,6 +2,9 @@
 import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
+    // Set timeout for Vercel
+    res.setTimeout(30000); // 30 seconds
+    
     try {
         // Set CORS headers
         res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,7 +17,7 @@ export default async function handler(req, res) {
         }
 
         if (req.method === 'POST') {
-        try {
+            try {
             const { name, email, phone, message, lastQuestion, lastAnswer } = req.body;
             
             // التحقق من البيانات المطلوبة
@@ -199,22 +202,22 @@ witsUP Support Team
                 return;
             }
 
-        } catch (error) {
-            console.error('❌ Error sending email:', error);
-            console.error('Error details:', {
-                message: error.message,
-                code: error.code,
-                response: error.response,
-                stack: error.stack
-            });
-            
-            res.status(500).json({ 
-                success: false, 
-                error: 'فشل في إرسال البريد الإلكتروني',
-                details: error.message,
-                code: error.code || 'UNKNOWN_ERROR'
-            });
-        }
+            } catch (error) {
+                console.error('❌ Error sending email:', error);
+                console.error('Error details:', {
+                    message: error.message,
+                    code: error.code,
+                    response: error.response,
+                    stack: error.stack
+                });
+                
+                res.status(500).json({ 
+                    success: false, 
+                    error: 'فشل في إرسال البريد الإلكتروني',
+                    details: error.message,
+                    code: error.code || 'UNKNOWN_ERROR'
+                });
+            }
         } else {
             res.status(405).json({ success: false, error: 'Method Not Allowed' });
         }
