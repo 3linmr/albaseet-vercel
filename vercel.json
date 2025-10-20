@@ -1,0 +1,16 @@
+{
+  "functions": {
+    "api/send-email.js": {
+      "maxDuration": 30
+    },
+    "api/ticket.js": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "SMTP_HOST": "pro.turbo-smtp.com",
+    "SMTP_PORT": "587",
+    "SMTP_USER": "no-reply@witsup.app",
+    "SMTP_PASS": "BUjAWNFd"
+  }
+}
