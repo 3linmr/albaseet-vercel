@@ -34,17 +34,22 @@ export default async function handler(req, res) {
             const transporter = nodemailer.createTransport({
                 host: process.env.SMTP_HOST || 'pro.turbo-smtp.com',
                 port: parseInt(process.env.SMTP_PORT) || 587,
-                secure: false,
+                secure: false, // true for 465, false for other ports
                 auth: {
                     user: process.env.SMTP_USER || 'no-reply@witsup.app',
                     pass: process.env.SMTP_PASS || 'BUjAWNFd'
                 },
                 tls: {
-                    rejectUnauthorized: false
+                    rejectUnauthorized: false,
+                    ciphers: 'SSLv3'
                 },
                 connectionTimeout: 30000,
                 greetingTimeout: 30000,
-                socketTimeout: 30000
+                socketTimeout: 30000,
+                // إعدادات إضافية لـ Turbo SMTP
+                pool: false,
+                maxConnections: 1,
+                maxMessages: 1
             });
 
             console.log('✅ Nodemailer transporter created');
