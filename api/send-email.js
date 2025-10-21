@@ -113,27 +113,6 @@ export default async function handler(req, res) {
                 subject: `دعم witsUP: تذكرة من ${name}`,
                 html: emailContent,
                 replyTo: 'support@witsup.app',
-                // إضافة headers قوية لمكافحة Spam
-                headers: {
-                    'X-Priority': '3',
-                    'X-MSMail-Priority': 'Normal',
-                    'Importance': 'Normal',
-                    'X-Mailer': 'EZMart System v1.0',
-                    'List-Unsubscribe': '<mailto:unsubscribe@ezmart.app>',
-                    'X-Auto-Response-Suppress': 'All',
-                    'X-Spam-Check': 'Pass',
-                    'X-Content-Type': 'text/html; charset=UTF-8',
-                    'X-Report-Abuse': 'Please report abuse to abuse@ezmart.app',
-                    'Return-Path': 'no-reply@ezmart.app',
-                    'Message-ID': `<${Date.now()}.${Math.random().toString(36).substr(2, 9)}@ezmart.app>`,
-                    'X-Sender': 'no-reply@ezmart.app',
-                    'X-Originating-IP': '192.168.1.1',
-                    'X-Entity-Ref-ID': 'ezmart-support-001',
-                    'X-Campaign-ID': 'support-ticket',
-                    'X-Source': 'customer-service',
-                    'X-Classification': 'business',
-                    'X-Business-Type': 'customer-support'
-                },
                 // إضافة text version محسن
                 text: `
 تذكرة دعم عملاء witsUP
