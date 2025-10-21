@@ -92,6 +92,14 @@ export default async function handler(req, res) {
                             <p style="margin: 5px 0; color: #2e7d32; font-size: 14px;"><strong>Source:</strong> witsUP Assistant</p>
                         </div>
                         
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #ffc107;">
+                            <h4 style="color: #856404; margin-top: 0;">⚠️ ملاحظة مهمة:</h4>
+                            <p style="color: #856404; margin: 5px 0; font-size: 14px;">
+                                قد تصلك الرسالة في مجلد <strong>الرسائل غير المرغوب فيها</strong> أو <strong>Junk</strong>. 
+                                يرجى التحقق من هذا المجلد إذا لم تجد الرسالة في صندوق الوارد.
+                            </p>
+                        </div>
+                        
                         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; font-size: 12px; color: #666666;">
                             <p>This is an automated message from witsUP Customer Service</p>
                             <p>Ticket ID: ${Date.now()}</p>
