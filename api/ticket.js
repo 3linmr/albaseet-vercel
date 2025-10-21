@@ -162,6 +162,14 @@ async function sendConfirmationEmail(email, ticketNumber, name, lastQuestion, la
                             </ul>
                         </div>
                         
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #ffc107;">
+                            <h4 style="color: #856404; margin-top: 0;">⚠️ ملاحظة مهمة:</h4>
+                            <p style="color: #856404; margin: 5px 0; font-size: 14px;">
+                                قد تصلك الرسالة في مجلد <strong>الرسائل غير المرغوب فيها</strong> أو <strong>Junk</strong>. 
+                                يرجى التحقق من هذا المجلد إذا لم تجد الرسالة في صندوق الوارد.
+                            </p>
+                        </div>
+                        
                         <p style="color: #666; font-size: 14px; margin-top: 20px;">
                             شكراً لثقتك في خدماتنا. فريق الدعم الفني في witsUP
                         </p>
