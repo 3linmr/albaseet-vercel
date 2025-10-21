@@ -5,6 +5,15 @@
     },
     "api/ticket.js": {
       "maxDuration": 30
+    },
+    "api/test.js": {
+      "maxDuration": 10
+    },
+    "api/test-smtp.js": {
+      "maxDuration": 30
+    },
+    "api/health.js": {
+      "maxDuration": 10
     }
   },
   "env": {
