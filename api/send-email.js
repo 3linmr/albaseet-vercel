@@ -157,6 +157,10 @@ Time: ${new Date().toLocaleString('ar-SA')}
 Source: witsUP Support System
 Ticket ID: ${Date.now()}
 
+⚠️ ملاحظة مهمة:
+قد تصلك الرسالة في مجلد "الرسائل غير المرغوب فيها" أو "Junk". 
+يرجى التحقق من هذا المجلد إذا لم تجد الرسالة في صندوق الوارد.
+
 This is an automated message from witsUP Customer Service.
 For support, please contact: support@witsup.app
 
