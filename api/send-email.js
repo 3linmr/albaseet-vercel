@@ -65,46 +65,38 @@ export default async function handler(req, res) {
                 </head>
                 <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
                     <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #ffffff;">
-                        <h2 style="color: #333333; text-align: center; margin-bottom: 30px;">witsUP Customer Support</h2>
+                        <h2 style="color: #333333; text-align: center; margin-bottom: 30px;">دعم عملاء witsUP</h2>
                         
                         <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #007bff;">
-                            <h3 style="color: #333333; margin-top: 0; font-size: 16px;">Customer Details</h3>
-                            <p style="margin: 5px 0;"><strong>Name:</strong> ${name}</p>
-                            <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
-                            <p style="margin: 5px 0;"><strong>Phone:</strong> ${phone}</p>
+                            <h3 style="color: #333333; margin-top: 0; font-size: 16px;">تفاصيل العميل</h3>
+                            <p style="margin: 5px 0;"><strong>الاسم:</strong> ${name}</p>
+                            <p style="margin: 5px 0;"><strong>البريد الإلكتروني:</strong> ${email}</p>
+                            <p style="margin: 5px 0;"><strong>رقم الجوال:</strong> ${phone}</p>
                         </div>
                         
                         <div style="background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #2196f3;">
-                            <h3 style="color: #333333; margin-top: 0; font-size: 16px;">Message</h3>
+                            <h3 style="color: #333333; margin-top: 0; font-size: 16px;">الرسالة</h3>
                             <p style="white-space: pre-wrap; margin: 5px 0;">${message}</p>
                         </div>
                         
                         ${lastQuestion && lastAnswer ? `
                         <div style="background-color: #f3e5f5; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #9c27b0;">
-                            <h3 style="color: #333333; margin-top: 0; font-size: 16px;">Last Conversation</h3>
-                            <p style="margin: 5px 0;"><strong>Question:</strong> ${lastQuestion}</p>
-                            <p style="margin: 5px 0;"><strong>Answer:</strong> ${lastAnswer}</p>
+                            <h3 style="color: #333333; margin-top: 0; font-size: 16px;">آخر محادثة</h3>
+                            <p style="margin: 5px 0;"><strong>السؤال:</strong> ${lastQuestion}</p>
+                            <p style="margin: 5px 0;"><strong>الإجابة:</strong> ${lastAnswer}</p>
                         </div>
                         ` : ''}
                         
                         <div style="background-color: #e8f5e8; padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; border-left: 4px solid #4caf50;">
-                            <p style="margin: 5px 0; color: #2e7d32; font-size: 14px;"><strong>Time:</strong> ${new Date().toLocaleString('ar-SA')}</p>
-                            <p style="margin: 5px 0; color: #2e7d32; font-size: 14px;"><strong>Source:</strong> witsUP Assistant</p>
-                        </div>
-                        
-                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #ffc107;">
-                            <h4 style="color: #856404; margin-top: 0;">⚠️ ملاحظة مهمة:</h4>
-                            <p style="color: #856404; margin: 5px 0; font-size: 14px;">
-                                قد تصلك الرسالة في مجلد <strong>الرسائل غير المرغوب فيها</strong> أو <strong>Junk</strong>. 
-                                يرجى التحقق من هذا المجلد إذا لم تجد الرسالة في صندوق الوارد.
-                            </p>
+                            <p style="margin: 5px 0; color: #2e7d32; font-size: 14px;"><strong>الوقت:</strong> ${new Date().toLocaleString('ar-SA')}</p>
+                            <p style="margin: 5px 0; color: #2e7d32; font-size: 14px;"><strong>المصدر:</strong> مساعد witsUP</p>
                         </div>
                         
                         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; font-size: 12px; color: #666666;">
-                            <p>This is an automated message from witsUP Customer Service</p>
-                            <p>Ticket ID: ${Date.now()}</p>
-                            <p>witsUP Support Team</p>
-                            <p>For support: support@witsup.app</p>
+                            <p>هذه رسالة آلية من خدمة عملاء witsUP</p>
+                            <p>رقم التذكرة: ${Date.now()}</p>
+                            <p>فريق الدعم الفني في witsUP</p>
+                            <p>للحصول على الدعم: support@witsup.app</p>
                         </div>
                     </div>
                 </body>
@@ -114,11 +106,11 @@ export default async function handler(req, res) {
             // إعداد البريد الإلكتروني مع تحسينات لمكافحة Spam
             const mailOptions = {
                 from: {
-                    name: 'witsUP Support',
+                    name: 'دعم witsUP',
                     address: process.env.SMTP_USER || 'no-reply@witsup.app'
                 },
                 to: email,
-                subject: `witsUP Support: Ticket from ${name}`,
+                subject: `دعم witsUP: تذكرة من ${name}`,
                 html: emailContent,
                 replyTo: 'support@witsup.app',
                 // إضافة headers قوية لمكافحة Spam
@@ -144,35 +136,31 @@ export default async function handler(req, res) {
                 },
                 // إضافة text version محسن
                 text: `
-witsUP Customer Support Ticket
+تذكرة دعم عملاء witsUP
 
-Customer Information:
-Name: ${name}
-Email: ${email}
-Phone: ${phone}
+معلومات العميل:
+الاسم: ${name}
+البريد الإلكتروني: ${email}
+رقم الجوال: ${phone}
 
-Message:
+الرسالة:
 ${message}
 
 ${lastQuestion && lastAnswer ? `
-Previous Conversation:
-Question: ${lastQuestion}
-Answer: ${lastAnswer}
+آخر محادثة:
+السؤال: ${lastQuestion}
+الإجابة: ${lastAnswer}
 ` : ''}
 
-Ticket Details:
-Time: ${new Date().toLocaleString('ar-SA')}
-Source: witsUP Support System
-Ticket ID: ${Date.now()}
+تفاصيل التذكرة:
+الوقت: ${new Date().toLocaleString('ar-SA')}
+المصدر: نظام دعم witsUP
+رقم التذكرة: ${Date.now()}
 
-⚠️ ملاحظة مهمة:
-قد تصلك الرسالة في مجلد "الرسائل غير المرغوب فيها" أو "Junk". 
-يرجى التحقق من هذا المجلد إذا لم تجد الرسالة في صندوق الوارد.
+هذه رسالة آلية من خدمة عملاء witsUP.
+للحصول على الدعم، يرجى التواصل مع: support@witsup.app
 
-This is an automated message from witsUP Customer Service.
-For support, please contact: support@witsup.app
-
-witsUP Support Team
+فريق الدعم الفني في witsUP
                 `
             };
 
