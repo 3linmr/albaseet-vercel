@@ -1744,8 +1744,11 @@
                    // إرسال إلى Zapier Webhook أولاً
                    await sendToZapier(name, email, phone, message, lastQuestion, lastAnswer);
                    
+                   // إنشاء رقم تذكرة فريد
+                   const ticketNumber = 'TKT-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+                   
                    // إرسال عبر الواتساب
-                   let whatsappMessage = `🎫 *تذكرة دعم فني*
+                   let whatsappMessage = `🎫 *تذكرة دعم فني - رقم التذكرة: ${ticketNumber}*
    
    👤 *الاسم:* ${name}
    📧 *البريد الإلكتروني:* ${email}
@@ -1842,23 +1845,27 @@
                    // إذا فشلت جميع المحاولات، تسجيل الخطأ فقط
                    if (!opened) {
                        console.log('All WhatsApp opening methods failed');
+                       // لا نرسل رسالة نجاح إذا فشل فتح الواتساب
+                       return;
                    }
                    
                    console.log('WhatsApp opening attempt completed, opened:', opened);
                    
-                   // إظهار رسالة نجاح مع رابط الواتساب
-                   showWhatsAppSuccessMessage(email, whatsappUrl);
+                   // إظهار رسالة نجاح فقط إذا نجح فتح الواتساب
+                   showWhatsAppSuccessMessage(email, whatsappUrl, ticketNumber);
                    
                    // إغلاق النموذج
                    closeTicketModal();
             } else if (sendMethod === 'email') {
+                // إنشاء رقم تذكرة فريد للإيميل أيضاً
+                const ticketNumber = 'TKT-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
                 // إرسال عبر الإيميل
-                sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer);
+                sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer, ticketNumber);
             }
         });
 
         // دالة إرسال التذكرة عبر الإيميل
-        async function sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer) {
+        async function sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer, ticketNumber) {
             try {
                 // إرسال إلى Zapier Webhook أولاً
                 const zapierSuccess = await sendToZapier(name, email, phone, message, lastQuestion, lastAnswer);
@@ -1895,8 +1902,8 @@
                 if (result.success) {
                     const zapierStatus = zapierSuccess ? 'تم إرسال التذكرة إلى Trello بنجاح' : 'فشل في إرسال التذكرة إلى Trello';
                     
-                    // إظهار رسالة منفصلة في الموقع
-                    showTicketSuccessMessage(email, zapierStatus);
+                    // إظهار رسالة منفصلة في الموقع مع رقم التذكرة
+                    showTicketSuccessMessage(email, zapierStatus, ticketNumber);
                     closeTicketModal();
                 } else {
                     console.error('Email API Error:', result);
@@ -1911,10 +1918,11 @@
         }
 
         // دالة إظهار رسالة نجاح التذكرة
-        function showTicketSuccessMessage(email, zapierStatus) {
+        function showTicketSuccessMessage(email, zapierStatus, ticketNumber) {
             // إنشاء رسالة نجاح في المحادثة
             const successMessage = `✅ تم إرسال التذكرة بنجاح!
 
+🎫 رقم التذكرة: ${ticketNumber}
 📧 تم إرسال رسالة تأكيد إلى: ${email}
 
 ⚠️ ملاحظة مهمة:
@@ -1928,10 +1936,11 @@
         }
 
         // دالة إظهار رسالة نجاح الواتساب مع رابط
-        function showWhatsAppSuccessMessage(email, whatsappUrl) {
+        function showWhatsAppSuccessMessage(email, whatsappUrl, ticketNumber) {
             // إنشاء رسالة نجاح في المحادثة
             const successMessage = `✅ تم إرسال التذكرة إلى الواتساب بنجاح!
 
+🎫 رقم التذكرة: ${ticketNumber}
 📱 تم إرسال رسالة تأكيد إلى: ${email}
 
 🎉 تم فتح الواتساب تلقائياً مع رسالتك جاهزة للإرسال!
