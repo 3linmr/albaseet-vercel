@@ -29,48 +29,19 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'الرسالة مطلوبة' });
         }
 
-        // قراءة الدليل كاملاً من قاعدة البيانات
+        // استخدام النظام الذكي لتحميل الدليل
         let guideContent = '';
         try {
-            const { createClient } = await import('@supabase/supabase-js');
+            const SmartGuideLoader = require('../smart_guide_loader');
+            const guideLoader = new SmartGuideLoader();
             
-            const supabaseUrl = process.env.SUPABASE_URL;
-            const supabaseKey = process.env.SUPABASE_ANON_KEY;
-            
-            console.log('Supabase URL:', supabaseUrl ? 'Found' : 'Missing');
-            console.log('Supabase Key:', supabaseKey ? 'Found' : 'Missing');
-            
-            if (!supabaseUrl || !supabaseKey) {
-                console.error('Supabase credentials not found');
-                throw new Error('Supabase credentials not configured');
-            }
-            
-            const supabase = createClient(supabaseUrl, supabaseKey);
-            
-            console.log('Reading guide from database...');
-            
-            // قراءة الدليل كاملاً
-            const { data, error } = await supabase
-                .from('guide_content')
-                .select('content')
-                .limit(1)
-                .single();
-            
-            if (error) {
-                console.error('Error reading guide from database:', error);
-                throw error;
-            }
-            
-            if (data && data.content) {
-                guideContent = data.content;
-                console.log('Guide loaded from database successfully, length:', guideContent.length);
-                console.log('Using FULL guide content from database');
-                console.log('Guide content preview:', guideContent.substring(0, 200));
-            } else {
-                console.log('No guide content found in database');
-            }
+            console.log('Using smart guide loader...');
+            guideContent = guideLoader.getGuideContent(message);
+            console.log('Smart guide content loaded, length:', guideContent.length);
         } catch (error) {
-            console.error('Error reading guide from database:', error);
+            console.error('Error loading smart guide:', error);
+            // في حالة الخطأ، نستخدم الدليل الأساسي
+            guideContent = guideLoader.getBasicParts();
         }
 
         // التحقق من لغة السؤال
