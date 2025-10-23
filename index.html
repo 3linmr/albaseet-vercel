@@ -1744,8 +1744,8 @@
                    // إرسال إلى Zapier Webhook أولاً
                    await sendToZapier(name, email, phone, message, lastQuestion, lastAnswer);
                    
-                   // إنشاء رقم تذكرة فريد
-                   const ticketNumber = 'TKT-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+                   // إنشاء رقم تذكرة بالتنسيق المطلوب
+                   const ticketNumber = generateTicketNumber();
                    
                    // إرسال عبر الواتساب
                    let whatsappMessage = `🎫 *تذكرة دعم فني - رقم التذكرة: ${ticketNumber}*
@@ -1857,12 +1857,21 @@
                    // إغلاق النموذج
                    closeTicketModal();
             } else if (sendMethod === 'email') {
-                // إنشاء رقم تذكرة فريد للإيميل أيضاً
-                const ticketNumber = 'TKT-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+                // إنشاء رقم تذكرة بالتنسيق المطلوب
+                const ticketNumber = generateTicketNumber();
                 // إرسال عبر الإيميل
                 sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer, ticketNumber);
             }
         });
+
+        // دالة إنشاء رقم تذكرة بالتنسيق المطلوب
+        function generateTicketNumber() {
+            const currentYear = new Date().getFullYear();
+            const ticketCounter = localStorage.getItem('ticketCounter') || '0';
+            const nextTicketNumber = parseInt(ticketCounter) + 1;
+            localStorage.setItem('ticketCounter', nextTicketNumber.toString());
+            return currentYear + '000' + nextTicketNumber.toString().padStart(2, '0');
+        }
 
         // دالة إرسال التذكرة عبر الإيميل
         async function sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer, ticketNumber) {
