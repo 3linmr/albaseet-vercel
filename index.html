@@ -1776,19 +1776,53 @@
                    
                    console.log('WhatsApp URL:', whatsappUrl);
                    console.log('Message length:', whatsappMessage.length);
+                   console.log('Original message:', whatsappMessage);
                    
-                   // فتح الواتساب مع الرسالة
+                   // محاولات متعددة لفتح الواتساب
+                   let opened = false;
+                   
+                   // المحاولة الأولى: window.open
                    try {
-                       window.open(whatsappUrl, '_blank');
-                       console.log('WhatsApp opened successfully');
+                       const newWindow = window.open(whatsappUrl, '_blank');
+                       if (newWindow) {
+                           console.log('WhatsApp opened with window.open');
+                           opened = true;
+                       }
                    } catch (error) {
-                       console.error('Error opening WhatsApp:', error);
-                       // محاولة بديلة
-                       window.location.href = whatsappUrl;
+                       console.error('window.open failed:', error);
                    }
                    
-                   // إظهار رسالة نجاح
-                   showTicketSuccessMessage(email, 'تم إرسال التذكرة إلى الواتساب بنجاح');
+                   // المحاولة الثانية: window.location.href (إذا لم تنجح الأولى)
+                   if (!opened) {
+                       try {
+                           console.log('Trying window.location.href...');
+                           window.location.href = whatsappUrl;
+                           opened = true;
+                       } catch (error) {
+                           console.error('window.location.href failed:', error);
+                       }
+                   }
+                   
+                   // المحاولة الثالثة: إنشاء رابط قابل للنقر
+                   if (!opened) {
+                       console.log('Creating clickable link...');
+                       const link = document.createElement('a');
+                       link.href = whatsappUrl;
+                       link.target = '_blank';
+                       link.click();
+                       opened = true;
+                   }
+                   
+                   // إظهار رسالة للمستخدم
+                   if (opened) {
+                       console.log('WhatsApp should be opening...');
+                   } else {
+                       console.error('All WhatsApp opening methods failed');
+                       alert('تعذر فتح الواتساب. يرجى المحاولة مرة أخرى أو استخدام الإيميل.');
+                   }
+                   
+                   // إظهار رسالة نجاح مع رابط الواتساب
+                   showWhatsAppSuccessMessage(email, whatsappUrl);
                    
                    // إغلاق النموذج
                    closeTicketModal();
@@ -1861,6 +1895,22 @@
 ⚠️ ملاحظة مهمة:
 قد تصلك الرسالة في مجلد "الرسائل غير المرغوب فيها" أو "Junk". 
 يرجى التحقق من هذا المجلد إذا لم تجد الرسالة في صندوق الوارد.
+
+شكراً لثقتك في خدماتنا! 🎉`;
+
+            // إضافة الرسالة إلى المحادثة
+            addMessage(successMessage, 'assistant');
+        }
+
+        // دالة إظهار رسالة نجاح الواتساب مع رابط
+        function showWhatsAppSuccessMessage(email, whatsappUrl) {
+            // إنشاء رسالة نجاح في المحادثة
+            const successMessage = `✅ تم إعداد رسالة الواتساب بنجاح!
+
+📱 تم إرسال رسالة تأكيد إلى: ${email}
+
+🔗 إذا لم يفتح الواتساب تلقائياً، اضغط على الرابط أدناه:
+<a href="${whatsappUrl}" target="_blank" style="color: #25D366; text-decoration: none; font-weight: bold;">📱 فتح الواتساب</a>
 
 شكراً لثقتك في خدماتنا! 🎉`;
 
