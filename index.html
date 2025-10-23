@@ -1423,7 +1423,7 @@
         // Initialize language on page load
         document.addEventListener('DOMContentLoaded', loadLanguagePreference);
 
-        // تعريف الدوال في النطاق العام مباشرة
+        // Toggle menu dropdown
         function toggleMenu() {
             const menu = document.getElementById('menuDropdown');
             if (menu.style.display === 'block') {
@@ -1432,7 +1432,16 @@
                 menu.style.display = 'block';
             }
         }
-        
+
+        // جعل الدوال متاحة في النطاق العام
+        window.toggleMenu = toggleMenu;
+        window.toggleLanguage = toggleLanguage;
+        window.sendMessage = sendMessage;
+        window.clearChat = clearChat;
+        window.openTicketModal = openTicketModal;
+        window.closeTicketModal = closeTicketModal;
+
+        // Toggle language
         function toggleLanguage() {
             const body = document.body;
             const languageButton = document.querySelector('.menu-item:last-child .menu-text');
@@ -1627,66 +1636,6 @@
             }
         }
 
-        // تعريف دالة الإرسال في النطاق العام
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-
-            // إضافة رسالة المستخدم
-            addMessage(message, 'user');
-            input.value = '';
-            input.style.height = 'auto';
-
-            // إظهار مؤشر الكتابة
-            showTypingIndicator();
-
-            try {
-                const response = await fetch('/api/deepseek', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        conversationHistory: conversationHistory
-                    })
-                });
-
-                const data = await response.json();
-                hideTypingIndicator();
-
-                if (data.response) {
-                    addMessage(data.response, 'assistant');
-                    conversationHistory.push({ role: 'user', content: message });
-                    conversationHistory.push({ role: 'assistant', content: data.response });
-                    
-                    // تقليل حجم المحادثة إذا كانت طويلة
-                    if (conversationHistory.length > 20) {
-                        conversationHistory = conversationHistory.slice(-20);
-                    }
-                } else if (data.error) {
-                    addMessage(`عذراً، ${data.error}. يرجى المحاولة مرة أخرى.`, 'assistant');
-            } else {
-                    addMessage('عذراً، حدث خطأ في معالجة طلبك. يرجى المحاولة مرة أخرى.', 'assistant');
-                    }
-                } catch (error) {
-                hideTypingIndicator();
-                console.error('Error:', error);
-                
-                let errorMessage = 'عذراً، حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.';
-                
-                if (error.message.includes('timeout') || error.message.includes('انتهت مهلة')) {
-                    errorMessage = 'انتهت مهلة الاتصال. يرجى المحاولة مرة أخرى.';
-                } else if (error.message.includes('ECONNRESET') || error.message.includes('انقطع الاتصال')) {
-                    errorMessage = 'انقطع الاتصال بالخادم. يرجى المحاولة مرة أخرى.';
-                }
-                
-                addMessage(errorMessage, 'assistant');
-            }
-        }
-
                // إضافة رسالة جديدة
                function addMessage(content, sender) {
                    const messagesContainer = document.getElementById('chatMessages');
@@ -1732,20 +1681,6 @@
             }
         }
 
-        // تعريف دالة مسح المحادثة في النطاق العام
-        function clearChat() {
-            if (confirm('هل تريد مسح جميع الرسائل؟')) {
-                document.getElementById('chatMessages').innerHTML = `
-                    <div class="message assistant welcome-message">
-                        <div class="message-content">
-                            سلني أجبك
-                        </div>
-                    </div>
-                `;
-                conversationHistory = [];
-            }
-        }
-
         // تم حذف كود Enter - Enter يعمل بشكل طبيعي للسطر الجديد
 
         // تعديل ارتفاع النص تلقائياً وتفعيل/تعطيل الزر
@@ -1768,16 +1703,6 @@
         }
 
         // إغلاق نموذج التذكرة
-        function closeTicketModal() {
-            document.getElementById('ticketModal').style.display = 'none';
-            document.getElementById('ticketForm').reset();
-        }
-
-        // تعريف دوال التذكرة في النطاق العام
-        function openTicketModal() {
-            document.getElementById('ticketModal').style.display = 'block';
-        }
-
         function closeTicketModal() {
             document.getElementById('ticketModal').style.display = 'none';
             document.getElementById('ticketForm').reset();
@@ -1827,11 +1752,8 @@
                    // إرسال إلى Zapier Webhook أولاً
                    await sendToZapier(name, email, phone, message, lastQuestion, lastAnswer);
                    
-                   // إنشاء رقم تذكرة بالتنسيق المطلوب
-                   const ticketNumber = generateTicketNumber();
-                   
                    // إرسال عبر الواتساب
-                   let whatsappMessage = `🎫 *تذكرة دعم فني - رقم التذكرة: ${ticketNumber}*
+                   let whatsappMessage = `🎫 *تذكرة دعم فني*
    
    👤 *الاسم:* ${name}
    📧 *البريد الإلكتروني:* ${email}
@@ -1858,63 +1780,21 @@
    
                    // تشفير الرسالة للواتساب
                    const encodedMessage = encodeURIComponent(whatsappMessage);
-                   const whatsappUrl = `https://wa.me/+966552130095?text=${encodedMessage}`;
+                   const whatsappUrl = `https://wa.me/0552130095?text=${encodedMessage}`;
                    
-                   console.log('WhatsApp URL:', whatsappUrl);
-                   console.log('Message length:', whatsappMessage.length);
-                   console.log('Original message:', whatsappMessage);
-                   
-                   // طريقة خاصة للواجهة المدمجة - إظهار رابط قابل للنقر
-                   console.log('WhatsApp URL generated:', whatsappUrl);
-                   
-                   // إنشاء رسالة تحتوي على رابط الواتساب
-                   const whatsappMessage = `✅ تم إعداد رسالة الواتساب بنجاح!
-
-🎫 رقم التذكرة: ${ticketNumber}
-📱 تم إرسال رسالة تأكيد إلى: ${email}
-
-🔗 **اضغط على الرابط أدناه لفتح الواتساب:**
-<a href="${whatsappUrl}" target="_blank" style="
-    display: inline-block;
-    background: #25D366;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    margin: 10px 0;
-    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
-">📱 فتح الواتساب</a>
-
-💡 **ملاحظة:** إذا لم يفتح الواتساب، انسخ الرابط أدناه والصقه في المتصفح:
-<code style="background: #f0f0f0; padding: 5px; border-radius: 3px; word-break: break-all; font-size: 12px;">${whatsappUrl}</code>
-
-شكراً لثقتك في خدماتنا! 🎉`;
-
-                   // إضافة الرسالة إلى المحادثة
-                   addMessage(whatsappMessage, 'assistant');
+                   // فتح الواتساب مع الرسالة
+                   window.open(whatsappUrl, '_blank');
                    
                    // إغلاق النموذج
                    closeTicketModal();
             } else if (sendMethod === 'email') {
-                // إنشاء رقم تذكرة بالتنسيق المطلوب
-                const ticketNumber = generateTicketNumber();
                 // إرسال عبر الإيميل
-                sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer, ticketNumber);
+                sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer);
             }
         });
 
-        // دالة إنشاء رقم تذكرة بالتنسيق المطلوب
-        function generateTicketNumber() {
-            const currentYear = new Date().getFullYear();
-            const ticketCounter = localStorage.getItem('ticketCounter') || '0';
-            const nextTicketNumber = parseInt(ticketCounter) + 1;
-            localStorage.setItem('ticketCounter', nextTicketNumber.toString());
-            return currentYear + '000' + nextTicketNumber.toString().padStart(2, '0');
-        }
-
         // دالة إرسال التذكرة عبر الإيميل
-        async function sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer, ticketNumber) {
+        async function sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer) {
             try {
                 // إرسال إلى Zapier Webhook أولاً
                 const zapierSuccess = await sendToZapier(name, email, phone, message, lastQuestion, lastAnswer);
@@ -1950,9 +1830,7 @@
                 
                 if (result.success) {
                     const zapierStatus = zapierSuccess ? 'تم إرسال التذكرة إلى Trello بنجاح' : 'فشل في إرسال التذكرة إلى Trello';
-                    
-                    // إظهار رسالة منفصلة في الموقع مع رقم التذكرة
-                    showTicketSuccessMessage(email, zapierStatus, ticketNumber);
+                    alert(`تم إرسال التذكرة بنجاح!\n📧 البريد الإلكتروني: ${email}\n📋 Trello: ${zapierStatus}`);
                     closeTicketModal();
                 } else {
                     console.error('Email API Error:', result);
@@ -1965,37 +1843,6 @@
                 alert(`حدث خطأ في إرسال التذكرة: ${errorMessage}`);
             }
         }
-
-        // دالة إظهار رسالة نجاح التذكرة
-        function showTicketSuccessMessage(email, zapierStatus, ticketNumber) {
-            // إنشاء رسالة نجاح في المحادثة
-            const successMessage = `✅ تم إرسال التذكرة بنجاح!
-
-🎫 رقم التذكرة: ${ticketNumber}
-📧 تم إرسال رسالة تأكيد إلى: ${email}
-
-⚠️ ملاحظة مهمة:
-قد تصلك الرسالة في مجلد "الرسائل غير المرغوب فيها" أو "Junk". 
-يرجى التحقق من هذا المجلد إذا لم تجد الرسالة في صندوق الوارد.
-
-شكراً لثقتك في خدماتنا! 🎉`;
-
-            // إضافة الرسالة إلى المحادثة
-            addMessage(successMessage, 'assistant');
-        }
-
-
-        // معالج الرسائل من الوالد (للحالات المدمجة)
-        window.addEventListener('message', function(event) {
-            if (event.data && event.data.type === 'whatsapp_open') {
-                console.log('Received WhatsApp open request from parent');
-                try {
-                    window.open(event.data.url, '_blank');
-                } catch (error) {
-                    console.error('Failed to open WhatsApp from parent message:', error);
-                }
-            }
-        });
 
         // دالة إرسال التذكرة إلى Zapier Webhook
         async function sendToZapier(name, email, phone, message, lastQuestion, lastAnswer) {
