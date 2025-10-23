@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مساعد witsUP - Chat Page - NEW DEPLOYMENT</title>
+    <title>مساعد witsUP الذكي</title>
     <style>
         * {
             margin: 0;
@@ -11,11 +11,63 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            direction: rtl;
+       body {
+           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+           background: #f8f9fa;
+           min-height: 100vh;
+           direction: rtl;
+           transition: all 0.3s ease;
+       }
+
+       /* English language styles */
+       body.english {
+           direction: ltr;
+       }
+
+       body.english .chat-input-wrapper {
+           flex-direction: row-reverse;
+       }
+
+       body.english .message.user {
+           text-align: right;
+       }
+
+       body.english .message.assistant {
+           text-align: left;
+       }
+
+       body.english .ticket-modal-content {
+           text-align: left;
+       }
+
+       body.english .ticket-form {
+           text-align: left;
+       }
+
+       body.english .form-field {
+           text-align: left;
+       }
+
+       body.english .ticket-buttons {
+           justify-content: flex-end;
+       }
+
+       body.english .chat-input-wrapper {
+           flex-direction: row;
+       }
+
+       body.english .send-button {
+           order: 2;
+       }
+
+       body.english .chat-input {
+           order: 1;
+       }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background: #1a1a1a;
+            color: #e0e0e0;
         }
 
         .chat-container {
@@ -28,36 +80,216 @@
         }
 
         .chat-header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             text-align: center;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .chat-header {
+            background: #2d2d2d;
+            border-color: #404040;
+            color: #e0e0e0;
         }
 
         .chat-header h1 {
-            color: #2c3e50;
-            font-size: 2rem;
+            color: #212529;
+            font-size: 1.8rem;
             margin-bottom: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .chat-header h1 {
+            color: #ffffff;
+        }
+
+        /* Animated logo container */
+        .animated-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .animated-logo svg {
+            width: 200px;
+            height: 200px;
+            filter: drop-shadow(0 0 25px rgba(105, 192, 211, 0.6));
+        }
+
+        /* Snake animation styles */
+        .snake-path {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Snake animation with exact original colors */
+        .main-triangles .snake-path {
+            stroke-width: 2;
+            stroke-dasharray: 0 1000;
+            animation: snake-draw 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 6px currentColor);
+        }
+
+        /* Different triangles have different original colors */
+        .main-triangles .snake-path:nth-child(1) {
+            stroke: #1856a0;
+        }
+
+        .main-triangles .snake-path:nth-child(2) {
+            stroke: #69c0d3;
+        }
+
+        .main-triangles .snake-path:nth-child(3) {
+            stroke: #69c0d3;
+        }
+
+        .main-triangles .snake-path:nth-child(4) {
+            stroke: #1856a0;
+        }
+
+        .main-triangles .snake-path:nth-child(5) {
+            stroke: #1856a0;
+        }
+
+        .main-triangles .snake-path:nth-child(6) {
+            stroke: #133c74;
+        }
+
+        .witsup-text .snake-path {
+            stroke-width: 2;
+            stroke-dasharray: 0 800;
+            animation: snake-draw-text 4s ease-in-out infinite 0.3s;
+            filter: drop-shadow(0 0 6px currentColor);
+        }
+
+        /* WITS text is dark blue, UP text is cyan */
+        .witsup-text .snake-path:nth-child(1),
+        .witsup-text .snake-path:nth-child(2),
+        .witsup-text .snake-path:nth-child(3),
+        .witsup-text .snake-path:nth-child(4) {
+            stroke: #133c74;
+        }
+
+        .witsup-text .snake-path:nth-child(5),
+        .witsup-text .snake-path:nth-child(6) {
+            stroke: #69c0d3;
+        }
+
+        .arabic-text .snake-path {
+            stroke-width: 1.5;
+            stroke-dasharray: 0 900;
+            animation: snake-draw-arabic 4s ease-in-out infinite 0.6s;
+            filter: drop-shadow(0 0 5px currentColor);
+        }
+
+        /* Arabic text colors */
+        .arabic-text .snake-path:nth-child(1),
+        .arabic-text .snake-path:nth-child(2) {
+            stroke: #69c0d3;
+        }
+
+        .arabic-text .snake-path:nth-child(3),
+        .arabic-text .snake-path:nth-child(4),
+        .arabic-text .snake-path:nth-child(5),
+        .arabic-text .snake-path:nth-child(6),
+        .arabic-text .snake-path:nth-child(7),
+        .arabic-text .snake-path:nth-child(8) {
+            stroke: #133c74;
+        }
+
+        @keyframes snake-draw {
+            0% {
+                stroke-dasharray: 0 1000;
+                stroke-dashoffset: 0;
+            }
+            70% {
+                stroke-dasharray: 1000 0;
+                stroke-dashoffset: -1000;
+            }
+            100% {
+                stroke-dasharray: 1000 0;
+                stroke-dashoffset: -1000;
+            }
+        }
+
+        @keyframes snake-draw-text {
+            0% {
+                stroke-dasharray: 0 800;
+                stroke-dashoffset: 0;
+            }
+            70% {
+                stroke-dasharray: 800 0;
+                stroke-dashoffset: -800;
+            }
+            100% {
+                stroke-dasharray: 800 0;
+                stroke-dashoffset: -800;
+            }
+        }
+
+        @keyframes snake-draw-arabic {
+            0% {
+                stroke-dasharray: 0 900;
+                stroke-dashoffset: 0;
+            }
+            70% {
+                stroke-dasharray: 900 0;
+                stroke-dashoffset: -900;
+            }
+            100% {
+                stroke-dasharray: 900 0;
+                stroke-dashoffset: -900;
+            }
+        }
+
+        /* Dark mode background for logo */
+        .animated-logo {
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .animated-logo {
+            background: #2d2d2d;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .chat-header p {
-            color: #7f8c8d;
-            font-size: 1.1rem;
+            color: #6c757d;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .chat-header p {
+            color: #e0e0e0;
         }
 
         .chat-messages {
             flex: 1;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
+            background: #ffffff;
+            border-radius: 8px;
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             overflow-y: auto;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            max-height: 60vh;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e9ecef;
+            max-height: 70vh;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .chat-messages {
+            background: #2d2d2d;
+            border-color: #404040;
         }
 
         .message {
@@ -69,9 +301,33 @@
             text-align: left;
         }
 
-        .message.assistant {
-            text-align: right;
-        }
+               .message.assistant {
+                   text-align: right;
+               }
+
+               .welcome-message {
+                   text-align: center !important;
+                   justify-content: center;
+                   display: flex;
+               }
+
+               .welcome-message .message-content {
+                   background: linear-gradient(135deg, #667eea, #764ba2);
+                   color: white;
+                   border: none;
+                   font-size: 1.2rem;
+                   font-weight: 600;
+                   padding: 20px 30px;
+                   border-radius: 25px;
+                   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                   max-width: 300px;
+                   margin: 0 auto;
+               }
+
+               body.dark-mode .welcome-message .message-content {
+                   background: linear-gradient(135deg, #4a5568, #2d3748);
+                   box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3);
+               }
 
         .message-content {
             display: inline-block;
@@ -80,30 +336,42 @@
             border-radius: 20px;
             word-wrap: break-word;
             line-height: 1.6;
+            font-size: 1.1rem;
         }
 
         .message.user .message-content {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #007bff;
             color: white;
-            border-bottom-right-radius: 5px;
         }
 
         .message.assistant .message-content {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            color: white;
-            border-bottom-left-radius: 5px;
+            background: #f8f9fa;
+            color: #212529;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .message.assistant .message-content {
+            background: #3d3d3d;
+            color: #e0e0e0;
+            border-color: #555;
         }
 
         .message-time {
             font-size: 0.8rem;
             color: #95a5a6;
             margin-top: 5px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .message-time {
+            color: #b0b0b0;
         }
 
         .typing-indicator {
             display: none;
             padding: 15px 20px;
-            background: linear-gradient(135deg, #f093fb, #f5576c);
+            background: linear-gradient(135deg, #25d366, #128c7e);
             color: white;
             border-radius: 20px;
             border-bottom-left-radius: 5px;
@@ -130,30 +398,50 @@
         }
 
         .chat-input-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: #ffffff;
             padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .chat-input-container {
+            background: #2d2d2d;
+            border-color: #404040;
         }
 
         .chat-input-wrapper {
             display: flex;
-            gap: 10px;
             align-items: flex-end;
+            gap: 10px;
+            width: 100%;
         }
 
         .chat-input {
             flex: 1;
             padding: 15px 20px;
             border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 1rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
             resize: none;
-            min-height: 50px;
-            max-height: 120px;
+            min-height: 60px;
+            max-height: 150px;
             font-family: inherit;
             transition: all 0.3s ease;
+            box-sizing: border-box;
+            background: #ffffff;
+            color: #212529;
+        }
+
+        body.dark-mode .chat-input {
+            background: #3d3d3d;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .chat-input::placeholder {
+            color: #999;
         }
 
         .chat-input:focus {
@@ -163,27 +451,54 @@
         }
 
         .send-button {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+            background: #25d366;
+            color: #ffffff;
             border: none;
-            padding: 15px 25px;
-            border-radius: 25px;
+            padding: 20px 25px;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
+            font-size: 2.2rem;
             transition: all 0.3s ease;
-            min-width: 100px;
+            min-width: 80px;
+            font-weight: 600;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 12px rgba(37, 211, 102, 0.4);
+            transform: rotate(-90deg);
         }
 
-        .send-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .send-button:hover:not(:disabled) {
+            background: #128c7e;
+            transform: rotate(-90deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
         }
 
         .send-button:disabled {
-            opacity: 0.6;
+            background: #cccccc;
+            color: #666666;
             cursor: not-allowed;
-            transform: none;
+            box-shadow: none;
+            transform: rotate(-90deg);
+        }
+
+        body.dark-mode .send-button {
+            background: #25d366;
+            color: #ffffff;
+        }
+
+        body.dark-mode .send-button:hover:not(:disabled) {
+            background: #128c7e;
+            transform: rotate(-90deg) scale(1.05);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+        }
+
+        body.dark-mode .send-button:disabled {
+            background: #555555;
+            color: #999999;
+            box-shadow: none;
+            transform: rotate(-90deg);
         }
 
         .model-selector {
@@ -209,21 +524,79 @@
             border-color: #667eea;
         }
 
-        .clear-chat {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            margin-left: 10px;
-            transition: all 0.3s ease;
+
+        /* Mobile icon buttons */
+        .mobile-controls {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            gap: 15px;
+            z-index: 1000;
+            flex-direction: column;
         }
 
-        .clear-chat:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        .mobile-icon-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .mobile-ticket-btn {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .mobile-clear-btn {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        body.dark-mode .mobile-ticket-btn {
+            background: #2d4a2d;
+            color: #81c784;
+        }
+
+        body.dark-mode .mobile-clear-btn {
+            background: #4a3d2a;
+            color: #ffb74d;
+        }
+
+        .mobile-icon-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tooltip */
+        .mobile-icon-btn::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1001;
+        }
+
+        .mobile-icon-btn:hover::after {
+            opacity: 1;
         }
 
         @keyframes fadeIn {
@@ -240,140 +613,693 @@
             text-align: center;
         }
 
-        .suggestions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
 
-        .suggestion {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-            padding: 8px 15px;
-            border-radius: 20px;
+        .ticket-button {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 0.9rem;
+            margin-left: 10px;
             transition: all 0.3s ease;
-            border: 1px solid rgba(102, 126, 234, 0.2);
+            font-weight: 500;
         }
 
-        .suggestion:hover {
-            background: rgba(102, 126, 234, 0.2);
-            transform: translateY(-2px);
+        body.dark-mode .ticket-button {
+            background: #2d4a2d;
+            color: #81c784;
+            border-color: #4a7c59;
         }
 
-        /* خيارات التواصل */
-        .contact-options {
-            margin-top: 20px;
+        .ticket-button:hover {
+            background: #c8e6c9;
+            color: #1b5e20;
+        }
+
+        body.dark-mode .ticket-button:hover {
+            background: #4a7c59;
+            color: #a5d6a7;
+        }
+
+               /* Menu toggle button */
+               .menu-toggle {
+                   position: fixed;
+                   top: 20px;
+                   left: 20px;
+                   background: #f8f9fa;
+                   border: 2px solid #e9ecef;
+                   border-radius: 50%;
+                   width: 50px;
+                   height: 50px;
+                   cursor: pointer;
+                   display: flex;
+                   align-items: center;
+                   justify-content: center;
+                   font-size: 1.5rem;
+                   transition: all 0.3s ease;
+                   z-index: 1000;
+                   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+               }
+
+               .menu-toggle:hover {
+                   background: #e9ecef;
+                   transform: scale(1.1);
+                   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+               }
+
+               /* Tooltip for menu toggle */
+               .menu-toggle::after {
+                   content: attr(data-tooltip);
+                   position: absolute;
+                   right: -10px;
+                   top: 50%;
+                   transform: translateY(-50%);
+                   background: rgba(0, 0, 0, 0.8);
+                   color: white;
+                   padding: 5px 10px;
+                   border-radius: 4px;
+                   font-size: 0.8rem;
+                   white-space: nowrap;
+                   opacity: 0;
+                   pointer-events: none;
+                   transition: opacity 0.3s ease;
+                   z-index: 1001;
+               }
+
+               .menu-toggle:hover::after {
+                   opacity: 1;
+               }
+
+               body.dark-mode .menu-toggle {
+                   background: #2d2d2d;
+                   border-color: #404040;
+                   color: #e0e0e0;
+               }
+
+               body.dark-mode .menu-toggle:hover {
+                   background: #404040;
+               }
+
+               /* Menu dropdown */
+               .menu-dropdown {
+                   position: fixed;
+                   top: 80px;
+                   left: 20px;
+                   background: #ffffff;
+                   border: 1px solid #e9ecef;
+                   border-radius: 12px;
+                   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+                   z-index: 1000;
+                   display: none;
+                   min-width: 200px;
+                   overflow: hidden;
+               }
+
+               body.dark-mode .menu-dropdown {
+                   background: #2d2d2d;
+                   border-color: #404040;
+               }
+
+               .menu-item {
+                   width: 100%;
+                   padding: 12px 16px;
+                   border: none;
+                   background: transparent;
+                   color: #212529;
+                   cursor: pointer;
+                   display: flex;
+                   align-items: center;
+                   gap: 12px;
+                   transition: all 0.3s ease;
+                   text-align: right;
+               }
+
+               body.dark-mode .menu-item {
+                   color: #e0e0e0;
+               }
+
+               .menu-item:hover {
+                   background: #f8f9fa;
+               }
+
+               body.dark-mode .menu-item:hover {
+                   background: #404040;
+               }
+
+               .menu-icon {
+                   font-size: 1.2rem;
+                   width: 24px;
+                   text-align: center;
+               }
+
+               .menu-text {
+                   font-size: 0.9rem;
+                   font-weight: 500;
+               }
+
+        .ticket-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .ticket-modal-content {
+            background-color: white;
+            margin: 2% auto;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            backdrop-filter: blur(10px);
+            width: 95%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
-        .contact-title {
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-align: center;
+        body.dark-mode .ticket-modal-content {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
-        .contact-buttons {
+        .ticket-form {
             display: flex;
+            flex-direction: column;
             gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
         }
 
-        .whatsapp-btn, .email-btn, .ticket-btn {
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-field label {
+            font-weight: 600;
+            color: #212529;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        body.dark-mode .form-field label {
+            color: #e0e0e0;
+        }
+
+        .ticket-form input, .ticket-form textarea {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #ffffff;
+            color: #212529;
+        }
+
+        body.dark-mode .ticket-form input, body.dark-mode .ticket-form textarea {
+            background: #3d3d3d;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .ticket-form input::placeholder, body.dark-mode .ticket-form textarea::placeholder {
+            color: #999;
+        }
+
+        .ticket-form input:focus, .ticket-form textarea:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .ticket-form textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .ticket-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .send-method-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-option {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: bold;
             cursor: pointer;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
             transition: all 0.3s ease;
-            text-decoration: none;
-            color: white;
+            background: #ffffff;
         }
 
-        .whatsapp-btn {
-            background: linear-gradient(135deg, #25D366, #128C7E);
+        .radio-option:hover {
+            border-color: #25d366;
+            background: #f0f8f0;
         }
 
-        .whatsapp-btn:hover {
-            background: linear-gradient(135deg, #128C7E, #25D366);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+        .radio-option input[type="radio"] {
+            margin: 0;
         }
 
-        .email-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .radio-option input[type="radio"]:checked + .radio-text {
+            color: #25d366;
+            font-weight: 600;
         }
 
-        .email-btn:hover {
-            background: linear-gradient(135deg, #764ba2, #667eea);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .radio-option:has(input[type="radio"]:checked) {
+            border-color: #25d366;
+            background: #e8f5e8;
         }
 
-        .ticket-btn {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
+        .radio-text {
+            font-size: 1rem;
+            font-weight: 500;
         }
 
-        .ticket-btn:hover {
-            background: linear-gradient(135deg, #f5576c, #f093fb);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+        body.dark-mode .radio-option {
+            background: #3d3d3d;
+            border-color: #555;
+            color: #e0e0e0;
         }
 
-        .whatsapp-icon, .email-icon, .ticket-icon {
-            font-size: 1.2rem;
+        body.dark-mode .radio-option:hover {
+            border-color: #25d366;
+            background: #2d4a2d;
+        }
+
+        body.dark-mode .radio-option:has(input[type="radio"]:checked) {
+            border-color: #25d366;
+            background: #2d4a2d;
+        }
+
+        .ticket-submit {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .ticket-cancel {
+            background: #f5f5f5;
+            color: #616161;
+            border: 1px solid #e0e0e0;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        body.dark-mode .ticket-submit {
+            background: #2d4a2d;
+            color: #81c784;
+            border-color: #4a7c59;
+        }
+
+        body.dark-mode .ticket-cancel {
+            background: #3d3d3d;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+
+        .ticket-submit:hover {
+            background: #c8e6c9;
+            color: #1b5e20;
+        }
+
+        body.dark-mode .ticket-submit:hover {
+            background: #4a7c59;
+            color: #a5d6a7;
+        }
+
+        .ticket-cancel:hover {
+            background: #eeeeee;
+            color: #424242;
+        }
+
+        body.dark-mode .ticket-cancel:hover {
+            background: #555;
+            color: #ffffff;
+        }
+
+        /* Ticket modal title and text */
+        .ticket-modal-content h2 {
+            color: #212529;
+            margin-bottom: 10px;
+        }
+
+        body.dark-mode .ticket-modal-content h2 {
+            color: #ffffff;
+        }
+
+        .ticket-modal-content p {
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        body.dark-mode .ticket-modal-content p {
+            color: #b0b0b0;
         }
 
         @media (max-width: 768px) {
+            .dark-mode-toggle {
+                top: 20px;
+                left: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            .animated-logo {
+                width: 60px;
+                height: 60px;
+                margin: 0 auto 8px;
+            }
+
+            .animated-logo svg {
+                width: 150px;
+                height: 150px;
+            }
+
             .chat-container {
                 padding: 10px;
-            }
-            
-            .chat-header h1 {
-                font-size: 1.5rem;
-            }
-            
-            .message-content {
-            max-width: 90%;
-            }
-            
-            .chat-input-wrapper {
+                height: 100vh;
+                display: flex;
                 flex-direction: column;
             }
-            
+
+            .chat-header {
+                padding: 8px 12px;
+                margin-bottom: 6px;
+            }
+
+            .chat-header h1 {
+                font-size: 1.1rem;
+                margin-bottom: 4px;
+            }
+
+            .chat-header p {
+                font-size: 0.75rem;
+                line-height: 1.3;
+                display: none; /* إخفاء النص الطويل على الجوال */
+            }
+
+            .chat-messages {
+                padding: 10px;
+                margin-bottom: 6px;
+                max-height: calc(100vh - 200px);
+                min-height: calc(100vh - 200px);
+                flex: 1;
+                overflow-y: auto;
+            }
+
+            .message-content {
+                max-width: 95%;
+                padding: 12px 16px;
+                font-size: 1.0rem;
+            }
+
+            .chat-input-container {
+                padding: 8px;
+                position: relative;
+            }
+
+            .chat-input {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 12px 15px;
+                min-height: 40px;
+            }
+
             .send-button {
+                padding: 15px 20px;
+                font-size: 2.2rem;
+                min-width: 70px;
+                height: 70px;
+                border-radius: 50%;
+            }
+            
+            /* إخفاء الأزرار العادية في الجوال */
+            .clear-chat, .ticket-button {
+                display: none;
+            }
+
+            /* إظهار أزرار الجوال */
+            .mobile-controls {
+                display: flex;
+                flex-direction: column;
+                top: 80px;
+                left: 20px;
+                gap: 15px;
+            }
+
+            /* تحسين التلميحات في الجوال */
+            .mobile-icon-btn::after {
+                right: -10px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .dark-mode-toggle::after {
+                right: -10px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .model-selector {
+                flex-direction: column;
+                gap: 4px;
+                margin-bottom: 8px;
+            }
+
+            .model-option {
                 width: 100%;
+                text-align: center;
+                padding: 8px;
+                font-size: 0.85rem;
+            }
+
+            .suggestions {
+                flex-direction: column;
+                gap: 4px;
+                margin-top: 8px;
+            }
+
+            .suggestion {
+                width: 100%;
+                text-align: center;
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+
+            .ticket-modal-content {
+                margin: 5% auto;
+                padding: 15px;
+                width: 98%;
+                max-height: 85vh;
+            }
+
+            .ticket-form {
+                gap: 12px;
+            }
+
+            .ticket-form input, .ticket-form textarea {
+                padding: 12px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            .ticket-form textarea {
+                min-height: 60px;
+            }
+
+            .ticket-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .ticket-submit, .ticket-cancel {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .animated-logo {
+                width: 50px;
+                height: 50px;
+                margin: 0 auto 6px;
+            }
+
+            .animated-logo svg {
+                width: 130px;
+                height: 130px;
+            }
+
+            .chat-container {
+                padding: 5px;
+            }
+
+            .chat-header {
+                padding: 8px 10px;
+            }
+
+            .chat-header h1 {
+                font-size: 1rem;
+            }
+
+            .chat-header p {
+                display: none; /* إخفاء النص على الشاشات الصغيرة */
+            }
+
+            .chat-messages {
+                padding: 8px;
+                max-height: 80vh;
+                min-height: 65vh;
+            }
+
+            .message-content {
+                padding: 10px 14px;
+                font-size: 0.95rem;
+            }
+
+            .chat-input-container {
+                padding: 5px;
+            }
+
+            .chat-input {
+                padding: 8px 12px;
+                font-size: 16px;
+                min-height: 35px;
+            }
+
+            .send-button {
+                padding: 12px 18px;
+                font-size: 2.0rem;
+                min-width: 60px;
+                height: 60px;
+                border-radius: 50%;
+            }
+
+            /* تحسين موضع الأزرار في الشاشات الصغيرة */
+            .mobile-controls {
+                top: 80px;
+                left: 20px;
+                flex-direction: column;
+            }
+
+            .mobile-icon-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .dark-mode-toggle {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .ticket-modal-content {
+                margin: 2% auto;
+                padding: 12px;
+                width: 98%;
+                max-height: 90vh;
             }
         }
     </style>
 </head>
 <body>
+           <!-- Menu button -->
+           <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()" data-tooltip="القائمة">
+               ⋯
+           </button>
+           
+           <!-- Menu dropdown -->
+           <div class="menu-dropdown" id="menuDropdown">
+               <button class="menu-item" onclick="toggleDarkMode()">
+                   <span class="menu-icon">🌙</span>
+                   <span class="menu-text">الوضع الليلي</span>
+               </button>
+               <button class="menu-item" onclick="clearChat()">
+                   <span class="menu-icon">🧹</span>
+                   <span class="menu-text">مسح المحادثة</span>
+               </button>
+               <button class="menu-item" onclick="openTicketModal()">
+                   <span class="menu-icon">🎧</span>
+                   <span class="menu-text">الدعم الفني</span>
+               </button>
+               <button class="menu-item" onclick="toggleLanguage()">
+                   <span class="menu-icon">🌐</span>
+                   <span class="menu-text">English</span>
+               </button>
+           </div>
+
     <div class="chat-container">
+        <!-- Header section temporarily disabled
         <div class="chat-header">
-            <h1>💬 مساعد witsUP - صفحة جديدة</h1>
-            <p>اسأل أي سؤال عن نظام witsUP وسأجيبك بناءً على الدليل الشامل</p>
+            <div class="animated-logo">
+                <svg viewBox="0 0 2000 2000" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Snake animation paths --
+                    <g class="main-triangles">
+                        <path class="snake-path" d="M958.6,987.01l-11.92,20.64c-16.18,28.03-56.64,28.03-72.82,0l-193.23-334.68c-16.11-27.9,4.03-62.78,36.25-62.78h0c14.95,0,28.77,7.98,36.25,20.93l157.15,272.19,48.33,83.71Z"/>
+                        <path class="snake-path" d="M1138.06,987.01l-11.91,20.64c-16.18,28.03-56.64,28.03-72.82,0l-43.12-74.69,48.32-83.71,79.53,137.77Z"/>
+                        <path class="snake-path" d="M1283.13,610.19c-14.95,0-28.77,7.98-36.25,20.93l-183.14,317.21c-9.95,17.25-34.8,16.86-44.85-.33l34.44,59.65c16.18,28.03,56.64,28.03,72.82,0l193.23-334.68c16.11-27.9-4.03-62.78-36.25-62.78h0Z"/>
+                        <path class="snake-path" d="M1103.33,610.19h-23.83l-195.22,338.14c-9.95,17.25-34.81,16.85-44.86-.34l24.35,42.18h0s10.09,17.48,10.09,17.48c16.18,28.03,56.64,28.03,72.82,0l193.06-334.4c16.18-28.03-4.05-63.06-36.41-63.06Z"/>
+                        <path class="snake-path" d="M1103.33,610.19h-206.66c-32.37,0-52.59,35.04-36.41,63.07l11.91,20.63h210.6c19.91.1,32.68,21.44,22.73,38.69l34.24-59.33c16.18-28.03-4.05-63.06-36.41-63.06Z"/>
+                        <path class="snake-path" d="M943.03,649.21c-9.87-17.3,2.23-39.02,22.14-39.02h-68.5c-32.37,0-52.59,35.04-36.41,63.07l81.22,140.67,48.32-83.7-46.78-81.02Z"/>
+                    </g>
+                    
+                    <g class="witsup-text">
+                        <path class="snake-path" d="M872.78,1113.44l-35.03,107.09h-26.62l-23.56-72.51-24.32,72.51h-26.47l-35.19-107.09h25.7l24.17,75.27,25.24-75.27h22.95l24.48,75.88,24.94-75.88h23.71Z"/>
+                        <path class="snake-path" d="M883.5,1113.44c0-7.5,5.97-13.31,14.84-13.31s14.84,5.51,14.84,12.85c0,7.96-5.97,13.77-14.84,13.77s-14.84-5.81-14.84-13.31ZM886.4,1138.22h23.87v82.31h-23.87v-82.31Z"/>
+                        <path class="snake-path" d="M985.54,1216.55c-4.9,3.52-12.09,5.2-19.43,5.2-19.43,0-30.75-9.94-30.75-29.53v-33.81h-12.7v-18.36h12.7v-20.04h23.87v20.04h20.5v18.36h-20.5v33.5c0,7.04,3.82,10.86,10.25,10.86,3.52,0,7.04-1.07,9.64-3.06l6.43,16.83Z"/>
+                        <path class="snake-path" d="M991.05,1212.88l7.96-17.13c7.34,4.74,18.51,7.96,28.61,7.96,11.01,0,15.15-2.91,15.15-7.5,0-13.46-49.72.31-49.72-32.59,0-15.6,14.07-26.62,38.09-26.62,11.32,0,23.87,2.6,31.67,7.19l-7.96,16.98c-8.11-4.59-16.22-6.12-23.71-6.12-10.71,0-15.3,3.37-15.3,7.65,0,14.07,49.72.46,49.72,32.89,0,15.3-14.23,26.16-38.86,26.16-13.92,0-28-3.82-35.65-8.87Z"/>
+                        <path class="snake-path" d="M1081.01,1173.41v-59.97h24.78v59.05c0,20.35,8.87,28.76,23.87,28.76s23.87-8.41,23.87-28.76v-59.05h24.48v59.97c0,31.51-18.05,48.96-48.5,48.96s-48.5-17.44-48.5-48.96Z"/>
+                        <path class="snake-path" d="M1295.34,1152.3c0,23.87-17.9,38.71-46.51,38.71h-21.57v29.53h-24.78v-107.09h46.35c28.61,0,46.51,14.84,46.51,38.86ZM1270.25,1152.3c0-11.78-7.65-18.66-22.79-18.66h-20.19v37.18h20.19c15.15,0,22.79-6.88,22.79-18.51Z"/>
+                    </g>
+                    
+                    <g class="arabic-text">
+                        <path class="snake-path" d="M769.64,1355.16c-3.32,0-6.17,1.18-8.56,3.55-2.39,2.37-3.58,5.21-3.58,8.52s1.19,6.08,3.58,8.45c2.39,2.37,5.24,3.55,8.56,3.55s6.18-1.17,8.59-3.51c2.41-2.34,3.62-5.17,3.62-8.49s-1.2-6.16-3.58-8.52c-2.39-2.37-5.27-3.55-8.63-3.55Z"/>
+                        <path class="snake-path" d="M902.25,1328.9h-55.22c-4.73,0-8.24-1.22-10.53-3.66-.67-.7-1.55-1.79-2.61-3.24.58-2.95.94-6.11,1.07-9.49v-39.35h-24.5v39.21c0,6.24-1.12,10.56-3.36,12.95-2.24,2.39-5.97,3.58-11.19,3.58h-43.96c-5.12,0-9.09-.73-11.92-2.19-2.83-1.46-4.88-3.68-6.14-6.66-1.27-2.83-1.71-6.63-1.32-11.41v-22.16h-25.67v22.24c1.07,13.21,5,23.31,11.78,30.28,7.31,7.61,18.41,11.41,33.28,11.41h49.74v-.12c8.36-.51,15.16-2.87,20.4-7.07,1.15.99,2.32,1.86,3.51,2.58,5.12,3.07,11.21,4.61,18.29,4.61h58.37l6.51-2.12v-17.26l-6.51-2.12Z"/>
+                        <path class="snake-path" d="M1140.12,1273.53c3.32,0,6.18-1.17,8.59-3.51s3.62-5.17,3.62-8.48-1.2-6.16-3.58-8.52c-2.39-2.37-5.27-3.55-8.63-3.55s-6.17,1.18-8.56,3.55c-2.39,2.37-3.58,5.21-3.58,8.52s1.19,6.08,3.58,8.45c2.39,2.37,5.24,3.55,8.56,3.55Z"/>
+                        <path class="snake-path" d="M1113.71,1273.53c3.32,0,6.18-1.17,8.59-3.51,2.41-2.34,3.62-5.17,3.62-8.48s-1.2-6.16-3.58-8.52c-2.39-2.37-5.27-3.55-8.63-3.55s-6.17,1.18-8.56,3.55c-2.39,2.37-3.58,5.21-3.58,8.52s1.19,6.08,3.58,8.45c2.39,2.37,5.24,3.55,8.56,3.55Z"/>
+                        <path class="snake-path" d="M1179.33,1312.37c0,6.24-1.12,10.56-3.36,12.95-2.24,2.39-8.41,3.58-18.51,3.58h-5.78c-4.73,0-8.24-1.22-10.53-3.66-2.29-2.44-3.29-6.44-3-12v-32.77h-25.02v32.77c.29,5.56-.71,9.56-3,12-2.29,2.44-5.8,3.66-10.53,3.66h-57.27c-4.73,0-8.24-1.22-10.53-3.66-.83-.88-1.66-3.22-2.49-7.02.1-1.02.19-2.07.29-3.15v-41.91h-23.85v41.69c0,4.78-1.07,8.31-3.22,10.61-2.15,2.29-3.71,3.44-4.68,3.44-3.12,0-5.75-1.14-7.9-3.44-2.15-2.29-3.22-5.83-3.22-10.61v-41.69h-23.85v41.69c0,2.88-.44,5.32-1.32,7.31-.54,1.22-1.27,2.27-2.19,3.15-2.29,2.39-5.58,3.58-9.88,3.58h-8.92v-55.74h-23.77v55.74h-40.23v21.5h72.85c6.05,0,11.34-1.34,15.87-4.02,2.78-1.76,5.19-3.95,7.24-6.58,1.9,2.54,3.92,4.51,6.07,5.92,4.63,3.12,10.48,4.68,17.56,4.68,8.78,0,15.87-2.37,21.29-7.09,1.12.98,2.27,1.8,3.44,2.49,5.12,3.07,11.21,4.61,18.29,4.61h60.42c8.58,0,15.18-1.66,19.79-4.97,2.13-1.53,4.07-3.61,5.82-6.22,2.14,2.72,4.48,4.84,7.01,6.36,5.36,3.22,10.73,4.83,16.09,4.83h6.22s0,0,0,0h12.43c11.7,0,20.65-3.27,26.84-9.8,6.19-6.53,9.53-15.9,10.02-28.09v-39.35h-24.5v39.21Z"/>
+                        <path class="snake-path" d="M1191.03,1355.23c-3.32,0-6.17,1.18-8.56,3.55-2.39,2.37-3.58,5.21-3.58,8.52s1.19,6.08,3.58,8.45c2.39,2.37,5.24,3.55,8.56,3.55s6.18-1.17,8.59-3.51c2.41-2.34,3.62-5.17,3.62-8.49s-1.2-6.16-3.58-8.52c-2.39-2.37-5.27-3.55-8.63-3.55Z"/>
+                        <path class="snake-path" d="M1164.62,1355.23c-3.32,0-6.17,1.18-8.56,3.55s-3.58,5.21-3.58,8.52,1.2,6.08,3.58,8.45,5.24,3.55,8.56,3.55,6.18-1.17,8.59-3.51c2.41-2.34,3.62-5.17,3.62-8.49s-1.2-6.16-3.58-8.52c-2.39-2.37-5.27-3.55-8.63-3.55Z"/>
+                        <path class="snake-path" d="M1290.84,1290.87c-3.1-6.34-7.49-11.22-13.17-14.63-5.68-3.41-12.13-5.12-19.35-5.12s-13.52,1.71-19.2,5.12c-5.68,3.41-10.09,8.12-13.24,14.12-3.15,6-4.72,12.73-4.72,20.19,0,13.12,3.55,23.04,10.64,29.77,7.09,6.73,17.47,10.09,31.12,10.09h6.73c-.39,1.85-2.61,4.19-6.66,7.02-4.05,2.83-10.24,4.24-18.58,4.24h-22.38v22.24h22.16c17.12,0,29.94-4.21,38.47-12.62,8.53-8.41,12.8-21.05,12.8-37.93v-20.55c0-8.29-1.55-15.6-4.64-21.94ZM1262.93,1328.9c-6.34,0-10.92-1.44-13.75-4.32-2.83-2.88-4.24-7.56-4.24-14.04,0-3.75.61-6.99,1.83-9.69,1.22-2.71,2.82-4.75,4.79-6.14s4.23-2.08,6.77-2.08c4.24,0,7.53,1.63,9.88,4.90,2.34,3.27,3.51,9.24,3.51,17.92l.07,13.46h-8.85Z"/>
+                    </g>
+                </svg>
+            </div>
+            <h1>💬 مساعد WitsUp الذكي</h1>
         </div>
+        -->
         
         <div class="chat-messages" id="chatMessages">
-            <div class="message assistant">
-                <div class="message-content">
-                    سلني اجبك
-                   
-                </div>
-                <div class="message-time" id="welcomeTime"></div>
-                    </div>
+               <div class="message assistant welcome-message">
+                   <div class="message-content">
+                       سلني أجبك
+                   </div>
+               </div>
                 </div>
                 
         <div class="typing-indicator" id="typingIndicator">
@@ -381,69 +1307,262 @@
             </div>
             
         <div class="chat-input-container">
-            <div class="model-selector">
-                <div class="model-option active" data-model="deepseek">DeepSeek R1</div>
-                <div class="model-option" data-model="chatgpt">ChatGPT</div>
-            </div>
             
-            <div class="chat-input-wrapper">
-                        <textarea 
-                    class="chat-input" 
-                    id="chatInput" 
-                    placeholder="اكتب سؤالك هنا..."
-                    rows="1"
+                <div class="chat-input-wrapper">
+                    <textarea 
+                        class="chat-input" 
+                        id="chatInput" 
+                        placeholder="اكتب سؤالك هنا"
+                        rows="3"
                         ></textarea>
-                <button class="send-button" id="sendButton" onclick="sendMessage()">
-                    إرسال
-                </button>
-                <button class="clear-chat" onclick="clearChat()">
-                    مسح المحادثة
-                        </button>
-                    </div>
-                    
-            <div class="suggestions">
-                <div class="suggestion" onclick="sendSuggestion('كيف أضيف عميل جديد؟')">كيف أضيف عميل جديد؟</div>
-                <div class="suggestion" onclick="sendSuggestion('كيف أنشئ فاتورة بيع؟')">كيف أنشئ فاتورة بيع؟</div>
-                <div class="suggestion" onclick="sendSuggestion('ما هي أنواع الموافقات؟')">ما هي أنواع الموافقات؟</div>
-                <div class="suggestion" onclick="sendSuggestion('كيف أضيف صنف جديد؟')">كيف أضيف صنف جديد؟</div>
-            </div>
-            
-            <!-- خيارات التواصل -->
-            <div class="contact-options">
-                <div class="contact-title">📞 التواصل مع الدعم الفني</div>
-                <div class="contact-buttons">
-                    <button class="whatsapp-btn" onclick="openWhatsApp()">
-                        <span class="whatsapp-icon">📱</span>
-                        واتساب
-                    </button>
-                    <button class="email-btn" onclick="openEmail()">
-                        <span class="email-icon">📧</span>
-                        إيميل
-                    </button>
-                    <button class="ticket-btn" onclick="openTicket()">
-                        <span class="ticket-icon">🎫</span>
-                        تذكرة دعم
+                    <button class="send-button" id="sendButton" onclick="sendMessage()">
+                        ➤
                     </button>
                 </div>
-            </div>
+                    
         </div>
     </div>
 
-    <script>
-        let selectedModel = 'deepseek';
-        let conversationHistory = [];
+    <!-- نموذج التذكرة -->
+    <div id="ticketModal" class="ticket-modal">
+        <div class="ticket-modal-content">
+            <h2>🎫 فتح تذكرة دعم</h2>
+            <p>إذا لم تكن الإجابة كافية، يمكنك فتح تذكرة دعم وسنرد عليك في أقرب وقت.</p>
+            
+               <form class="ticket-form" id="ticketForm">
+                   <div class="form-field">
+                       <label for="ticketName">الاسم الكامل *</label>
+                       <input type="text" id="ticketName" placeholder="الاسم الكامل" required>
+                   </div>
+                   <div class="form-field">
+                       <label for="ticketEmail">البريد الإلكتروني *</label>
+                       <input type="email" id="ticketEmail" placeholder="البريد الإلكتروني" required>
+                   </div>
+                   <div class="form-field">
+                       <label for="ticketPhone">رقم الجوال *</label>
+                       <input type="tel" id="ticketPhone" placeholder="رقم الجوال" required>
+                   </div>
+                   <div class="form-field">
+                       <label for="ticketMessage">الرسالة *</label>
+                       <textarea id="ticketMessage" placeholder="اكتب رسالتك هنا..." required></textarea>
+                   </div>
+                   
+                   <div class="form-field">
+                       <label>طريقة الإرسال *</label>
+                       <div class="send-method-options">
+                           <label class="radio-option">
+                               <input type="radio" name="sendMethod" value="whatsapp" checked>
+                               <span class="radio-text">📱 واتساب</span>
+                           </label>
+                           <label class="radio-option">
+                               <input type="radio" name="sendMethod" value="email">
+                               <span class="radio-text">📧 إيميل</span>
+                           </label>
+                       </div>
+                   </div>
+               
+                   <div class="ticket-buttons">
+                       <button type="button" class="ticket-cancel" onclick="closeTicketModal()">
+                           إلغاء
+                       </button>
+                       <button type="submit" class="ticket-submit">
+                           إرسال التذكرة
+                       </button>
+                   </div>
+               </form>
+        </div>
+    </div>
 
-        // تحديث وقت الترحيب
-        document.getElementById('welcomeTime').textContent = new Date().toLocaleTimeString('ar-SA');
+       <script>
+           let selectedModel = 'deepseek'; // DeepSeek فقط
+           let conversationHistory = [];
+           let isEnglish = false;
 
-        // اختيار النموذج
-        document.querySelectorAll('.model-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.model-option').forEach(opt => opt.classList.remove('active'));
-                this.classList.add('active');
-                selectedModel = this.dataset.model;
-            });
+        // Dark mode functionality
+        function toggleDarkMode() {
+            const body = document.body;
+            const toggleButton = document.getElementById('darkModeToggle');
+            
+            body.classList.toggle('dark-mode');
+            
+            // Update button icon
+            if (body.classList.contains('dark-mode')) {
+                toggleButton.textContent = '☀️';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                toggleButton.textContent = '🌙';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+
+        // Load dark mode preference on page load
+        function loadDarkModePreference() {
+            const darkMode = localStorage.getItem('darkMode');
+            const toggleButton = document.getElementById('darkModeToggle');
+            
+            if (darkMode === 'enabled') {
+                document.body.classList.add('dark-mode');
+                toggleButton.textContent = '☀️';
+            }
+        }
+
+        // Initialize dark mode on page load
+        document.addEventListener('DOMContentLoaded', loadDarkModePreference);
+
+        // Load language preference on page load
+        function loadLanguagePreference() {
+            const language = localStorage.getItem('language');
+            if (language === 'english') {
+                isEnglish = true;
+                document.body.classList.add('english');
+                document.querySelector('.menu-item:last-child .menu-text').textContent = 'العربية';
+                updateUIToEnglish();
+            }
+        }
+
+        // Initialize language on page load
+        document.addEventListener('DOMContentLoaded', loadLanguagePreference);
+
+        // Toggle menu dropdown
+        function toggleMenu() {
+            const menu = document.getElementById('menuDropdown');
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'block';
+            }
+        }
+
+        // Toggle language
+        function toggleLanguage() {
+            const body = document.body;
+            const languageButton = document.querySelector('.menu-item:last-child .menu-text');
+            
+            isEnglish = !isEnglish;
+            
+            if (isEnglish) {
+                body.classList.add('english');
+                languageButton.textContent = 'العربية';
+                updateUIToEnglish();
+            } else {
+                body.classList.remove('english');
+                languageButton.textContent = 'English';
+                updateUIToArabic();
+            }
+            
+            localStorage.setItem('language', isEnglish ? 'english' : 'arabic');
+        }
+
+        // Update UI to English
+        function updateUIToEnglish() {
+            document.getElementById('chatInput').placeholder = 'Type your question here';
+            document.querySelector('.welcome-message .message-content').textContent = 'Ask me anything';
+            document.querySelector('.menu-item:nth-child(1) .menu-text').textContent = 'Dark Mode';
+            document.querySelector('.menu-item:nth-child(2) .menu-text').textContent = 'Clear Chat';
+            document.querySelector('.menu-item:nth-child(3) .menu-text').textContent = 'Support';
+            
+            // Update ticket modal to English
+            document.querySelector('.ticket-modal-content h2').textContent = '🎫 Create Support Ticket';
+            document.querySelector('.ticket-modal-content p').textContent = 'If the answer is not sufficient, you can create a support ticket and we will respond to you as soon as possible.';
+            document.querySelector('label[for="ticketName"]').textContent = 'Full Name *';
+            document.querySelector('label[for="ticketEmail"]').textContent = 'Email Address *';
+            document.querySelector('label[for="ticketPhone"]').textContent = 'Phone Number *';
+            document.querySelector('label[for="ticketMessage"]').textContent = 'Message *';
+            document.getElementById('ticketName').placeholder = 'Full Name';
+            document.getElementById('ticketEmail').placeholder = 'Email Address';
+            document.getElementById('ticketPhone').placeholder = 'Phone Number';
+            document.getElementById('ticketMessage').placeholder = 'Write your message here...';
+            document.querySelector('.ticket-cancel').textContent = 'Cancel';
+            document.querySelector('.ticket-submit').textContent = 'Send Ticket';
+            
+            // Update send method options to English
+            const sendMethodLabel = document.querySelector('.form-field label:not([for])');
+            if (sendMethodLabel) {
+                sendMethodLabel.textContent = 'Send Method *';
+            }
+            
+            const radioOptions = document.querySelectorAll('.radio-option .radio-text');
+            if (radioOptions.length >= 2) {
+                radioOptions[0].textContent = '📱 WhatsApp';
+                radioOptions[1].textContent = '📧 Email';
+            }
+            
+            // Update typing indicator to English
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                const typingDots = typingIndicator.querySelector('.typing-dots');
+                if (typingDots) {
+                    typingDots.textContent = 'Assistant is typing';
+                }
+            }
+        }
+
+        // Update UI to Arabic
+        function updateUIToArabic() {
+            document.getElementById('chatInput').placeholder = 'اكتب سؤالك هنا';
+            document.querySelector('.welcome-message .message-content').textContent = 'سلني أجبك';
+            document.querySelector('.menu-item:nth-child(1) .menu-text').textContent = 'الوضع الليلي';
+            document.querySelector('.menu-item:nth-child(2) .menu-text').textContent = 'مسح المحادثة';
+            document.querySelector('.menu-item:nth-child(3) .menu-text').textContent = 'الدعم الفني';
+            
+            // Update ticket modal to Arabic
+            document.querySelector('.ticket-modal-content h2').textContent = '🎫 فتح تذكرة دعم';
+            document.querySelector('.ticket-modal-content p').textContent = 'إذا لم تكن الإجابة كافية، يمكنك فتح تذكرة دعم وسنرد عليك في أقرب وقت.';
+            document.querySelector('label[for="ticketName"]').textContent = 'الاسم الكامل *';
+            document.querySelector('label[for="ticketEmail"]').textContent = 'البريد الإلكتروني *';
+            document.querySelector('label[for="ticketPhone"]').textContent = 'رقم الجوال *';
+            document.querySelector('label[for="ticketMessage"]').textContent = 'الرسالة *';
+            document.getElementById('ticketName').placeholder = 'الاسم الكامل';
+            document.getElementById('ticketEmail').placeholder = 'البريد الإلكتروني';
+            document.getElementById('ticketPhone').placeholder = 'رقم الجوال';
+            document.getElementById('ticketMessage').placeholder = 'اكتب رسالتك هنا...';
+            document.querySelector('.ticket-cancel').textContent = 'إلغاء';
+            document.querySelector('.ticket-submit').textContent = 'إرسال التذكرة';
+            
+            // Update send method options to Arabic
+            const sendMethodLabel = document.querySelector('.form-field label:not([for])');
+            if (sendMethodLabel) {
+                sendMethodLabel.textContent = 'طريقة الإرسال *';
+            }
+            
+            const radioOptions = document.querySelectorAll('.radio-option .radio-text');
+            if (radioOptions.length >= 2) {
+                radioOptions[0].textContent = '📱 واتساب';
+                radioOptions[1].textContent = '📧 إيميل';
+            }
+            
+            // Update typing indicator to Arabic
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                const typingDots = typingIndicator.querySelector('.typing-dots');
+                if (typingDots) {
+                    typingDots.textContent = 'المساعد يكتب';
+                }
+            }
+        }
+
+               // Close menu when clicking outside
+               document.addEventListener('click', function(event) {
+                   const menu = document.getElementById('menuDropdown');
+                   const menuToggle = document.getElementById('menuToggle');
+                   if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
+                       menu.style.display = 'none';
+                   }
+               });
+
+        
+        // تهيئة زر الإرسال ليكون معطل في البداية
+        document.getElementById('sendButton').disabled = true;
+        
+        // تحديث حالة الزر عند الكتابة
+        document.getElementById('chatInput').addEventListener('input', function() {
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = this.value.trim() === '';
         });
+
+        // لا يوجد كود للتعامل مع Enter - Enter يعمل بشكل طبيعي للسطر الجديد
+
+        // DeepSeek فقط - لا حاجة لاختيار النموذج
 
         // إرسال الرسالة
         async function sendMessage() {
@@ -461,8 +1580,7 @@
             showTypingIndicator();
 
             try {
-                const apiEndpoint = selectedModel === 'deepseek' ? '/api/deepseek' : '/api/chat';
-                const response = await fetch(apiEndpoint, {
+                const response = await fetch('/api/deepseek', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -510,27 +1628,24 @@
             }
         }
 
-        // إضافة رسالة جديدة
-        function addMessage(content, sender) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            
-            const messageContent = document.createElement('div');
-            messageContent.className = 'message-content';
-            messageContent.textContent = content;
-            
-            const messageTime = document.createElement('div');
-            messageTime.className = 'message-time';
-            messageTime.textContent = new Date().toLocaleTimeString('ar-SA');
-            
-            messageDiv.appendChild(messageContent);
-            messageDiv.appendChild(messageTime);
-            messagesContainer.appendChild(messageDiv);
-            
-            // التمرير لأسفل
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
+               // إضافة رسالة جديدة
+               function addMessage(content, sender) {
+                   const messagesContainer = document.getElementById('chatMessages');
+                   const messageDiv = document.createElement('div');
+                   messageDiv.className = `message ${sender}`;
+                   
+                   const messageContent = document.createElement('div');
+                   messageContent.className = 'message-content';
+                   messageContent.textContent = content;
+                   
+                   messageDiv.appendChild(messageContent);
+                   messagesContainer.appendChild(messageDiv);
+                   
+                   // التمرير لأسفل فقط للرسائل الجديدة من المستخدم
+                   if (sender === 'user') {
+                       messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                   }
+               }
 
         // إظهار مؤشر الكتابة
         function showTypingIndicator() {
@@ -543,75 +1658,229 @@
             document.getElementById('typingIndicator').style.display = 'none';
         }
 
-        // إرسال اقتراح
-        function sendSuggestion(text) {
-            document.getElementById('chatInput').value = text;
-            sendMessage();
-        }
 
         // مسح المحادثة
         function clearChat() {
             if (confirm('هل تريد مسح جميع الرسائل؟')) {
                 document.getElementById('chatMessages').innerHTML = `
-                    <div class="message assistant">
+                    <div class="message assistant welcome-message">
                         <div class="message-content">
-                            مرحباً! أنا مساعدك الذكي لنظام witsUP. يمكنني مساعدتك في:
-                            <br>• شرح أي وظيفة في النظام
-                            <br>• الإجابة على أسئلتك التقنية
-                            <br>• توجيهك خطوة بخطوة
-                            <br><br>اسألني أي شيء! 😊
-                                </div>
-                        <div class="message-time">${new Date().toLocaleTimeString('ar-SA')}</div>
-                            </div>
-                        `;
+                            سلني أجبك
+                        </div>
+                    </div>
+                `;
                 conversationHistory = [];
             }
         }
 
-        // إرسال بالضغط على Enter
-        document.getElementById('chatInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
+        // تم حذف كود Enter - Enter يعمل بشكل طبيعي للسطر الجديد
 
-        // تعديل ارتفاع النص تلقائياً
+        // تعديل ارتفاع النص تلقائياً وتفعيل/تعطيل الزر
         document.getElementById('chatInput').addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            
+            // تفعيل/تعطيل زر الإرسال حسب المحتوى
+            const sendButton = document.getElementById('sendButton');
+            if (this.value.trim().length > 0) {
+                sendButton.disabled = false;
+            } else {
+                sendButton.disabled = true;
+            }
         });
 
-        // فتح الواتساب
-        function openWhatsApp() {
-            const phoneNumber = '+96655213009'; // رقم هاتف الدعم الفني
-            const message = 'مرحباً، أحتاج مساعدة في نظام witsUP';
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            
-            // محاولة فتح الواتساب
-            window.open(whatsappUrl, '_blank');
-            
-            // إضافة رسالة تأكيد
-            addMessage('تم فتح الواتساب للتواصل مع الدعم الفني. إذا لم يفتح، يمكنك التواصل على: +966552130095', 'assistant');
+        // فتح نموذج التذكرة
+        function openTicketModal() {
+            document.getElementById('ticketModal').style.display = 'block';
         }
 
-        // فتح الإيميل
-        function openEmail() {
-            const email = 'support@witsup.app';
-            const subject = 'طلب دعم فني - witsUP';
-            const body = 'مرحباً،\n\nأحتاج مساعدة في نظام witsUP.\n\nتفاصيل المشكلة:\n';
-            const emailUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            
-            window.open(emailUrl, '_blank');
-            addMessage('تم فتح تطبيق الإيميل. إذا لم يفتح، يمكنك التواصل على: support@witsup.app', 'assistant');
+        // إغلاق نموذج التذكرة
+        function closeTicketModal() {
+            document.getElementById('ticketModal').style.display = 'none';
+            document.getElementById('ticketForm').reset();
         }
 
-        // فتح تذكرة دعم
-        function openTicket() {
-            // إضافة رسالة في المحادثة لفتح تذكرة
-            const ticketMessage = 'أريد فتح تذكرة دعم فني';
-            document.getElementById('chatInput').value = ticketMessage;
-            sendMessage();
+        // إغلاق النموذج عند النقر خارجه
+        window.onclick = function(event) {
+            const modal = document.getElementById('ticketModal');
+            if (event.target === modal) {
+                closeTicketModal();
+            }
+        }
+
+        // إرسال التذكرة عبر الواتساب أو الإيميل
+        document.getElementById('ticketForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('ticketName').value;
+            const email = document.getElementById('ticketEmail').value;
+            const phone = document.getElementById('ticketPhone').value;
+            const message = document.getElementById('ticketMessage').value;
+            const sendMethod = document.querySelector('input[name="sendMethod"]:checked').value;
+            
+            if (!name || !email || !phone || !message) {
+                alert(isEnglish ? 'Please fill in all required fields' : 'يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
+            
+            // الحصول على آخر سؤال وجواب من المحادثة
+            const messages = document.querySelectorAll('.message');
+            let lastQuestion = '';
+            let lastAnswer = '';
+            
+            if (messages.length >= 2) {
+                const lastUserMessage = Array.from(messages).reverse().find(msg => msg.classList.contains('user'));
+                const lastAssistantMessage = Array.from(messages).reverse().find(msg => msg.classList.contains('assistant'));
+                
+                if (lastUserMessage) {
+                    lastQuestion = lastUserMessage.querySelector('.message-content').textContent.trim();
+                }
+                if (lastAssistantMessage) {
+                    lastAnswer = lastAssistantMessage.querySelector('.message-content').textContent.trim();
+                }
+            }
+            
+               if (sendMethod === 'whatsapp') {
+                   // إرسال إلى Zapier Webhook أولاً
+                   await sendToZapier(name, email, phone, message, lastQuestion, lastAnswer);
+                   
+                   // إرسال عبر الواتساب
+                   let whatsappMessage = `🎫 *تذكرة دعم فني*
+   
+   👤 *الاسم:* ${name}
+   📧 *البريد الإلكتروني:* ${email}
+   📱 *رقم الجوال:* ${phone}
+   
+   💬 *الرسالة:*
+   ${message}`;
+   
+                   // إضافة آخر سؤال وجواب إذا كانا موجودين
+                   if (lastQuestion && lastAnswer) {
+                       whatsappMessage += `
+   
+   📝 *آخر سؤال:*
+   ${lastQuestion}
+   
+   🤖 *آخر إجابة:*
+   ${lastAnswer}`;
+                   }
+   
+                   whatsappMessage += `
+   
+   ---
+   تم إرسال هذه التذكرة من مساعد WitsUp الذكي`;
+   
+                   // تشفير الرسالة للواتساب
+                   const encodedMessage = encodeURIComponent(whatsappMessage);
+                   const whatsappUrl = `https://wa.me/0552130095?text=${encodedMessage}`;
+                   
+                   // فتح الواتساب مع الرسالة
+                   window.open(whatsappUrl, '_blank');
+                   
+                   // إغلاق النموذج
+                   closeTicketModal();
+            } else if (sendMethod === 'email') {
+                // إرسال عبر الإيميل
+                sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer);
+            }
+        });
+
+        // دالة إرسال التذكرة عبر الإيميل
+        async function sendTicketByEmail(name, email, phone, message, lastQuestion, lastAnswer) {
+            try {
+                // إرسال إلى Zapier Webhook أولاً
+                const zapierSuccess = await sendToZapier(name, email, phone, message, lastQuestion, lastAnswer);
+                
+                // إرسال بريد إلكتروني
+                const response = await fetch('/api/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        phone,
+                        message,
+                        lastQuestion,
+                        lastAnswer
+                    })
+                });
+
+                let result;
+                let textResponse;
+                
+                try {
+                    textResponse = await response.text();
+                    console.log('Raw response:', textResponse);
+                    result = JSON.parse(textResponse);
+                } catch (parseError) {
+                    console.error('JSON Parse Error:', parseError);
+                    console.error('Raw response:', textResponse);
+                    throw new Error('Invalid response format: ' + textResponse);
+                }
+                
+                if (result.success) {
+                    const zapierStatus = zapierSuccess ? 'تم إرسال التذكرة إلى Trello بنجاح' : 'فشل في إرسال التذكرة إلى Trello';
+                    alert(`تم إرسال التذكرة بنجاح!\n📧 البريد الإلكتروني: ${email}\n📋 Trello: ${zapierStatus}`);
+                    closeTicketModal();
+                } else {
+                    console.error('Email API Error:', result);
+                    const errorMessage = result.error || result.details || 'خطأ غير معروف';
+                    alert(`حدث خطأ في إرسال البريد الإلكتروني: ${errorMessage}`);
+                }
+            } catch (error) {
+                console.error('Error sending ticket by email:', error);
+                const errorMessage = error.message || 'خطأ غير معروف';
+                alert(`حدث خطأ في إرسال التذكرة: ${errorMessage}`);
+            }
+        }
+
+        // دالة إرسال التذكرة إلى Zapier Webhook
+        async function sendToZapier(name, email, phone, message, lastQuestion, lastAnswer) {
+            try {
+                console.log('🚀 Sending ticket to Zapier via API...');
+                console.log('Data:', { name, email, phone, message, lastQuestion, lastAnswer });
+                
+                // إرسال البيانات عبر API بدلاً من form
+                const data = {
+                    ticketType: 'Support Ticket',
+                    customerName: name,
+                    customerEmail: email,
+                    customerPhone: phone,
+                    ticketMessage: message,
+                    lastQuestion: lastQuestion || 'N/A',
+                    lastAnswer: lastAnswer || 'N/A',
+                    timestamp: new Date().toISOString(),
+                    source: 'witsUP Assistant',
+                    priority: 'Normal',
+                    status: 'New'
+                };
+
+                console.log('📤 Zapier Data:', data);
+
+                // إرسال عبر API endpoint
+                const response = await fetch('/api/zapier', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('✅ Ticket sent to Zapier successfully:', result);
+                    return true;
+                } else {
+                    console.error('❌ Failed to send to Zapier:', response.status);
+                    return false;
+                }
+
+            } catch (error) {
+                console.error('💥 Error sending to Zapier:', error);
+                return false;
+            }
         }
     </script>
 </body>
