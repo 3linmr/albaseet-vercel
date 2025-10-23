@@ -1772,10 +1772,23 @@
    
                    // تشفير الرسالة للواتساب
                    const encodedMessage = encodeURIComponent(whatsappMessage);
-                   const whatsappUrl = `https://wa.me/0552130095?text=${encodedMessage}`;
+                   const whatsappUrl = `https://wa.me/966552130095?text=${encodedMessage}`;
+                   
+                   console.log('WhatsApp URL:', whatsappUrl);
+                   console.log('Message length:', whatsappMessage.length);
                    
                    // فتح الواتساب مع الرسالة
-                   window.open(whatsappUrl, '_blank');
+                   try {
+                       window.open(whatsappUrl, '_blank');
+                       console.log('WhatsApp opened successfully');
+                   } catch (error) {
+                       console.error('Error opening WhatsApp:', error);
+                       // محاولة بديلة
+                       window.location.href = whatsappUrl;
+                   }
+                   
+                   // إظهار رسالة نجاح
+                   showTicketSuccessMessage(email, 'تم إرسال التذكرة إلى الواتساب بنجاح');
                    
                    // إغلاق النموذج
                    closeTicketModal();
@@ -1822,7 +1835,9 @@
                 
                 if (result.success) {
                     const zapierStatus = zapierSuccess ? 'تم إرسال التذكرة إلى Trello بنجاح' : 'فشل في إرسال التذكرة إلى Trello';
-                    alert(`تم إرسال التذكرة بنجاح!\n📧 البريد الإلكتروني: ${email}\n📋 Trello: ${zapierStatus}`);
+                    
+                    // إظهار رسالة منفصلة في الموقع
+                    showTicketSuccessMessage(email, zapierStatus);
                     closeTicketModal();
                 } else {
                     console.error('Email API Error:', result);
@@ -1834,6 +1849,23 @@
                 const errorMessage = error.message || 'خطأ غير معروف';
                 alert(`حدث خطأ في إرسال التذكرة: ${errorMessage}`);
             }
+        }
+
+        // دالة إظهار رسالة نجاح التذكرة
+        function showTicketSuccessMessage(email, zapierStatus) {
+            // إنشاء رسالة نجاح في المحادثة
+            const successMessage = `✅ تم إرسال التذكرة بنجاح!
+
+📧 تم إرسال رسالة تأكيد إلى: ${email}
+
+⚠️ ملاحظة مهمة:
+قد تصلك الرسالة في مجلد "الرسائل غير المرغوب فيها" أو "Junk". 
+يرجى التحقق من هذا المجلد إذا لم تجد الرسالة في صندوق الوارد.
+
+شكراً لثقتك في خدماتنا! 🎉`;
+
+            // إضافة الرسالة إلى المحادثة
+            addMessage(successMessage, 'assistant');
         }
 
         // دالة إرسال التذكرة إلى Zapier Webhook
