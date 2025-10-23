@@ -1433,6 +1433,10 @@
             }
         }
 
+        // جعل الدوال متاحة في النطاق العام للآيفون
+        window.toggleMenu = toggleMenu;
+        window.toggleLanguage = toggleLanguage;
+
         // Toggle language
         function toggleLanguage() {
             const body = document.body;
@@ -1628,6 +1632,9 @@
             }
         }
 
+        // جعل الدوال متاحة في النطاق العام للآيفون
+        window.sendMessage = sendMessage;
+
                // إضافة رسالة جديدة
                function addMessage(content, sender) {
                    const messagesContainer = document.getElementById('chatMessages');
@@ -1673,6 +1680,9 @@
             }
         }
 
+        // جعل الدوال متاحة في النطاق العام للآيفون
+        window.clearChat = clearChat;
+
         // تم حذف كود Enter - Enter يعمل بشكل طبيعي للسطر الجديد
 
         // تعديل ارتفاع النص تلقائياً وتفعيل/تعطيل الزر
@@ -1699,6 +1709,10 @@
             document.getElementById('ticketModal').style.display = 'none';
             document.getElementById('ticketForm').reset();
         }
+
+        // جعل الدوال متاحة في النطاق العام للآيفون
+        window.openTicketModal = openTicketModal;
+        window.closeTicketModal = closeTicketModal;
 
         // إغلاق النموذج عند النقر خارجه
         window.onclick = function(event) {
