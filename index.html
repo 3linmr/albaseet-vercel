@@ -1780,10 +1780,15 @@
    
                    // تشفير الرسالة للواتساب
                    const encodedMessage = encodeURIComponent(whatsappMessage);
-                   const whatsappUrl = `https://wa.me/0552130095?text=${encodedMessage}`;
+                   const whatsappUrl = `https://wa.me/+966552130095?text=${encodedMessage}`;
                    
                    // فتح الواتساب مع الرسالة
                    window.open(whatsappUrl, '_blank');
+                   
+                   // إظهار رسالة نجاح
+                   addMessage(`✅ تم فتح الواتساب مع رسالتك جاهزة للإرسال!
+
+شكراً لثقتك في خدماتنا! 🎉`, 'assistant');
                    
                    // إغلاق النموذج
                    closeTicketModal();
