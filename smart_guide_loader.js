@@ -4,32 +4,35 @@ const path = require('path');
 class SmartGuideLoader {
     constructor() {
         this.partsDir = path.join(__dirname, 'guide_parts');
-        this.index = this.buildIndex();
+        this.index = {};
+        this.loadGuideParts();
     }
 
-    buildIndex() {
-        const index = {};
-        const files = fs.readdirSync(this.partsDir);
-        
-        files.forEach(file => {
-            if (file.endsWith('.md')) {
-                const content = fs.readFileSync(path.join(this.partsDir, file), 'utf8');
-                const lines = content.split('\n');
-                const title = lines[0]?.replace(/^# /, '') || '';
-                
-                // استخراج الكلمات المفتاحية
-                const keywords = this.extractKeywords(content);
-                
-                index[file] = {
-                    title,
-                    content,
-                    keywords,
-                    size: content.length
-                };
-            }
-        });
-        
-        return index;
+    loadGuideParts() {
+        try {
+            const files = fs.readdirSync(this.partsDir);
+            
+            files.forEach(file => {
+                if (file.endsWith('.md')) {
+                    const content = fs.readFileSync(path.join(this.partsDir, file), 'utf8');
+                    const lines = content.split('\n');
+                    const title = lines[0]?.replace(/^# /, '') || '';
+                    
+                    // استخراج الكلمات المفتاحية
+                    const keywords = this.extractKeywords(content);
+                    
+                    this.index[file] = {
+                        title,
+                        content,
+                        keywords,
+                        size: content.length
+                    };
+                }
+            });
+        } catch (error) {
+            console.error('Error loading guide parts:', error);
+            this.index = {};
+        }
     }
 
     extractKeywords(content) {
@@ -121,20 +124,43 @@ class SmartGuideLoader {
     }
 
     getGuideContent(query) {
-        const relevantParts = this.findRelevantParts(query);
-        
-        if (relevantParts.length === 0) {
-            // إذا لم نجد أجزاء ذات صلة، نعيد الأجزاء الأساسية
+        try {
+            const relevantParts = this.findRelevantParts(query);
+            const maxSize = 50000; // حدود آمنة للـ tokens
+            let currentSize = 0;
+            
+            if (relevantParts.length === 0) {
+                // إذا لم نجد أجزاء ذات صلة، نعيد الأجزاء الأساسية
+                return this.getBasicParts();
+            }
+
+            let content = '=== دليل المستخدم الشامل لـ witsUP ===\n\n';
+            
+            // إضافة الأجزاء الأساسية أولاً
+            const basicFiles = ['00__witsUP_.md', '01_.md', '02__witsUP.md'];
+            basicFiles.forEach(filename => {
+                if (this.index[filename] && currentSize < maxSize) {
+                    const partSize = this.index[filename].size;
+                    if (currentSize + partSize < maxSize) {
+                        content += this.index[filename].content + '\n\n';
+                        currentSize += partSize;
+                    }
+                }
+            });
+            
+            // إضافة الأجزاء ذات الصلة
+            relevantParts.forEach(part => {
+                if (currentSize + part.size < maxSize) {
+                    content += part.content + '\n\n';
+                    currentSize += part.size;
+                }
+            });
+
+            return content;
+        } catch (error) {
+            console.error('Error in getGuideContent:', error);
             return this.getBasicParts();
         }
-
-        let content = '=== دليل المستخدم الشامل لـ witsUP ===\n\n';
-        
-        relevantParts.forEach(part => {
-            content += part.content + '\n\n';
-        });
-
-        return content;
     }
 
     getBasicParts() {
