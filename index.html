@@ -1433,15 +1433,16 @@
             }
         }
 
-        // جعل الدوال متاحة في النطاق العام
-        window.toggleMenu = toggleMenu;
-        window.toggleLanguage = toggleLanguage;
-        window.sendMessage = sendMessage;
-        window.clearChat = clearChat;
-        window.openTicketModal = openTicketModal;
-        window.closeTicketModal = closeTicketModal;
+        // تعريف الدوال في النطاق العام مباشرة
+        function toggleMenu() {
+            const menu = document.getElementById('menuDropdown');
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'block';
+            }
+        }
 
-        // Toggle language
         function toggleLanguage() {
             const body = document.body;
             const languageButton = document.querySelector('.menu-item:last-child .menu-text');
@@ -1460,6 +1461,88 @@
             
             localStorage.setItem('language', isEnglish ? 'english' : 'arabic');
         }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // إضافة رسالة المستخدم
+            addMessage(message, 'user');
+            input.value = '';
+            input.style.height = 'auto';
+
+            // إظهار مؤشر الكتابة
+            showTypingIndicator();
+
+            try {
+                const response = await fetch('/api/deepseek', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        conversationHistory: conversationHistory
+                    })
+                });
+
+                const data = await response.json();
+                hideTypingIndicator();
+
+                if (data.response) {
+                    addMessage(data.response, 'assistant');
+                    conversationHistory.push({ role: 'user', content: message });
+                    conversationHistory.push({ role: 'assistant', content: data.response });
+                    
+                    // تقليل حجم المحادثة إذا كانت طويلة
+                    if (conversationHistory.length > 20) {
+                        conversationHistory = conversationHistory.slice(-20);
+                    }
+                } else if (data.error) {
+                    addMessage(`عذراً، ${data.error}. يرجى المحاولة مرة أخرى.`, 'assistant');
+            } else {
+                    addMessage('عذراً، حدث خطأ في معالجة طلبك. يرجى المحاولة مرة أخرى.', 'assistant');
+                    }
+                } catch (error) {
+                hideTypingIndicator();
+                console.error('Error:', error);
+                
+                let errorMessage = 'عذراً، حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.';
+                
+                if (error.message.includes('timeout') || error.message.includes('انتهت مهلة')) {
+                    errorMessage = 'انتهت مهلة الاتصال. يرجى المحاولة مرة أخرى.';
+                } else if (error.message.includes('ECONNRESET') || error.message.includes('انقطع الاتصال')) {
+                    errorMessage = 'انقطع الاتصال بالخادم. يرجى المحاولة مرة أخرى.';
+                }
+                
+                addMessage(errorMessage, 'assistant');
+            }
+        }
+
+        function clearChat() {
+            if (confirm('هل تريد مسح جميع الرسائل؟')) {
+                document.getElementById('chatMessages').innerHTML = `
+                    <div class="message assistant welcome-message">
+                        <div class="message-content">
+                            سلني أجبك
+                        </div>
+                    </div>
+                `;
+                conversationHistory = [];
+            }
+        }
+
+        function openTicketModal() {
+            document.getElementById('ticketModal').style.display = 'block';
+        }
+
+        function closeTicketModal() {
+            document.getElementById('ticketModal').style.display = 'none';
+            document.getElementById('ticketForm').reset();
+        }
+
 
         // Update UI to English
         function updateUIToEnglish() {
