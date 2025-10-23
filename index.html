@@ -1839,29 +1839,9 @@
                        }
                    }
                    
-                   // إذا فشلت جميع المحاولات، إظهار رابط
+                   // إذا فشلت جميع المحاولات، تسجيل الخطأ فقط
                    if (!opened) {
-                       console.log('All methods failed, showing fallback link');
-                       const fallbackDiv = document.createElement('div');
-                       fallbackDiv.innerHTML = `
-                           <div style="
-                               background: #25D366; 
-                               color: white; 
-                               padding: 10px; 
-                               border-radius: 5px; 
-                               margin: 5px 0; 
-                               text-align: center;
-                               cursor: pointer;
-                               font-size: 14px;
-                           " onclick="window.open('${whatsappUrl}', '_blank')">
-                               📱 اضغط هنا لفتح الواتساب
-                           </div>
-                       `;
-                       
-                       const chatContainer = document.querySelector('.chat-container');
-                       if (chatContainer) {
-                           chatContainer.appendChild(fallbackDiv);
-                       }
+                       console.log('All WhatsApp opening methods failed');
                    }
                    
                    console.log('WhatsApp opening attempt completed, opened:', opened);
